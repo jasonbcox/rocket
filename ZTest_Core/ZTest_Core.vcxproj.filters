@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="External Source">
+      <UniqueIdentifier>{44f96a3c-0b4d-4fb6-9e87-97a2ff50e33e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="UnitTest_floap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ZTest\UnitTest.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ZTest\main.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\floap.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\string_.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTest_string_.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTest_matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTest_vector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Third Party Source">
+      <UniqueIdentifier>{46de3952-a2a1-4a81-8b98-9c847d2529c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party Source\GLEW">
+      <UniqueIdentifier>{02da3d57-4772-40fd-8a05-65b778039a3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Universe">
+      <UniqueIdentifier>{054d104f-4d7c-41d0-92dc-27cc84e3dccc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party Source\SOIL">
+      <UniqueIdentifier>{42dc8901-3190-4897-a0f2-6e3318d6340d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{069fc666-fb30-4e6d-8dc0-a83b2c273a8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{76cd668a-0176-4e3c-9b73-28edd713b8b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External Source">
+      <UniqueIdentifier>{d3a30bde-a069-49e6-9bc7-38b10358ba75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{ff802250-963e-4603-a468-dbc2b89af525}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Image Files">
+      <UniqueIdentifier>{bc95be3e-4cfb-4592-a4df-07d8ee752fdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party Source\GLFW">
+      <UniqueIdentifier>{bb568d6f-a60e-4d81-89a0-f07e8994ef52}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="glew.h">
+      <Filter>Third Party Source\GLEW</Filter>
+    </ClInclude>
+    <ClInclude Include="Universe.h">
+      <Filter>Universe</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Universe</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Universe</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Universe</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Universe</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Universe</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Universe</Filter>
+    </ClInclude>
+    <ClInclude Include="SOIL\image_DXT.h">
+      <Filter>Third Party Source\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="SOIL\image_helper.h">
+      <Filter>Third Party Source\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="SOIL\SOIL.h">
+      <Filter>Third Party Source\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="SOIL\stb_image_aug.h">
+      <Filter>Third Party Source\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="SOIL\stbi_DDS_aug.h">
+      <Filter>Third Party Source\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="SOIL\stbi_DDS_aug_c.h">
+      <Filter>Third Party Source\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Object_Newton.h">
+      <Filter>Universe</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderDefaults.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Clickable.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Object_BitmapText.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Raster.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="glfw.h">
+      <Filter>Third Party Source\GLFW</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="glew32.lib">
+      <Filter>Third Party Source\GLEW</Filter>
+    </Library>
+    <Library Include="GLFW.lib">
+      <Filter>Third Party Source\GLFW</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="glew32.dll">
+      <Filter>Third Party Source\GLEW</Filter>
+    </None>
+    <None Include="Shaders\texture_f.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\texture_v.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\testTexture1.bmp">
+      <Filter>Shaders\Image Files</Filter>
+    </None>
+    <None Include="Shaders\testFont1.bmp">
+      <Filter>Shaders\Image Files</Filter>
+    </None>
+    <None Include="Shaders\testFont1.png">
+      <Filter>Shaders\Image Files</Filter>
+    </None>
+    <None Include="GLFW.dll">
+      <Filter>Third Party Source\GLFW</Filter>
+    </None>
+    <None Include="glfwreadme.txt">
+      <Filter>Third Party Source\GLFW</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Transform.cpp">
+      <Filter>Universe</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Universe</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshPrimitives.cpp">
+      <Filter>Universe</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Universe</Filter>
+    </ClCompile>
+    <ClCompile Include="SOIL\image_DXT.c">
+      <Filter>Third Party Source\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="SOIL\image_helper.c">
+      <Filter>Third Party Source\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="SOIL\SOIL.c">
+      <Filter>Third Party Source\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="SOIL\stb_image_aug.c">
+      <Filter>Third Party Source\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Universe</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshLoader.cpp">
+      <Filter>Universe</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Universe</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Universe</Filter>
+    </ClCompile>
+    <ClCompile Include="Universe.cpp">
+      <Filter>Universe</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\timer.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Object_Newton.cpp">
+      <Filter>Universe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\string_.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderDefaults.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\debug.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Clickable.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Object_BitmapText.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Raster.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

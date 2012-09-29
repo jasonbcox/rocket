@@ -1,0 +1,411 @@
+
+
+#include <vector>
+
+#include "glew.h"
+#include "glfw.h"
+
+#include "Scene.h"
+#include "matrix.h"
+#include "Transform.h"
+#include "Object.h"
+
+#include "debug.h"
+
+namespace Rocket {
+	namespace Graphics {
+
+		void Scene::Init() {
+			m_camera_position = Core::vec3(0,0,0);
+			m_camera_rotation = Core::Quaternion( 0.0f, Core::vec3(0,1,0) );
+			m_frame_camera_orientationCache = false;
+			m_frame_camera_orientationInverseCache = false;
+
+			m_frameTexture = 0;
+			m_frameBufferObject = 0;
+			m_frameDepthBuffer = 0;
+
+			setCameraInput( NULL );
+		}
+
+		Scene::Scene( float orthoWidth, float orthoHeight ) {
+			//m_camera_projection = Core::Orthographic2D( -orthoWidth/2.0f, orthoWidth/2.0f, -orthoHeight/2.0f, orthoHeight/2.0f );
+			//m_camera_projection = Core::Orthographic( -orthoWidth/2.0f, orthoWidth/2.0f, -orthoHeight/2.0f, orthoHeight/2.0f, -OrthographicDrawDistance, OrthographicDrawDistance );
+			m_camera_projection = Core::Orthographic( 0.0f, orthoWidth, orthoHeight, 0.0f, -OrthographicDrawDistance, OrthographicDrawDistance );
+			
+			Init();
+
+			disableDepthTest();
+		}
+		Scene::Scene( float FOVy, float aspectRatio, float nearClip, float farClip ) {
+			m_camera_projection = Core::Perspective( FOVy, aspectRatio, nearClip, farClip );
+			
+			Init();
+
+			enableDepthTest();
+		}
+		Scene::~Scene() {
+			// Delete all child composites (Transform's deconstructor takes care of children)
+			std::vector<Scene*>::iterator childComposite;
+			for (childComposite = m_composites.begin(); childComposite != m_composites.end(); childComposite++) {
+				delete (*childComposite);
+			}
+		}
+
+		void Scene::addMesh( Mesh * mesh ) {
+			m_meshes.push_back( mesh );
+		}
+
+		void Scene::addObject( Object * object, Transform * parent ) {
+			if (parent == NULL) {
+				addChild( object, false );
+			} else {
+				// todo: check to make sure parent object is infact already added to this Scene
+				parent->addChild( object, true );
+			}
+		}
+
+		void Scene::draw( float elapsedMilliseconds, bool clearScreen ) {
+			glBindFramebuffer( GL_FRAMEBUFFER, m_frameBufferObject );
+			if ( glDepthTest == true ) {
+				glEnable( GL_DEPTH_TEST );
+			} else {
+				glDisable( GL_DEPTH_TEST );
+			}
+			
+			if ( clearScreen == true ) glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+#ifdef ENABLE_DEBUG
+			m_frame_renderedPolygons = 0;
+			m_frame_renderedObjects = 0;
+#endif
+
+			//Core::Debug_StartTimer( (std::string( "Scene::calculateTransforms_" ) + (clearScreen ?"mainScene":"hudScene")).c_str() );
+			// Calculate transforms and update all nodes
+			std::vector<Transform*>::iterator child;
+			for (child = m_children.begin(); child != m_children.end(); child++) {
+				(*child)->calculateTransforms( elapsedMilliseconds, Core::mat4(), false, true );
+			}
+			//Core::Debug_StopTimer( (std::string( "Scene::calculateTransforms_" ) + (clearScreen ?"mainScene":"hudScene")).c_str() );
+
+			//Core::Debug_StartTimer( (std::string( "Scene::OpaquePass_" ) + (clearScreen ?"mainScene":"hudScene")).c_str() );
+			// Opaque pass
+			std::vector<Mesh*>::iterator mesh;
+			for (mesh = m_meshes.begin(); mesh != m_meshes.end(); mesh++) {
+				//GLuint shader = (*mesh)->getShader()->getShaderNumber();
+				Shader * shader = (*mesh)->getShader();
+				shader->useShaderProgram();
+				glBindVertexArray( (*mesh)->getVertexArrayObject() );
+
+				// Orientation of the camera
+				*shader->getCameraOrientation() = &getCameraOrientation();
+
+				// Camera projection
+				*shader->getCameraPerspective() = &getCameraProjection();
+
+#ifdef ENABLE_DEBUG
+				(*mesh)->m_frame_renderedPolygons = 0;
+#endif
+
+				(*mesh)->drawOpaqueMeshUsers();
+
+#ifdef ENABLE_DEBUG
+				m_frame_renderedPolygons += (*mesh)->m_frame_renderedPolygons;
+				m_frame_renderedObjects += (*mesh)->getOpaqueMeshUserCount();
+#endif
+			}
+
+			glEnable( GL_BLEND );
+			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+			//Core::Debug_StopTimer( (std::string( "Scene::OpaquePass_" ) + (clearScreen ?"mainScene":"hudScene")).c_str() );
+			//Core::Debug_StartTimer( (std::string( "Scene::TransparencyPass_" ) + (clearScreen ?"mainScene":"hudScene")).c_str() );
+
+			// Transparency pass
+			for (mesh = m_meshes.begin(); mesh != m_meshes.end(); mesh++) {
+				//GLuint shader = (*mesh)->getShader()->getShaderNumber();
+				Shader * shader = (*mesh)->getShader();
+				shader->useShaderProgram();
+				glBindVertexArray( (*mesh)->getVertexArrayObject() );
+
+				// Orientation of the camera
+				*shader->getCameraOrientation() = &getCameraOrientation();
+
+				// Camera projection
+				*shader->getCameraPerspective() = &getCameraProjection();
+
+#ifdef ENABLE_DEBUG
+				(*mesh)->m_frame_renderedPolygons = 0;
+#endif
+
+				(*mesh)->drawTransparentMeshUsers();
+
+#ifdef ENABLE_DEBUG
+				m_frame_renderedPolygons += (*mesh)->m_frame_renderedPolygons;
+				m_frame_renderedObjects += (*mesh)->getTransparentMeshUserCount();
+#endif
+			}
+
+			glDisable( GL_BLEND );
+			//Core::Debug_StopTimer( (std::string( "Scene::TransparencyPass_" ) + (clearScreen ?"mainScene":"hudScene")).c_str() );
+
+			//glBindFramebuffer(GL_FRAMEBUFFER, 0 );
+			//glBindTexture( GL_TEXTURE_2D, m_renderPasses[0]->m_frameTexture );
+			//glGenerateMipmap(GL_TEXTURE_2D);
+		}
+
+		void Scene::renderToTexture( int width, int height ) {
+			// Create RGB texture for the previous scene to render to
+			glGenTextures( 1, &m_frameTexture );
+			glBindTexture( GL_TEXTURE_2D, m_frameTexture );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+			// NULL means reserve texture memory, but texels are undefined
+			glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL );
+			glGenerateMipmap( GL_TEXTURE_2D );
+
+			// Create the frame buffer object for the previous scene to render with
+			glGenFramebuffers( 1, &m_frameBufferObject );
+			glBindFramebuffer( GL_FRAMEBUFFER, m_frameBufferObject );
+
+			// Attach 2D texture to this FBO
+			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_frameTexture, 0 );
+
+			// Create the depth buffer for the previous scene to render to
+			glGenRenderbuffers( 1, &m_frameDepthBuffer );
+			glBindRenderbuffer( GL_RENDERBUFFER, m_frameDepthBuffer );
+			glRenderbufferStorage( GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height );
+
+			// Attach depth buffer to FBO
+			glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_frameDepthBuffer );
+		}
+
+		// Camera Functions
+		const Core::mat4 & Scene::getCameraProjection() {
+			return m_camera_projection;
+		}
+		const Core::vec3 & Scene::getCameraPosition() {
+			return m_camera_position;
+		}
+		Core::vec3 Scene::getCameraDirection() {
+			return Core::QuaternionToUnitVector( m_camera_rotation );
+		}
+		Core::vec3 Scene::getCameraRotation() {
+			return Core::QuaternionToEuler( m_camera_rotation );
+		}
+
+		void Scene::calculateNewPosition( Core::mat4 orientation ) {
+			Core::vec4 pos = orientation.inverse() * Core::vec4( -orientation[0][3], -orientation[1][3], -orientation[2][3], 0.0f );
+			m_camera_position = Core::vec3( pos.x, pos.y, pos.z );
+		}
+		void Scene::calculateNewRotation( Core::mat4 orientation ) {
+			m_camera_rotation = Core::MatrixToQuaternion( orientation );
+		}
+
+		const Core::mat4 & Scene::getCameraOrientation() {
+			if (m_frame_camera_orientationCache == false) {
+				m_frame_camera_orientationCache = true;
+				m_frame_camera_orientation = Core::Translate( m_camera_position ) * Core::QuaternionRotate( m_camera_rotation );
+			}
+			return m_frame_camera_orientation;
+		}
+
+		const Core::mat4 & Scene::getCameraOrientationInverse() {
+			if (m_frame_camera_orientationInverseCache == false) {
+				m_frame_camera_orientationInverseCache = true;
+				m_frame_camera_orientationInverse = m_frame_camera_orientation.inverse();
+			}
+			return m_frame_camera_orientationInverse;
+		}
+
+		void Scene::setCameraOrientation( Core::mat4 orientation ) {
+			m_frame_camera_orientation = orientation;
+			m_frame_camera_orientationCache = true;
+			m_frame_camera_orientationInverseCache = false;
+		}
+		
+		void Scene::Camera_Rotate( float angle, Core::vec3 axis ) {
+			Core::mat4 cameraOrientation = getCameraOrientation();
+			//m_camera_rotation = Core::Rotate( angle, axis ) * m_camera_rotation;
+			setCameraOrientation( Core::Rotate( angle, axis ) * cameraOrientation );
+			calculateNewRotation( m_frame_camera_orientation );
+		}
+		void Scene::Camera_Move( float distance ) {
+			Core::mat4 cameraOrientation = getCameraOrientation();
+			setCameraOrientation( Core::Translate( Core::vec3( 0.0f, 0.0f, distance ) ) * cameraOrientation );
+			calculateNewPosition( m_frame_camera_orientation );
+		}
+		void Scene::Camera_Strafe( float distance ) {
+			Core::mat4 cameraOrientation = getCameraOrientation();
+			setCameraOrientation( Core::Translate( Core::vec3( -distance, 0.0f, 0.0f ) ) * cameraOrientation );
+			calculateNewPosition( m_frame_camera_orientation );
+		}
+		void Scene::Camera_Elevate( float distance ) {
+			Core::mat4 cameraOrientation = getCameraOrientation();
+			setCameraOrientation( Core::Translate( Core::vec3( 0.0f, -distance, 0.0f ) ) * cameraOrientation );
+			calculateNewPosition( m_frame_camera_orientation );
+		}
+
+		void Scene::Camera_Move( Core::vec3 velocity ) {
+			Core::mat4 cameraOrientation = getCameraOrientation();
+			//vec3 v = getSlideCollision( getCameraPosition(), velocity, 0.3f );
+			//vec4 move = m_camera_orientation * vec4( v, 0.0f );
+
+			Core::vec4 move = cameraOrientation * Core::vec4( velocity, 0.0f );
+			setCameraOrientation( Core::Translate( (-move).xyz() ) * cameraOrientation );
+			calculateNewPosition( m_frame_camera_orientation );
+		}
+
+		void Scene::Camera_Orient( Core::mat4 orientation ) {
+			setCameraOrientation( orientation );
+			calculateNewPosition( m_frame_camera_orientation );
+		}
+
+		void Scene::Camera_Position( Core::vec3 position ) {
+			Core::mat4 orientationAtOrigin = Core::QuaternionRotate( m_camera_rotation );
+			Core::vec4 move = orientationAtOrigin * Core::vec4( position, 0.0f );
+
+			setCameraOrientation( Core::Translate( (-move).xyz() ) * orientationAtOrigin );
+			calculateNewPosition( m_frame_camera_orientation );
+		}
+
+		void Scene::Camera_SetRotation( Core::vec4 quaternion ) {
+			setCameraOrientation( Translate( getCameraPosition() ) * Core::QuaternionRotate( quaternion ) );
+			calculateNewRotation( m_frame_camera_orientation );
+		}
+
+
+		void Scene::setCameraInput( Input * input ) {
+			m_camera_input = input;
+
+			setCameraMouseSensitivity( 50.0f );
+			setCameraControl_Move( 0, 0 );
+			setCameraControl_Strafe( 0, 0 );
+			setCameraControl_Elevate( 0, 0 );
+			setCameraControl_Turn( 0, 0 );
+			setCameraControl_Pitch( 0, 0 );
+			setCameraControl_Roll( 0, 0 );
+			m_camera_moveSpeed = Core::vec3( 0.0f, 0.0f, 0.0f );
+			m_camera_turnSpeed = Core::vec3( 0.0f, 0.0f, 0.0f );
+		}
+		void Scene::setCameraMouseSensitivity( float sensitivity ) {
+			m_camera_mouseSensitivity = sensitivity;
+		}
+		void Scene::setCameraControl_Move( int forward, int backward ) {
+			m_camera_controls[CameraControls::MoveForward] = forward;
+			m_camera_controls[CameraControls::MoveBackward] = backward;
+		}
+		void Scene::setCameraControl_Strafe( int left, int right ) {
+			m_camera_controls[CameraControls::StrafeLeft] = left;
+			m_camera_controls[CameraControls::StrafeRight] = right;
+		}
+		void Scene::setCameraControl_Elevate( int up, int down ) {
+			m_camera_controls[CameraControls::ElevateUp] = up;
+			m_camera_controls[CameraControls::ElevateDown] = down;
+		}
+		void Scene::setCameraControl_Turn( int left, int right ) {
+			m_camera_controls[CameraControls::TurnLeft] = left;
+			m_camera_controls[CameraControls::TurnRight] = right;
+		}
+		void Scene::setCameraControl_Pitch( int up, int down ) {
+			m_camera_controls[CameraControls::PitchUp] = up;
+			m_camera_controls[CameraControls::PitchDown] = down;
+		}
+		void Scene::setCameraControl_Roll( int left, int right ) {
+			m_camera_controls[CameraControls::RollLeft] = left;
+			m_camera_controls[CameraControls::RollRight] = right;
+		}
+
+		void Scene::setCameraMoveSpeed( const Core::vec3 & speed ) {
+			m_camera_moveSpeed = speed;
+		}
+		void Scene::setCameraTurnSpeed( const Core::vec3 & speed ) {
+			m_camera_turnSpeed = speed;
+		}
+		void Scene::ControlCamera( float elapsedTime ) {
+			Core::vec3 strafeAxis = ( getCameraOrientationInverse() * Core::vec4( 1, 0, 0, 0 ) ).xyz();
+			strafeAxis.y = 0;
+			if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::StrafeLeft] ) ) Camera_Move( strafeAxis * -m_camera_moveSpeed.x * elapsedTime );
+			if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::StrafeRight] ) ) Camera_Move( strafeAxis * m_camera_moveSpeed.x * elapsedTime );
+
+			Core::vec3 moveAxis = ( getCameraOrientationInverse() * Core::vec4( 0, 0, 1, 0 ) ).xyz();
+			moveAxis.y = 0;
+			if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::MoveForward] ) ) Camera_Move( moveAxis * -m_camera_moveSpeed.z * elapsedTime );
+			if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::MoveBackward] ) ) Camera_Move( moveAxis * m_camera_moveSpeed.z * elapsedTime );
+
+			// Control looking with mouse if all look controls aren't set
+			Core::vec3 lookSpeed = Core::vec3( 0.0f, 0.0f, 0.0f );
+			if ( ( m_camera_controls[CameraControls::TurnLeft] == 0 )
+				|| ( m_camera_controls[CameraControls::TurnRight] == 0 )
+				|| ( m_camera_controls[CameraControls::PitchUp] == 0 )
+				|| ( m_camera_controls[CameraControls::PitchDown] == 0 ) ) {
+
+					Core::vec2i mouseMove = m_camera_input->getMouseMove();
+					lookSpeed.x = -m_camera_turnSpeed.x * mouseMove.y * 1.0f / m_camera_mouseSensitivity;
+					lookSpeed.y = -m_camera_turnSpeed.y * mouseMove.x * 1.0f / m_camera_mouseSensitivity;
+			} else {
+				if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::TurnLeft] ) ) lookSpeed.y -= m_camera_turnSpeed.y;
+				if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::TurnRight] ) ) lookSpeed.y += m_camera_turnSpeed.y;
+
+				if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::PitchUp] ) ) lookSpeed.x -= m_camera_turnSpeed.x;
+				if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::PitchDown] ) ) lookSpeed.x += m_camera_turnSpeed.x;
+			}
+
+			// rotate around local X-axis
+			Camera_Rotate( lookSpeed.x * elapsedTime, Core::vec3( 1, 0, 0 ) );
+
+			// rotate around global Y-axis
+			Core::mat4 cameraOrientationInverse = getCameraOrientationInverse();
+			Core::vec3 rotationAxis = ( cameraOrientationInverse.transpose() * Core::vec4( 0, 1, 0, 0 ) ).xyz();
+			Camera_Rotate( lookSpeed.y * elapsedTime, rotationAxis );
+
+			if ( ( m_camera_controls[CameraControls::ElevateUp] != 0 )
+				&& ( m_camera_controls[CameraControls::ElevateDown] != 0 ) ) {
+
+					Core::vec3 elevateAxis = ( getCameraOrientationInverse() * Core::vec4( 0, 1, 0, 0 ) ).xyz();
+					elevateAxis.x = 0;	elevateAxis.z = 0;
+					if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::ElevateUp] ) ) Camera_Move( elevateAxis * m_camera_moveSpeed.z * elapsedTime );
+					if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::ElevateDown] ) ) Camera_Move( elevateAxis * -m_camera_moveSpeed.z * elapsedTime );
+			}
+		}
+
+
+		Rocket::Core::vec4 Scene::pickScreen( int x, int y, float optionalDepth ) {
+			GLint viewport[4];
+			GLdouble modelview[16];
+			GLdouble projection[16];
+			GLfloat winX, winY, winZ;
+			GLdouble posX, posY, posZ;
+
+			glGetDoublev( GL_MODELVIEW_MATRIX, modelview );		// get modelview matrix from GPU
+			glGetDoublev( GL_PROJECTION_MATRIX, projection );	// get projection matrix from GPU
+			glGetIntegerv( GL_VIEWPORT, viewport );				// get viewport from GPU
+
+			winX = (float)x;
+			winY = (float)viewport[3] - (float)y;
+			if ( optionalDepth == 0.0f ) {
+				glReadPixels( x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );	// get depth from depth buffer
+			} else {
+				winZ = optionalDepth;
+			}
+
+			gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ );
+
+			return Rocket::Core::normalize( Rocket::Core::vec4( (float)posX, (float)posY, (float)posZ, 0.0f ) );
+		}
+
+		void Scene::enableDepthTest() {
+			glDepthTest = true;
+		}
+		void Scene::disableDepthTest() {
+			glDepthTest = false;
+		}
+
+		std::list<std::pair< Transform*, int >> * Scene::zIndexer() {
+			return &m_zIndexer;
+		}
+
+	}
+}
