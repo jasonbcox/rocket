@@ -9,39 +9,6 @@
 namespace Rocket {
 	namespace Graphics {
 
-		Input_Interactable_Button::Input_Interactable_Button( Input_ButtonState::Input_ButtonState defaultState ) {
-			m_state = defaultState;
-		}
-
-		// Return the state
-		// If the state is Hit, change it to Pressed and return Hit (this way, the hit was known to have been processed)
-		// If the state is Released, change it to NotPressed and return Released
-		// Otherwise, just return the state
-		Input_ButtonState::Input_ButtonState Input_Interactable_Button::getState() {
-			if ( m_state == Input_ButtonState::Hit ) {
-				m_state = Input_ButtonState::Pressed;
-				return Input_ButtonState::Hit;
-			} else if ( m_state == Input_ButtonState::Released ) {
-				m_state = Input_ButtonState::NotPressed;
-				return Input_ButtonState::Released;
-			}
-			return m_state;
-		}
-		// Return true if the key is Hit or Pressed
-		bool Input_Interactable_Button::getStateSimple() {
-			if ( ( m_state == Input_ButtonState::Hit ) || ( m_state == Input_ButtonState::Pressed ) ) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-		Input_Interactable_Keyboard::Input_Interactable_Keyboard( Input_ButtonState::Input_ButtonState defaultState ) : Input_Interactable_Button( defaultState ) {
-		}
-
-		Input_Interactable_Mouse::Input_Interactable_Mouse( Input_ButtonState::Input_ButtonState defaultState ) : Input_Interactable_Button( defaultState ) {
-		}
-
 		// Definition for static member
 		Input * Input::Global_Input = NULL;
 
@@ -121,7 +88,7 @@ namespace Rocket {
 			}
 		}
 
-		void Input::addKeyboardBinding( int key, Input_Interactable_Keyboard * binding ) {
+		void Input::addKeyboardBinding( int key, Input_Keyboard * binding ) {
 			m_keyboardBindings[ key ].push_back( binding );
 		}
 
@@ -172,7 +139,7 @@ namespace Rocket {
 			return m_mouseScroll;
 		}
 
-		void Input::addMouseBinding( int button, Input_Interactable_Mouse * binding ) {
+		void Input::addMouseBinding( int button, Input_Mouse * binding ) {
 			m_mouseBindings[ button ].push_back( binding );
 		}
 
@@ -183,8 +150,8 @@ namespace Rocket {
 			Global_Input->m_keyboard[ key ] = newstate;
 
 			// Update keyboard bindings
-			std::vector< Input_Interactable_Keyboard* > bindingsToKey = Global_Input->m_keyboardBindings[ key ];
-			std::vector< Input_Interactable_Keyboard* >::iterator iter;
+			std::vector< Input_Keyboard* > bindingsToKey = Global_Input->m_keyboardBindings[ key ];
+			std::vector< Input_Keyboard* >::iterator iter;
 			for ( iter = bindingsToKey.begin(); iter != bindingsToKey.end(); iter++ ) {
 				(*iter)->update( newstate );
 			}
@@ -205,8 +172,8 @@ namespace Rocket {
 			// Update mouse bindings for all buttons
 			std::unordered_map< int, Input_ButtonState::Input_ButtonState >::iterator iterButton;
 			for ( iterButton = Global_Input->m_mouse.begin(); iterButton != Global_Input->m_mouse.end(); iterButton++ ) {
-				std::vector< Input_Interactable_Mouse* > bindingsToButton = Global_Input->m_mouseBindings[ (*iterButton).first ];
-				std::vector< Input_Interactable_Mouse* >::iterator iter;
+				std::vector< Input_Mouse* > bindingsToButton = Global_Input->m_mouseBindings[ (*iterButton).first ];
+				std::vector< Input_Mouse* >::iterator iter;
 				for ( iter = bindingsToButton.begin(); iter != bindingsToButton.end(); iter++ ) {
 					(*iter)->update( (*iterButton).second, x, y );
 				}
@@ -219,8 +186,8 @@ namespace Rocket {
 
 			// Update mouse bindings on the button that was pressed
 			Core::vec2i mousePos = Global_Input->getMousePosition();
-			std::vector< Input_Interactable_Mouse* > bindingsToButton = Global_Input->m_mouseBindings[ button ];
-			std::vector< Input_Interactable_Mouse* >::iterator iter;
+			std::vector< Input_Mouse* > bindingsToButton = Global_Input->m_mouseBindings[ button ];
+			std::vector< Input_Mouse* >::iterator iter;
 			for ( iter = bindingsToButton.begin(); iter != bindingsToButton.end(); iter++ ) {
 				(*iter)->update( newstate, mousePos.x, mousePos.y );
 			}

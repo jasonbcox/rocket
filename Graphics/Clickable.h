@@ -9,7 +9,7 @@ namespace Rocket {
 	namespace Graphics {
 
 		// Input - monitors and records all input events
-		class Clickable : public Input_Interactable_Mouse {
+		class Clickable : public Input_Mouse {
 		public:
 			Clickable( int left, int top, int right, int bottom );
 			~Clickable();

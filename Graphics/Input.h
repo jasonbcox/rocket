@@ -9,52 +9,10 @@
 #include "glfw.h"
 
 #include "vector.h"
+#include "Input_Interactable.h"
 
 namespace Rocket {
 	namespace Graphics {
-
-		// Hit - the button was pressed recently (the press event has not been handled yet)
-		// Pressed - the button is currently being pressed
-		// Released - the button was released recently (the release event has not been handled yet)
-		// NotPressed - the button is currently not being pressed
-		namespace Input_ButtonState {
-		enum Input_ButtonState {
-			Hit = 1,
-			Pressed,
-			Released,
-			NotPressed
-		};
-		}
-
-		class Input_Interactable_Button {
-		public:
-			Input_Interactable_Button( Input_ButtonState::Input_ButtonState defaultState = Input_ButtonState::NotPressed );
-
-			// Returns the current state
-			// If the state is Hit, it transitions to Pressed upon calling getState()
-			// If the state is Released, it transitions to NotPressed upon calling getState()
-			Input_ButtonState::Input_ButtonState getState();
-			// Returns true if the key is Hit or Pressed
-			// Hit and Released do not transistion upon calling getKeySimple()
-			bool getStateSimple();
-
-		protected:
-			Input_ButtonState::Input_ButtonState m_state;
-		};
-
-		class Input_Interactable_Keyboard : public Input_Interactable_Button {
-		public:
-			Input_Interactable_Keyboard( Input_ButtonState::Input_ButtonState defaultState = Input_ButtonState::NotPressed );
-
-			virtual void update( Input_ButtonState::Input_ButtonState state ) = 0;
-		};
-
-		class Input_Interactable_Mouse : public Input_Interactable_Button {
-		public:
-			Input_Interactable_Mouse( Input_ButtonState::Input_ButtonState defaultState = Input_ButtonState::NotPressed );
-
-			virtual void update( Input_ButtonState::Input_ButtonState state, int x, int y ) = 0;
-		};
 
 		// Input - monitors and records all input events
 		class Input {
@@ -80,7 +38,7 @@ namespace Rocket {
 			bool getKeySimple( int key );
 
 			// Add an input binding (button, device, etc.) to react to keyboard events
-			void addKeyboardBinding( int key, Input_Interactable_Keyboard * binding );
+			void addKeyboardBinding( int key, Input_Keyboard * binding );
 
 			// Returns the screen coord of the mouse
 			Core::vec2i getMousePosition();
@@ -97,7 +55,7 @@ namespace Rocket {
 			int getMouseScroll();
 
 			// Add an input binding (button, device, etc.) to react to mouse events
-			void addMouseBinding( int button, Input_Interactable_Mouse * binding );
+			void addMouseBinding( int button, Input_Mouse * binding );
 
 			static void callback_keyboard( int key, int state );
 
@@ -109,10 +67,10 @@ namespace Rocket {
 			static Input * Global_Input;
 
 			std::unordered_map< int, Input_ButtonState::Input_ButtonState > m_keyboard;
-			std::unordered_map< int, std::vector< Input_Interactable_Keyboard* > > m_keyboardBindings;
+			std::unordered_map< int, std::vector< Input_Keyboard* > > m_keyboardBindings;
 
 			std::unordered_map< int, Input_ButtonState::Input_ButtonState > m_mouse;
-			std::unordered_map< int, std::vector< Input_Interactable_Mouse* > > m_mouseBindings;
+			std::unordered_map< int, std::vector< Input_Mouse* > > m_mouseBindings;
 
 			bool m_mouseEnabled;
 			Core::vec2i m_mousePosition;

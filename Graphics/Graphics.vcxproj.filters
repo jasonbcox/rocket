@@ -99,6 +99,9 @@
     <ClInclude Include="glfw.h">
       <Filter>Third Party Source\GLFW</Filter>
     </ClInclude>
+    <ClInclude Include="Input_Interactable.h">
+      <Filter>Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="glew32.lib">
@@ -204,6 +207,9 @@
     </ClCompile>
     <ClCompile Include="Raster.cpp">
       <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Input_Interactable.cpp">
+      <Filter>Input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

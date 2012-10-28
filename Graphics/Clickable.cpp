@@ -7,7 +7,7 @@
 namespace Rocket {
 	namespace Graphics {
 
-		Clickable::Clickable( int left, int top, int right, int bottom ) : Input_Interactable_Mouse( Input_ButtonState::NotPressed ) {
+		Clickable::Clickable( int left, int top, int right, int bottom ) : Input_Mouse( Input_ButtonState::NotPressed ) {
 			m_clickableArea = Core::vec4i( left, top, right, bottom );
 		}
 
