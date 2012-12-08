@@ -292,6 +292,138 @@ namespace Rocket {
 		};
 
 
+		// Matrix NxM
+		// --------------------------------------------------------------------------------------------------------------------
+		template <class T> class T_matNxM {
+		public:
+			T ** m_rows;
+			unsigned int m_N, m_M;
+
+			// Constructors
+			T_matNxM( unsigned int rows, unsigned int columns ) {
+				m_N = rows;
+				m_M = columns;
+				m_rows = new T * [rows];
+				for ( unsigned int r = 0; r < rows; r++ ) {
+					m_rows[r] = new T[columns];
+					for ( unsigned int c = 0; c < columns; c++ ) { m_rows[r][c] = 0; }
+				}
+			}
+			~T_matNxM() {
+				for ( unsigned int r = 0; r < m_N; r++ ) {
+					delete m_rows[r];
+				}
+				delete m_rows;
+			}
+
+			// Array Subscript
+			T * operator [] ( unsigned int index ) { return m_rows[index]; }
+
+			// Arithmetic
+			// M * V
+			void multiplyVector ( const T * vector, T * outvector ) const {
+				for (unsigned int i = 0; i < m_N; i++) {
+					for (unsigned int j = 0; j < m_M; j++) {
+						outvector[i] += m_rows[i][j] * vector[j];
+					}	}
+				return outvector;
+			}
+			// M * M
+			void multiplyMatrix ( const T_matNxM<T> & R, T_matNxM<T> * outmatrix ) const {
+				if ( ( m_N != R.m_M ) || ( m_M != R.m_N ) ) return NULL;
+				for (unsigned int i = 0; i < m_N; i++) {
+					for (unsigned int j = 0; j < R.m_M; j++) {
+						for (unsigned int k = 0; k < m_M; k++) {
+							outmatrix[i][j] += m_rows[i][k] * R.m_rows[k][j];
+						}	}	}
+				return outmatrix;
+			}
+
+			// Matrix Operations
+			void transpose() {
+				// todo
+				return;
+			}
+
+			T determinant() {
+				T r = 0;
+				int sign = 1;
+				for ( unsigned int i = 0; i < m_M; i++ ) {
+					r += sign * m_rows[0][i] * minorDeterminant(0,i);
+					sign *= -1;
+				}
+				return r;
+			}
+
+			// Returns this matrix with row and col removed
+			T_matNxM<T> * minor( unsigned int row, unsigned int col ) {
+				T_matNxM<T> r = new T_matNxM<T>( m_N, m_M );
+				int x = 0, y = 0;
+				for ( unsigned int i = 0; i < m_N; i++) {
+					if (i != row) {
+						for ( unsigned int j = 0; j < m_M; j++) {
+							if (j != col) {
+								r[x][y] = m_rows[i][j];
+								y++;
+							}
+						}
+						x++;
+						y = 0;
+					}
+				}
+				return r;
+			}
+
+			T minorDeterminant( unsigned int row, unsigned int col ) {
+				/*
+				int r0 = ( row == 0 ) ? 1 : 0;
+				int c0 = ( col == 0 ) ? 1 : 0;
+				int r1 = ( row == 1 ) ? 2 : 1+r0;
+				int c1 = ( col == 1 ) ? 2 : 1+c0;
+				int r2 = ( row == 2 ) ? 3 : 1+r1;
+				int c2 = ( col == 2 ) ? 3 : 1+c1;
+				return m_rows[r0][c0] * m_rows[r1][c1] * m_rows[r2][c2]
+						- m_rows[r0][c0] * m_rows[r1][c2] * m_rows[r2][c1]
+						- m_rows[r0][c1] * m_rows[r1][c0] * m_rows[r2][c2]
+						+ m_rows[r0][c1] * m_rows[r1][c2] * m_rows[r2][c0]
+						+ m_rows[r0][c2] * m_rows[r1][c0] * m_rows[r2][c1]
+						- m_rows[r0][c2] * m_rows[r1][c1] * m_rows[r2][c0];
+				*/
+				// todo
+				return 0;
+			}
+
+			void inverse() {
+				/*
+				T det = 1 / determinant();
+				T negdet = -det;
+				return T_mat4<T>(
+					minorDeterminant(0,0)*det,		minorDeterminant(1,0)*negdet,	minorDeterminant(2,0)*det,		minorDeterminant(3,0)*negdet,
+					minorDeterminant(0,1)*negdet,	minorDeterminant(1,1)*det,		minorDeterminant(2,1)*negdet,	minorDeterminant(3,1)*det,
+					minorDeterminant(0,2)*det,		minorDeterminant(1,2)*negdet,	minorDeterminant(2,2)*det,		minorDeterminant(3,2)*negdet,
+					minorDeterminant(0,3)*negdet,	minorDeterminant(1,3)*det,		minorDeterminant(2,3)*negdet,	minorDeterminant(3,3)*det );
+				*/
+				// todo
+				return;
+			}
+			
+
+			friend std::ostream & operator << ( std::ostream& stream, const T_matNxM<T> & m ) {
+				stream << "[";
+				for ( unsigned int i = 0; i < m.m_N; i++ ) {
+					stream << "[";
+					for ( unsigned int j = 0; j < m.m_M; j++ ) {
+						if ( j > 0 ) stream << ",";
+						stream << m.m_rows[i][j];
+					}
+					stream << "]";
+					if ( i < m.m_N-1 ) stream << "\n";
+				}
+				return stream << "]";
+			}
+		};
+
+
 		// External Matrix Operations
 		// --------------------------------------------------------------------------------------------------------------------
 		template <class T> T_mat4<T> Scale( const T_vec3<T> & v ) {
@@ -418,6 +550,9 @@ namespace Rocket {
 
 		typedef T_mat4<float> mat4;
 		typedef T_mat4<double> mat4d;
+
+		typedef T_matNxM<float> matNxM;
+		typedef T_matNxM<double> matNxMd;
 	}
 }
 
