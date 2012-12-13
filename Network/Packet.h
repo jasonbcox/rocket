@@ -4,7 +4,7 @@
 
 #include "system.h"
 #include "string_.h"
-#include "floap.h"
+#include "fixedpoint.h"
 
 #ifdef OS_WINDOWS
 #include <WinSock2.h>
@@ -37,7 +37,7 @@ namespace Rocket {
 			char_string,
 			raw_int,
 			raw_uint,
-			raw_floap
+			raw_fixedpoint
 		};
 		}
 
@@ -54,9 +54,9 @@ namespace Rocket {
 		// --------------------------------------------------------------------------------------------------------------------
 		const PacketElementTypes::PacketElementTypes Packet_Test[] = {
 			PacketElementTypes::char_string,
-			PacketElementTypes::raw_floap,
-			PacketElementTypes::raw_floap,
-			PacketElementTypes::raw_floap,
+			PacketElementTypes::raw_fixedpoint,
+			PacketElementTypes::raw_fixedpoint,
+			PacketElementTypes::raw_fixedpoint,
 			PacketElementTypes::raw_int,
 			PacketElementTypes::empty
 		};
@@ -92,7 +92,7 @@ namespace Rocket {
 			// Add elements to the packet
 			void add( int i );
 			void add( unsigned int u );
-			void add( Core::floap f );			// idea: add bool flag for optional compression
+			void add( Core::fixedpoint f );			// idea: add bool flag for optional compression
 			void add( Core::string s );
 
 
@@ -101,7 +101,7 @@ namespace Rocket {
 			// Read elements from the packet
 			int getInt();
 			unsigned int getUInt();
-			Core::floap getFloap();
+			Core::fixedpoint getfixedpoint();
 			Core::string getString();
 
 

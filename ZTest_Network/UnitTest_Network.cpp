@@ -22,9 +22,9 @@ Rocket_UnitTest ( Network_TCP ) {
 	// Client: send data
 	Rocket::Network::Packet * p = new Rocket::Network::Packet( Rocket::Network::PacketTypes::Test );
 	p->add( "Hello server!" );
-	p->add( (Rocket::Core::floap)0.5f );
-	p->add( (Rocket::Core::floap)0.0f );
-	p->add( (Rocket::Core::floap)-1.1f );
+	p->add( (Rocket::Core::fixedpoint)0.5f );
+	p->add( (Rocket::Core::fixedpoint)0.0f );
+	p->add( (Rocket::Core::fixedpoint)-1.1f );
 	p->add( (int)-5 );
 	client_acc->send( p );
 	client->update();
@@ -35,9 +35,9 @@ Rocket_UnitTest ( Network_TCP ) {
 	Rocket_UnitTest_Check_Expression( p2 != NULL );
 
 	Rocket_UnitTest_Check_CharStringEqual( p2->getString().c_str(), "Hello server!" );
-	Rocket_UnitTest_Check_FloatEqual( p2->getFloap().toValue(), 0.5f, 0.001f );
-	Rocket_UnitTest_Check_FloatEqual( p2->getFloap().toValue(), 0.0f, 0.001f );
-	Rocket_UnitTest_Check_FloatEqual( p2->getFloap().toValue(), -1.1f, 0.001f );
+	Rocket_UnitTest_Check_FloatEqual( p2->getfixedpoint().toValue(), 0.5f, 0.001f );
+	Rocket_UnitTest_Check_FloatEqual( p2->getfixedpoint().toValue(), 0.0f, 0.001f );
+	Rocket_UnitTest_Check_FloatEqual( p2->getfixedpoint().toValue(), -1.1f, 0.001f );
 	Rocket_UnitTest_Check_Equal( p2->getInt(), -5 );
 
 	delete server;
@@ -64,9 +64,9 @@ Rocket_UnitTest ( Network_UDP ) {
 	// Sender: send UDP packet
 	Rocket::Network::Packet * p = new Rocket::Network::Packet( Rocket::Network::PacketTypes::Test );
 	p->add( "Hello Receiver!" );
-	p->add( (Rocket::Core::floap)12345.0f );
-	p->add( (Rocket::Core::floap)-987654321.0f );
-	p->add( (Rocket::Core::floap)0.0f );
+	p->add( (Rocket::Core::fixedpoint)12345.0f );
+	p->add( (Rocket::Core::fixedpoint)-987654321.0f );
+	p->add( (Rocket::Core::fixedpoint)0.0f );
 	p->add( (int)0 );
 	sender_acc->send( p );
 	sender->update();
@@ -77,9 +77,9 @@ Rocket_UnitTest ( Network_UDP ) {
 	Rocket_UnitTest_Check_Expression( p2 != NULL );
 
 	Rocket_UnitTest_Check_CharStringEqual( p2->getString().c_str(), "Hello Receiver!" );
-	Rocket_UnitTest_Check_FloatEqual( p2->getFloap().toValue(), 12345.0f, 0.001f );
-	Rocket_UnitTest_Check_FloatEqual( p2->getFloap().toValue(), -987654321.0f, 0.001f );
-	Rocket_UnitTest_Check_FloatEqual( p2->getFloap().toValue(), -0.0f, 0.001f );
+	Rocket_UnitTest_Check_FloatEqual( p2->getfixedpoint().toValue(), 12345.0f, 0.001f );
+	Rocket_UnitTest_Check_FloatEqual( p2->getfixedpoint().toValue(), -987654321.0f, 0.001f );
+	Rocket_UnitTest_Check_FloatEqual( p2->getfixedpoint().toValue(), -0.0f, 0.001f );
 	Rocket_UnitTest_Check_Equal( p2->getInt(), 0 );
 
 	delete sender;

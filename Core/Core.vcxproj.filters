@@ -35,9 +35,6 @@
     <ClInclude Include="string_.h">
       <Filter>Primitive Types</Filter>
     </ClInclude>
-    <ClInclude Include="floap.h">
-      <Filter>Primitive Types</Filter>
-    </ClInclude>
     <ClInclude Include="vector.h">
       <Filter>Math\Vectors</Filter>
     </ClInclude>
@@ -49,6 +46,9 @@
     </ClInclude>
     <ClInclude Include="dsp.h">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="fixedpoint.h">
+      <Filter>Primitive Types</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -67,11 +67,11 @@
     <ClCompile Include="string_.cpp">
       <Filter>Primitive Types</Filter>
     </ClCompile>
-    <ClCompile Include="floap.cpp">
-      <Filter>Primitive Types</Filter>
-    </ClCompile>
     <ClCompile Include="dsp.cpp">
       <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="fixedpoint.cpp">
+      <Filter>Primitive Types</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

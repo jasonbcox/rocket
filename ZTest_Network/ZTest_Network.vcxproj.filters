@@ -22,9 +22,6 @@
     <ClCompile Include="..\Network\Packet.cpp">
       <Filter>External Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\Core\floap.cpp">
-      <Filter>External Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\Core\string_.cpp">
       <Filter>External Source</Filter>
     </ClCompile>
@@ -41,6 +38,9 @@
       <Filter>External Source</Filter>
     </ClCompile>
     <ClCompile Include="..\Core\timer.cpp">
+      <Filter>External Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Core\fixedpoint.cpp">
       <Filter>External Source</Filter>
     </ClCompile>
   </ItemGroup>

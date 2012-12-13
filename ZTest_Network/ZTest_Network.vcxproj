@@ -12,7 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Core\debug.cpp" />
-    <ClCompile Include="..\Core\floap.cpp" />
+    <ClCompile Include="..\Core\fixedpoint.cpp" />
     <ClCompile Include="..\Core\string_.cpp" />
     <ClCompile Include="..\Core\timer.cpp" />
     <ClCompile Include="..\Network\Network.cpp" />

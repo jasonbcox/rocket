@@ -1,10 +1,13 @@
 
 #include "UnitTest.h"
 
-#include "floap.h"
+#include "fixedpoint.h"
 
-Rocket_UnitTest ( Floap_BasicMath ) {
-	Rocket::Core::floap x = 0.0f;
+using namespace Rocket;
+using namespace Rocket::Core;
+
+Rocket_UnitTest ( fixedpoint_BasicMath ) {
+	fixedpoint x = 0.0f;
 	Rocket_UnitTest_Check_FloatEqual( x.toValue(), 0.0f, 0.001f );
 
 	x -= 10.0f;
@@ -35,13 +38,29 @@ Rocket_UnitTest ( Floap_BasicMath ) {
 	Rocket_UnitTest_Check_FloatEqual( x.toValue(), 5.0f, 0.001f );
 
 
-	Rocket::Core::floap y = x;
+	fixedpoint y = x;
 	Rocket_UnitTest_Check_FloatEqual( y.toValue(), 5.0f, 0.001f );
 
-	Rocket::Core::floap z; z = x;
+	fixedpoint z; z = x;
 	Rocket_UnitTest_Check_FloatEqual( z.toValue(), 5.0f, 0.001f );
 
 	x = 0.0f;
 	Rocket_UnitTest_Check_FloatEqual( y.toValue(), 5.0f, 0.001f );
 	Rocket_UnitTest_Check_FloatEqual( z.toValue(), 5.0f, 0.001f );
+}
+
+Rocket_UnitTest( fixedpoint_OtherFunctions ) {
+	Rocket_UnitTest_Check_FloatEqual( fixedpoint(123.456f).floor().toValue(), 123.0f, 0.001f );
+	Rocket_UnitTest_Check_FloatEqual( fixedpoint(123.456f).ceiling().toValue(), 124.0f, 0.001f );
+	Rocket_UnitTest_Check_FloatEqual( fixedpoint(123.456f).round().toValue(), 123.0f, 0.001f );
+
+	Rocket_UnitTest_Check_FloatEqual( fixedpoint(123.654f).floor().toValue(), 123.0f, 0.001f );
+	Rocket_UnitTest_Check_FloatEqual( fixedpoint(123.654f).ceiling().toValue(), 124.0f, 0.001f );
+	Rocket_UnitTest_Check_FloatEqual( fixedpoint(123.654f).round().toValue(), 124.0f, 0.001f );
+
+	Rocket_UnitTest_Check_FloatEqual( fixedpoint(123.456f).roundToNearest(12.0f).toValue(), 120.0f, 0.001f );
+}
+
+Rocket_UnitTest( fixedpoint_StringFunctions ) {
+	Rocket_UnitTest_Check_CharStringEqual( fixedpoint(123.456f).toString().c_str(), "123.456" );
 }

@@ -136,8 +136,8 @@ namespace Rocket {
 			}
 		}
 
-		void Packet::add( Core::floap f ) {
-			PacketElementTypes::PacketElementTypes type = PacketElementTypes::raw_floap;
+		void Packet::add( Core::fixedpoint f ) {
+			PacketElementTypes::PacketElementTypes type = PacketElementTypes::raw_fixedpoint;
 			if ( nextElementMatches( type ) ) {
 				if ( m_explicitPacketElements == true ) add( (char*)(&type), 1 );
 				
@@ -212,14 +212,14 @@ namespace Rocket {
 			}
 		}
 
-		Core::floap Packet::getFloap() {
+		Core::fixedpoint Packet::getfixedpoint() {
 			char type = 0;
 			if ( ( m_explicitPacketElements == false ) || (nextElementMatches( (PacketElementTypes::PacketElementTypes)(type = getByte()) )) ) {
 				fswap cf;
 				int nbo_i;
 				memcpy( &nbo_i, &(m_data[m_seek]), PACKET_INT_SIZE );
 				cf.i =  ntohl( nbo_i );
-				CORE_FLOAP_TYPE f = cf.f;
+				Core::FixedPoint_OutputType f = cf.f;
 
 				m_seek += PACKET_INT_SIZE;
 				( m_nestedElements == 0 ) ? m_current_element++ : m_nestedElements--;

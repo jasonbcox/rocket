@@ -11,11 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Core\floap.cpp" />
+    <ClCompile Include="..\Core\fixedpoint.cpp" />
     <ClCompile Include="..\Core\string_.cpp" />
     <ClCompile Include="..\ZTest\main.cpp" />
     <ClCompile Include="..\ZTest\UnitTest.cpp" />
-    <ClCompile Include="UnitTest_floap.cpp" />
+    <ClCompile Include="UnitTest_fixedpoint.cpp" />
     <ClCompile Include="UnitTest_matrix.cpp" />
     <ClCompile Include="UnitTest_string_.cpp" />
     <ClCompile Include="UnitTest_vector.cpp" />
