@@ -11,5 +11,5 @@ For commercial use, you must negotiate a separate license.  See the LICENSE file
 
 ## Contributing
 
-If you are interested in contributing to the ROCKET Engine Project,
-just shoot an email to Jason Cox at contact@jasonbcox.com.
+If you are interested in contributing to the ROCKET Engine Project, please read the LICENSE_CONTRIBUTORS file.
+Then, just shoot an email to Jason Cox at contact@jasonbcox.com.
