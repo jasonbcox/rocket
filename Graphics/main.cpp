@@ -6,8 +6,8 @@
 
 #include <stdlib.h>
 
-#include "glew.h"
-#include "glfw.h"
+#include "GL/glew.h"
+#include "GL/glfw.h"
 
 #include "debug.h"
 

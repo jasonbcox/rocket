@@ -28,9 +28,6 @@
     <Filter Include="Shaders\Image Files">
       <UniqueIdentifier>{bc95be3e-4cfb-4592-a4df-07d8ee752fdf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Third Party Source\GLFW">
-      <UniqueIdentifier>{bb568d6f-a60e-4d81-89a0-f07e8994ef52}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Third Party Source\FreeType">
       <UniqueIdentifier>{bdfec9b9-df7a-4616-9495-7f1407bd8c99}</UniqueIdentifier>
     </Filter>
@@ -49,11 +46,17 @@
     <Filter Include="Third Party Source\FreeType\include\freetype\internal\services">
       <UniqueIdentifier>{f20023b8-3909-4c96-9e76-d00780899c6d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Third Party Source\GLFW">
+      <UniqueIdentifier>{e4d9b890-0ae7-4bb7-8e72-aa4a929e2e2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party Source\GLFW\win32">
+      <UniqueIdentifier>{ae097342-2e08-477c-8043-98de7409639c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Third Party Source\GL">
+      <UniqueIdentifier>{11113570-1dbe-4efc-aa32-147e5415fe0c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="glew.h">
-      <Filter>Third Party Source\GLEW</Filter>
-    </ClInclude>
     <ClInclude Include="Universe.h">
       <Filter>Universe</Filter>
     </ClInclude>
@@ -113,9 +116,6 @@
     </ClInclude>
     <ClInclude Include="Raster.h">
       <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="glfw.h">
-      <Filter>Third Party Source\GLFW</Filter>
     </ClInclude>
     <ClInclude Include="Input_Interactable.h">
       <Filter>Input</Filter>
@@ -405,19 +405,26 @@
     <ClInclude Include="FreeType\include\freetype\config\ftstdlib.h">
       <Filter>Third Party Source\FreeType\include\freetype\config</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="glew32.lib">
-      <Filter>Third Party Source\GLEW</Filter>
-    </Library>
-    <Library Include="GLFW.lib">
+    <ClInclude Include="GLFW\internal.h">
       <Filter>Third Party Source\GLFW</Filter>
-    </Library>
+    </ClInclude>
+    <ClInclude Include="GLFW\win32\platform.h">
+      <Filter>Third Party Source\GLFW\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="GL\glew.h">
+      <Filter>Third Party Source\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="GL\glxew.h">
+      <Filter>Third Party Source\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="GL\wglew.h">
+      <Filter>Third Party Source\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="GL\glfw.h">
+      <Filter>Third Party Source\GL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="glew32.dll">
-      <Filter>Third Party Source\GLEW</Filter>
-    </None>
     <None Include="Shaders\texture_f.glsl">
       <Filter>Shaders</Filter>
     </None>
@@ -432,12 +439,6 @@
     </None>
     <None Include="Shaders\testFont1.png">
       <Filter>Shaders\Image Files</Filter>
-    </None>
-    <None Include="GLFW.dll">
-      <Filter>Third Party Source\GLFW</Filter>
-    </None>
-    <None Include="glfwreadme.txt">
-      <Filter>Third Party Source\GLFW</Filter>
     </None>
     <None Include="FreeType\FTL.TXT">
       <Filter>Third Party Source\FreeType</Filter>
@@ -651,6 +652,72 @@
     </ClCompile>
     <ClCompile Include="FreeType\ftbase.c">
       <Filter>Third Party Source\FreeType</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\enable.c">
+      <Filter>Third Party Source\GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\fullscreen.c">
+      <Filter>Third Party Source\GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\glext.c">
+      <Filter>Third Party Source\GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\image.c">
+      <Filter>Third Party Source\GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\init.c">
+      <Filter>Third Party Source\GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\joystick.c">
+      <Filter>Third Party Source\GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\stream.c">
+      <Filter>Third Party Source\GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\tga.c">
+      <Filter>Third Party Source\GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\thread.c">
+      <Filter>Third Party Source\GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\window.c">
+      <Filter>Third Party Source\GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\win32\win32_dllmain.c">
+      <Filter>Third Party Source\GLFW\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\win32\win32_enable.c">
+      <Filter>Third Party Source\GLFW\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\win32\win32_fullscreen.c">
+      <Filter>Third Party Source\GLFW\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\win32\win32_glext.c">
+      <Filter>Third Party Source\GLFW\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\win32\win32_init.c">
+      <Filter>Third Party Source\GLFW\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\win32\win32_joystick.c">
+      <Filter>Third Party Source\GLFW\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\win32\win32_thread.c">
+      <Filter>Third Party Source\GLFW\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\win32\win32_time.c">
+      <Filter>Third Party Source\GLFW\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\win32\win32_window.c">
+      <Filter>Third Party Source\GLFW\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\glfw_input.c">
+      <Filter>Third Party Source\GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="GLFW\glfw_time.c">
+      <Filter>Third Party Source\GLFW</Filter>
+    </ClCompile>
+    <ClCompile Include="GLEW\glew.c">
+      <Filter>Third Party Source\GLEW</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

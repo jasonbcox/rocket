@@ -4,8 +4,8 @@
 
 #include <set>
 
-#include "glew.h"
-#include "glfw.h"
+#include "GL/glew.h"
+#include "GL/glfw.h"
 
 #include "vector.h"
 #include "Shader.h"

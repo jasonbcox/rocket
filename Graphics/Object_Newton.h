@@ -33,7 +33,7 @@ namespace Rocket {
 			void applyTorque( const Core::vec3 & T );
 			void applyTorque( const Core::vec3 & r, const Core::vec3 & F );
 
-			void update( bool recursive, float elapsedMilliseconds );
+			void update( bool recursive, float elapsedMilliseconds ) override;
 
 			Object_Newton * cloneNewton();
 			Object_Newton * cloneNewtonInScene( Scene * scene, Transform * parent, const Core::vec3 & scale, const Core::vec4 & rotation, const Core::vec3 & position );

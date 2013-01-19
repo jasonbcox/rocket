@@ -19,12 +19,14 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -41,11 +43,11 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Core\;.\FreeType\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Core\;.\FreeType\include;.\GLFW\;.\GLFW\win32</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glew32.lib;glu32.lib;glfw.lib;opengl32.lib;user32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glu32.lib;opengl32.lib;user32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -158,8 +160,12 @@
     <ClInclude Include="FreeType\include\ft2build.h" />
     <ClInclude Include="FreeType\rasterrs.h" />
     <ClInclude Include="FreeType\rastpic.h" />
-    <ClInclude Include="glew.h" />
-    <ClInclude Include="glfw.h" />
+    <ClInclude Include="GLFW\internal.h" />
+    <ClInclude Include="GLFW\win32\platform.h" />
+    <ClInclude Include="GL\glew.h" />
+    <ClInclude Include="GL\glfw.h" />
+    <ClInclude Include="GL\glxew.h" />
+    <ClInclude Include="GL\wglew.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Input_Interactable.h" />
     <ClInclude Include="Mesh.h" />
@@ -182,14 +188,7 @@
     <ClInclude Include="Universe.h" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="glew32.lib" />
-    <Library Include="GLFW.lib" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="FreeType\FTL.TXT" />
-    <None Include="glew32.dll" />
-    <None Include="GLFW.dll" />
-    <None Include="glfwreadme.txt" />
     <None Include="Shaders\testFont1.bmp" />
     <None Include="Shaders\testFont1.png" />
     <None Include="Shaders\testTexture1.bmp" />
@@ -252,6 +251,28 @@
     <ClCompile Include="FreeType\smooth.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GLEW\glew.c" />
+    <ClCompile Include="GLFW\enable.c" />
+    <ClCompile Include="GLFW\fullscreen.c" />
+    <ClCompile Include="GLFW\glext.c" />
+    <ClCompile Include="GLFW\glfw_input.c" />
+    <ClCompile Include="GLFW\glfw_time.c" />
+    <ClCompile Include="GLFW\image.c" />
+    <ClCompile Include="GLFW\init.c" />
+    <ClCompile Include="GLFW\joystick.c" />
+    <ClCompile Include="GLFW\stream.c" />
+    <ClCompile Include="GLFW\tga.c" />
+    <ClCompile Include="GLFW\thread.c" />
+    <ClCompile Include="GLFW\win32\win32_dllmain.c" />
+    <ClCompile Include="GLFW\win32\win32_enable.c" />
+    <ClCompile Include="GLFW\win32\win32_fullscreen.c" />
+    <ClCompile Include="GLFW\win32\win32_glext.c" />
+    <ClCompile Include="GLFW\win32\win32_init.c" />
+    <ClCompile Include="GLFW\win32\win32_joystick.c" />
+    <ClCompile Include="GLFW\win32\win32_thread.c" />
+    <ClCompile Include="GLFW\win32\win32_time.c" />
+    <ClCompile Include="GLFW\win32\win32_window.c" />
+    <ClCompile Include="GLFW\window.c" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Input_Interactable.cpp" />
     <ClCompile Include="main.cpp" />

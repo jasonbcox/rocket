@@ -51,8 +51,8 @@ namespace Rocket {
 			void show();
 			bool isVisible();
 
-			void updateBase( bool recursive, float elapsedMilliseconds );				// recursively update all children (do NOT overload)
-			virtual void update( bool recursive, float elapsedMilliseconds );			// update function for this object type (overloading OK)
+			virtual void updateBase( bool recursive, float elapsedMilliseconds ) final;		// recursively update all children (do NOT overload)
+			virtual void update( bool recursive, float elapsedMilliseconds );				// update function for this object type (overloading OK)
 
 			// the transparencyCollector must be a pointer to the scene's transparency list for a normal draw pass
 			// for a transparency draw pass, transparencyCollector must be NULL

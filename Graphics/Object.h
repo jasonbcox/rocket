@@ -24,7 +24,7 @@ namespace Rocket {
 			//void draw( Scene * drawer, Core::mat4 parent_orientation, bool opaquePass );
 			void draw();
 			// Calculate the object's world matrices before calling draw()
-			void calculateTransforms( float elapsedMilliseconds, const Core::mat4 & parent_orientation, bool parentCacheIsClean, bool applyUpdates );
+			void calculateTransforms( float elapsedMilliseconds, const Core::mat4 & parent_orientation, bool parentCacheIsClean, bool applyUpdates ) override;
 			Mesh * getMesh();
 
 			void setShaderUniforms( ShaderUniforms * shaderUniforms );
