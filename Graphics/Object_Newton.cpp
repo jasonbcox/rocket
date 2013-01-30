@@ -85,14 +85,9 @@ namespace Rocket {
 		}
 
 		Object_Newton * Object_Newton::cloneNewton() {
-			// note: this can be made more efficient by writing:
-			//		- a copy constructor for Object_Newton
-			//		- a Object::function() to do the deep copy procedures
-			//		- call that Object::function() from Object_Newton's copy constructor
-			Object * obj = clone();
-			Object_Newton * r = new Object_Newton( *obj );
-			free( obj );	// do not call destructor, or r's members will be destroyed
-			r->m_mesh->addMeshUser( r );
+			Object_Newton * r = new Object_Newton( m_mesh );
+
+			clonePropertiesOnto( r );
 
 			//r->setVelocity( m_v );
 			//r->setAngularVelocity( m_omega );

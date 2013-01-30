@@ -46,7 +46,7 @@ namespace Rocket {
 		}
 		Mesh::~Mesh() {
 			// copy and then clear m_meshUsers before deleting the objects because the Object constructor will attempt to remove that element from m_meshUsers
-			std::set<Object*> meshOpaqueList = m_opaqueMeshUsers;
+			/*std::set<Object*> meshOpaqueList = m_opaqueMeshUsers;
 			m_opaqueMeshUsers.clear();
 			std::set<Object*>::iterator obj;
 			for (obj = meshOpaqueList.begin(); obj != meshOpaqueList.end(); obj++) {
@@ -57,11 +57,28 @@ namespace Rocket {
 			m_transparentMeshUsers.clear();
 			for (obj = meshTransparentList.begin(); obj != meshTransparentList.end(); obj++) {
 				delete (*obj);
+			}*/
+			while( m_opaqueMeshUsers.size() > 0 ) {
+				std::set<Object*>::iterator iter = m_opaqueMeshUsers.begin();
+				Object * user = (*iter);
+				m_opaqueMeshUsers.erase( iter );
+				user->setMesh( NULL );	// prevent the object from attempt to remove itself from this mesh's user lists
+				//delete user;
+			}
+			while( m_transparentMeshUsers.size() > 0 ) {
+				std::set<Object*>::iterator iter = m_transparentMeshUsers.begin();
+				Object * user = (*iter);
+				m_transparentMeshUsers.erase( iter );
+				user->setMesh( NULL );	// prevent the object from attempt to remove itself from this mesh's user lists
+				//delete user;
 			}
 
 			glDeleteVertexArrays( 1, &m_vao );
 			glDeleteBuffers( MESH_VBO_NUM, m_vbo );
 
+			Core::Debug_Scramble( m_vertices, m_vertexCount );
+			Core::Debug_Scramble( m_normals, m_vertexCount );
+			Core::Debug_Scramble( m_uv, m_vertexCount );
 			delete [] m_vertices;
 			delete [] m_normals;
 			delete [] m_uv;

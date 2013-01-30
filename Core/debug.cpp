@@ -15,6 +15,13 @@
 namespace Rocket {
 	namespace Core {
 
+		unsigned long Debug_ScrambleID = 0xDEADF00D;
+
+		void Debug_Scramble ( void * pointer, size_t size ) {
+			memset( pointer, Debug_ScrambleID, size );
+			Debug_ScrambleID++;
+		}
+
 		//std::vector<std::string> Debug_Log;
 		std::vector<std::string> Debug_LogView;
 		unsigned long Debug_LogViewTimer = 0;

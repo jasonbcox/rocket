@@ -12,6 +12,8 @@
 namespace Rocket {
 	namespace Core {
 
+		void Debug_Scramble ( void * pointer, size_t size );
+
 		static const unsigned long Debug_LogViewRefreshInterval = 1000;
 
 		void Debug_AddToLog( const char * entry );
@@ -25,8 +27,8 @@ namespace Rocket {
 		void Debug_UnPauseTimer( const char * timerName );
 		void Debug_ResetTimer( const char * timerName );
 
-		// add direct support for class-origination and class members
-		// add support for grabbing lists of local variables
+		// todo: add direct support for class-origination and class members
+		// todo: add support for grabbing lists of local variables
 
 	}
 }
@@ -34,6 +36,8 @@ namespace Rocket {
 // These functions get optimized out by the compiler
 namespace Rocket {
 	namespace Core {
+
+#define void Debug_Scramble ( void * pointer, size_t size )
 
 #define Debug_AddToLog( const char * entry )
 

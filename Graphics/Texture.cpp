@@ -18,6 +18,10 @@ namespace Rocket {
 			m_size = Core::vec2i( width, height );
 		}
 
+		Texture::~Texture() {
+			glDeleteTextures( 1, &m_textureID );
+		}
+
 		unsigned int Texture::getID() {
 			return m_textureID;
 		}

@@ -28,14 +28,18 @@ namespace Rocket {
 			// Delete all child transforms
 			std::vector<Transform*>::iterator child;
 			for (child = m_children.begin(); child != m_children.end(); child++) {
+				(*child)->m_parent = NULL;	// The destructor on this Transform (the parent of the child) is already being destroyed, so do NOT attempt to remove
+											//		the child's self from this Transform (the parent)
 				delete (*child);
 			}
 
 			// Remove self from parent
-			for (child = m_parent->m_children.begin(); child != m_parent->m_children.end(); child++) {
-				if ( (*child) == this ) {
-					m_parent->m_children.erase( child );
-					break;
+			if ( m_parent != NULL ) {
+				for (child = m_parent->m_children.begin(); child != m_parent->m_children.end(); child++) {
+					if ( (*child) == this ) {
+						m_parent->m_children.erase( child );
+						break;
+					}
 				}
 			}
 		}

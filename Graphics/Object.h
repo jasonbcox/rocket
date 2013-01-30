@@ -25,6 +25,8 @@ namespace Rocket {
 			void draw();
 			// Calculate the object's world matrices before calling draw()
 			void calculateTransforms( float elapsedMilliseconds, const Core::mat4 & parent_orientation, bool parentCacheIsClean, bool applyUpdates ) override;
+
+			void setMesh( Mesh * mesh );
 			Mesh * getMesh();
 
 			void setShaderUniforms( ShaderUniforms * shaderUniforms );
@@ -39,6 +41,8 @@ namespace Rocket {
 			ShaderUniforms * m_shaderUniforms;
 
 			bool m_transparencyEnabled;
+
+			void clonePropertiesOnto( Object * cloneOnto );
 		};
 
 	}

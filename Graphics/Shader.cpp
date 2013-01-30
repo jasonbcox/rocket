@@ -32,6 +32,7 @@ namespace Rocket {
 			cachedUniformLocation = InvalidShaderUniformLocation;
 		}
 		ShaderUniformCache::~ShaderUniformCache() {
+			Core::Debug_Scramble( cachedValue, 1 );	// first byte only, because we don't know the size
 			free( cachedValue );
 		}
 
@@ -125,6 +126,7 @@ namespace Rocket {
 				delete [] s.source;
 
 				glAttachShader( m_shaderNumber, shader );								GL_GET_ERROR();
+				glDeleteShader( shader );												GL_GET_ERROR();
 			}
 
 			glLinkProgram( m_shaderNumber );											GL_GET_ERROR();
@@ -150,6 +152,7 @@ namespace Rocket {
 		}
 
 		Shader::~Shader() {
+			glDeleteProgram( m_shaderNumber );
 		}
 
 

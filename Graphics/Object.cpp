@@ -21,21 +21,23 @@ namespace Rocket {
 		}
 
 		Object::~Object() {
-			m_mesh->removeMeshUser( this );
+			if ( m_mesh != NULL ) m_mesh->removeMeshUser( this );
 		}
 
+
+		void Object::clonePropertiesOnto( Object * cloneOnto ) {
+			cloneOnto->m_transparencyEnabled = m_transparencyEnabled;
+			if ( m_mesh != NULL ) m_mesh->addMeshUser( cloneOnto );
+
+			//cloneOnto->m_collisionRadius = m_collisionRadius;
+
+			cloneOnto->m_shaderUniforms = m_shaderUniforms->clone();
+		}
 
 		// Make a copy of this object, but instance the same mesh
 		Object * Object::clone() {
 			Object * r = new Object( m_mesh );
-			
-			r->m_transparencyEnabled = m_transparencyEnabled;
-			m_mesh->addMeshUser( r );
-
-			//r->m_collisionRadius = m_collisionRadius;
-
-			r->m_shaderUniforms = m_shaderUniforms->clone();
-	
+			clonePropertiesOnto( r );
 			return r;
 		}
 
@@ -53,24 +55,30 @@ namespace Rocket {
 
 		void Object::draw() {
 			if ( m_hidden == false ) {
-				Shader * shader = m_mesh->getShader();
+				if ( m_mesh != NULL ) {
+					Shader * shader = m_mesh->getShader();
 
-				// Orientation of the object
-				*shader->getObjecTransform() = &getFinalOrientation();
+					// Orientation of the object
+					*shader->getObjecTransform() = &getFinalOrientation();
 
-				shader->passUniformDataToGPU( m_shaderUniforms );
+					shader->passUniformDataToGPU( m_shaderUniforms );
 
-				int vertexCount = m_mesh->getVertexCount();
-				glDrawArrays( GL_TRIANGLES, 0, vertexCount );
+					int vertexCount = m_mesh->getVertexCount();
+					glDrawArrays( GL_TRIANGLES, 0, vertexCount );
 
 #ifdef ENABLE_DEBUG
-				m_mesh->m_frame_renderedPolygons += vertexCount/3;
+					m_mesh->m_frame_renderedPolygons += vertexCount/3;
 #endif
+				}
 			}
 		}
 
 		void Object::calculateTransforms( float elapsedMilliseconds, const Core::mat4 & parent_orientation, bool parentCacheIsClean, bool applyUpdates ) {
 			Transform::calculateTransforms( elapsedMilliseconds, parent_orientation, parentCacheIsClean, applyUpdates );
+		}
+
+		void Object::setMesh( Mesh * mesh ) {
+			m_mesh = mesh;
 		}
 
 		Mesh * Object::getMesh() {
@@ -86,11 +94,11 @@ namespace Rocket {
 
 		void Object::enableTransparency() {
 			m_transparencyEnabled = true;
-			m_mesh->addMeshUser( this );
+			if ( m_mesh != NULL ) m_mesh->addMeshUser( this );
 		}
 		void Object::disableTransparency() {
 			m_transparencyEnabled = false;
-			m_mesh->addMeshUser( this );
+			if ( m_mesh != NULL ) m_mesh->addMeshUser( this );
 		}
 		bool Object::isTransparent() {
 			return m_transparencyEnabled;

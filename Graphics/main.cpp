@@ -79,7 +79,7 @@ int main() {
 
 	// Yellow smiley-face glass pane
 	Object_Newton * testObject = new Object_Newton( testMesh );
-	Texture * testTexture = new Texture( "./Shaders/testTexture1.bmp", true, false );
+	Texture * testTexture = world->loadTexture( "test_happyface", "./Shaders/testTexture1.bmp", true, false );
 	ShaderDefaults::setObjectUniforms_texture( testObject,
 		Shader_UniformTexture( 0, testTexture, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE ),
 		vec2( 1.0f, 1.0f ), vec2( 0.0f, 0.0f ), vec3( 0.99f, 0.98f, 0.97f ), true, 0.0f, 0.5f );
@@ -89,7 +89,7 @@ int main() {
 
 	// Test Planet
 	Object * testPlanet = new Object( testPlanetMesh );
-	Texture * testPlanetTexture = new Texture( "./Shaders/StaticPlanet1.png", true, true );
+	Texture * testPlanetTexture = world->loadTexture( "test_planet", "./Shaders/StaticPlanet1.png", true, true );
 	ShaderDefaults::setObjectUniforms_texture( testPlanet,
 		Shader_UniformTexture( 0, testPlanetTexture, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE ),
 		vec2( 1.0f, 1.0f ), vec2( 0.0f, 0.0f ), vec3( 1.0f, 0.8f, 0.5f ), false, 0.0f, 1.0f );
@@ -101,7 +101,7 @@ int main() {
 
 	// Blue test cube
 	Object * testCube = new Object( testCubeMesh );
-	Texture * testHumanTexture = new Texture( "./Shaders/human1.png", true, true );
+	Texture * testHumanTexture = world->loadTexture( "test_human", "./Shaders/human1.png", true, true );
 	ShaderDefaults::setObjectUniforms_texture( testCube,
 		Shader_UniformTexture( 0, testHumanTexture, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE ),
 		vec2( 1.0f, 1.0f ), vec2( 0.0f, 0.0f ), vec3( 1.0f, 1.0f, 1.0f ), false, 0.0f, 1.0f );
@@ -154,13 +154,13 @@ int main() {
 	hudCube->rotatePitch( Rocket::MathConstants::PI / 4.0f );
 
 	Sprite::enableSpritesInScene( hudScene, shader_texture );
-	Texture * testTexture2 = new Texture( "./Shaders/testTexture1.bmp", false, true );
+	Texture * testTexture2 = world->loadTexture( "test_happyface2", "./Shaders/testTexture1.bmp", false, true );
 	Sprite * testSprite = new Sprite( testTexture2, 64, 64 );
 	testSprite->addToScene( hudScene );
 	testSprite->setAngle( Rocket::MathConstants::PI / 4.0f );
 	testSprite->setUV(4,4,40,40);
 
-	Texture * testBitmapTexture = new Texture( "./Shaders/testFont1.png", false, true );
+	Texture * testBitmapTexture = world->loadTexture( "test_font", "./Shaders/testFont1.png", false, true );
 	Object_BitmapText * testBitmap = new Object_BitmapText( testBitmapTexture, "The quick, brown fox jumped over the lazy dog.\nTHE QUICK BROWN FOX JUMPED OVER THE LAZY DOG!\n0123456789?" );
 	testBitmap->enableTransparency( 0.0f, 1.0f );
 	hudScene->addChild( testBitmap, false );
@@ -253,6 +253,9 @@ int main() {
 		//running = !glfwGetKey( GLFW_KEY_ESC ) && glfwGetWindowParam( GLFW_OPENED );
 		running = !input->getKeySimple( GLFW_KEY_ESC ) && glfwGetWindowParam( GLFW_OPENED );
 	}
+
+	// Cleanup before closing the context
+	delete world;
 
 	glfwTerminate();
 

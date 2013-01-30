@@ -50,6 +50,12 @@ namespace Rocket {
 			for (childComposite = m_composites.begin(); childComposite != m_composites.end(); childComposite++) {
 				delete (*childComposite);
 			}
+
+			// Delete all meshes
+			std::vector<Mesh*>::iterator meshes;
+			for (meshes = m_meshes.begin(); meshes != m_meshes.end(); meshes++) {
+				delete (*meshes);
+			}
 		}
 
 		void Scene::addMesh( Mesh * mesh ) {

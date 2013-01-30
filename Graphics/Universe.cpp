@@ -18,6 +18,23 @@ namespace Rocket {
 		Universe::Universe() {
 		}
 		Universe::~Universe() {
+			// Cleanup Scenes
+			std::vector<Scene*>::iterator iter_scenes;
+			for ( iter_scenes = m_renderPasses.begin(); iter_scenes != m_renderPasses.end(); iter_scenes++ ) {
+				delete (*iter_scenes);
+			}
+
+			// Cleanup Textures
+			std::unordered_map< std::string, Texture* >::iterator iter_textures;
+			for ( iter_textures = m_textures.begin(); iter_textures != m_textures.end(); iter_textures++ ) {
+				delete (*iter_textures).second;
+			}
+
+			// Cleanup Shaders
+			std::unordered_map< std::string, Shader* >::iterator iter_shaders;
+			for ( iter_shaders = m_shaders.begin(); iter_shaders != m_shaders.end(); iter_shaders++ ) {
+				delete (*iter_shaders).second;
+			}
 		}
 
 		// Add a render pass to the end of the render list.
