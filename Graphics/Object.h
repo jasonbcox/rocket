@@ -29,10 +29,6 @@ namespace Rocket {
 
 			Mesh * getMesh();
 
-			void addOwner( Scene * scene );
-			void removeOwner( Scene * scene );
-			std::vector<Scene*> getOwners();
-
 			void setShaderUniforms( ShaderUniforms * shaderUniforms );
 			ShaderUniforms * getShaderUniforms();
 
@@ -40,9 +36,10 @@ namespace Rocket {
 			void disableTransparency();
 			bool isTransparent();
 
+			void removeOwner( Scene * scene );
+
 		protected:
 			Mesh * m_mesh;
-			std::vector<Scene*> m_owners;
 			ShaderUniforms * m_shaderUniforms;
 
 			bool m_transparencyEnabled;

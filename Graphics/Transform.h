@@ -66,8 +66,13 @@ namespace Rocket {
 			std::list<std::pair< Transform*, int >>::iterator zIndexer_AddBehind( Transform * relativeTo, int zIndexTag );
 			std::list<std::pair< Transform*, int >>::iterator zIndexer_AddInFront( Transform * relativeTo, int zIndexTag );
 
+			virtual void addOwner( Scene * scene );
+			virtual void removeOwner( Scene * scene );
+			std::vector<Scene*> getOwners();
+
 		protected:
 			Transform * m_parent;
+			std::vector<Scene*> m_owners;
 
 			bool m_hidden;
 			bool m_updated;

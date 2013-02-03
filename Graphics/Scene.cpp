@@ -67,7 +67,8 @@ namespace Rocket {
 
 		void Scene::addObject( Object * object, Transform * parent ) {
 			object->addOwner( this );
-			object->getMesh()->addMeshUser( object );
+			Mesh * mesh = object->getMesh();
+			if ( mesh != NULL ) mesh->addMeshUser( object );
 			if (parent == NULL) {
 				addChild( object, false );
 			} else {

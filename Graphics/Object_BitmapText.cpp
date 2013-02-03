@@ -5,7 +5,7 @@
 namespace Rocket {
 	namespace Graphics {
 		
-		Object_BitmapText::Object_BitmapText( Texture * bitmap, std::string text ) : Transform(), Raster( this ) {
+		Object_BitmapText::Object_BitmapText( Texture * bitmap, std::string text ) : Object( NULL ), Raster( this ) {
 			m_bitmap = bitmap;
 
 			m_transparency = true;
@@ -94,17 +94,6 @@ namespace Rocket {
 			}
 		}
 
-		void Object_BitmapText::addToScene( Scene * scene ) {
-			m_owners.push_back( scene );
-			for ( unsigned int i = 0; i < m_quads.size(); i++ ) {
-				Object * quad = m_quads[i];
-				quad->addOwner( scene );
-				quad->getMesh()->addMeshUser( quad );
-			}
-
-			scene->addChild( this, false );
-		}
-
 		void Object_BitmapText::setText( const std::string & text ) {
 			m_text = text;
 
@@ -139,11 +128,6 @@ namespace Rocket {
 					} else {
 						quad = new Sprite( m_bitmap, spriteSize.x, spriteSize.y );
 						this->addChild( quad, true );
-
-						for ( int scene = 0; scene < m_owners.size(); scene++ ) {
-							quad->addOwner( m_owners[ scene ] );
-						}
-						quad->getMesh()->addMeshUser( quad );
 
 						if ( m_transparency == true ) {
 							quad->enableTransparency( m_alphaTest, m_alphaTransparency );

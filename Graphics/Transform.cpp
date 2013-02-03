@@ -48,6 +48,10 @@ namespace Rocket {
 
 		void Transform::addChild( Transform * child, bool coupleChildToParent ) {
 			m_children.push_back( child );
+			for ( int scene = 0; scene < m_owners.size(); scene++ ) {
+				child->addOwner( m_owners[ scene ] );
+			}
+
 			// todo: since coupleChildToParent is almost always only false with Scene parents, maybe just
 			//			add a member to Transform with a default value for coupleChildToParent (false for Scenes, true for everthing else)
 			if ( coupleChildToParent == true ) child->m_parent = this;
@@ -266,6 +270,35 @@ namespace Rocket {
 			pos.z = (highZ - lowZ) / 2.0f;
 			position( pos );
 			return m_zIndexer->insert( relativeTo->m_zIndexer_myIterator, std::pair< Transform*, int >( this, zIndexTag ) );
+		}
+
+		// Add a scene to the list of owners that contain this object
+		void Transform::addOwner( Scene * scene ) {
+			std::vector<Scene*>::iterator iter;
+			for ( iter = m_owners.begin(); iter != m_owners.end(); iter++ ) {
+				if ( (*iter) == scene ) return;
+			}
+			m_owners.push_back( scene );
+
+			// Add owner for children too
+			std::vector<Transform*>::iterator child;
+			for ( child = m_children.begin(); child != m_children.end(); child++ ) {
+				(*child)->addOwner( scene );
+			}
+		}
+		// Remove a scene from the list of owners
+		void Transform::removeOwner( Scene * scene ) {
+			std::vector<Scene*>::iterator iter;
+			for ( iter = m_owners.begin(); iter != m_owners.end(); iter++ ) {
+				if ( (*iter) == scene ) {
+					m_owners.erase( iter );
+					return;
+				}
+			}
+		}
+		// Return a list of all scene owners of this object
+		std::vector<Scene*> Transform::getOwners() {
+			return m_owners;
 		}
 
 	}

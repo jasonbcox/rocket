@@ -8,7 +8,7 @@
 #include "Scene.h"
 #include "Sprite.h"
 #include "Texture.h"
-#include "Transform.h"
+#include "Object.h"
 #include "Raster.h"
 #include "Mesh.h"
 #include "string_.h"
@@ -28,12 +28,10 @@ namespace Rocket {
 		};
 
 		// Object_BitmapText - A single texture applied to multiple quads (Sprites) where each quad is a glyph/character
-		class Object_BitmapText : public Transform, public Raster {
+		class Object_BitmapText : public Object, public Raster {
 		public:
 			Object_BitmapText( Texture * bitmap, std::string text = "" );
 			virtual ~Object_BitmapText();
-
-			void addToScene( Scene * scene );
 
 			void setText( const std::string & text );
 			const std::string & getText();
@@ -43,7 +41,6 @@ namespace Rocket {
 
 		protected:
 			Texture * m_bitmap;
-			std::vector<Scene*> m_owners;
 			std::vector<Sprite*> m_quads;
 			std::string m_text;
 

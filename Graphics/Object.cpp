@@ -67,28 +67,9 @@ namespace Rocket {
 			return m_mesh;
 		}
 
-		// Add a scene to the list of owners that contain this object
-		void Object::addOwner( Scene * scene ) {
-			std::vector<Scene*>::iterator iter;
-			for ( iter = m_owners.begin(); iter != m_owners.end(); iter++ ) {
-				if ( (*iter) == scene ) return;
-			}
-			m_owners.push_back( scene );
-		}
-		// Remove a scene from the list of owners
 		void Object::removeOwner( Scene * scene ) {
-			std::vector<Scene*>::iterator iter;
-			for ( iter = m_owners.begin(); iter != m_owners.end(); iter++ ) {
-				if ( (*iter) == scene ) {
-					m_owners.erase( iter );
-					m_mesh->removeMeshUserFromScene( this, scene );
-					return;
-				}
-			}
-		}
-		// Return a list of all scene owners of this object
-		std::vector<Scene*> Object::getOwners() {
-			return m_owners;
+			Transform::removeOwner( scene );
+			if ( m_mesh != NULL ) m_mesh->removeMeshUserFromScene( this, scene );
 		}
 
 		void Object::setShaderUniforms( ShaderUniforms * shaderUniforms ) {

@@ -156,7 +156,6 @@ int main() {
 	Sprite::enableSpritesInScene( world, hudScene, shader_texture );
 	Texture * testTexture2 = world->loadTexture( "test_happyface2", "./Shaders/testTexture1.bmp", false, true );
 	Sprite * testSprite = new Sprite( testTexture2, 64, 64 );
-	//testSprite->addToScene( hudScene );
 	hudScene->addObject( testSprite, NULL );
 	testSprite->setAngle( Rocket::MathConstants::PI / 4.0f );
 	testSprite->setUV(4,4,40,40);
@@ -164,8 +163,8 @@ int main() {
 	Texture * testBitmapTexture = world->loadTexture( "test_font", "./Shaders/testFont1.png", false, true );
 	Object_BitmapText * testBitmap = new Object_BitmapText( testBitmapTexture, "The quick, brown fox jumped over the lazy dog.\nTHE QUICK BROWN FOX JUMPED OVER THE LAZY DOG!\n0123456789?" );
 	testBitmap->enableTransparency( 0.0f, 1.0f );
-	//hudScene->addChild( testBitmap, false );
-	testBitmap->addToScene( hudScene );
+	hudScene->addObject( testBitmap, NULL );
+	testBitmap->enableTransparency( 0.0f, 1.0f );
 	testBitmap->setPosition( vec2i( 0, 200 ) );
 
 	// Main Loop
