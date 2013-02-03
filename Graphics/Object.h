@@ -29,8 +29,6 @@ namespace Rocket {
 
 			Mesh * getMesh();
 
-			void setRasterParent( Raster * parent );
-
 			void addOwner( Scene * scene );
 			void removeOwner( Scene * scene );
 			std::vector<Scene*> getOwners();
@@ -44,7 +42,6 @@ namespace Rocket {
 
 		protected:
 			Mesh * m_mesh;
-			Raster * m_rasterParent;
 			std::vector<Scene*> m_owners;
 			ShaderUniforms * m_shaderUniforms;
 

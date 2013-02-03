@@ -15,7 +15,6 @@ namespace Rocket {
 
 		Object::Object( Mesh * mesh ) : Transform() {
 			m_mesh = mesh;
-			m_rasterParent = NULL;
 			m_shaderUniforms = NULL;
 
 			disableTransparency();
@@ -66,10 +65,6 @@ namespace Rocket {
 		// Return the mesh that renders this object
 		Mesh * Object::getMesh() {
 			return m_mesh;
-		}
-
-		void Object::setRasterParent( Raster * parent ) {
-			m_rasterParent = parent;
 		}
 
 		// Add a scene to the list of owners that contain this object

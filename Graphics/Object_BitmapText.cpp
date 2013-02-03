@@ -97,7 +97,7 @@ namespace Rocket {
 		void Object_BitmapText::addToScene( Scene * scene ) {
 			m_owners.push_back( scene );
 			for ( unsigned int i = 0; i < m_quads.size(); i++ ) {
-				Object * quad = m_quads[i]->getQuad();
+				Object * quad = m_quads[i];
 				quad->addOwner( scene );
 				quad->getMesh()->addMeshUser( quad );
 			}
@@ -110,7 +110,7 @@ namespace Rocket {
 
 			// Cleanup old quads
 			for ( unsigned int i = 0; i < m_quads.size(); i++ ) {
-				m_quads[i]->hide();
+				m_quads[i]->Raster::hide();
 			}
 
 			// Generate new quads
@@ -134,17 +134,16 @@ namespace Rocket {
 					Core::vec2i spriteSize( glyph.advance*testScale, glyph.height*testScale );
 					if ( i < m_quads.size() ) {
 						quad = m_quads[i];
-						quad->show();
+						quad->Raster::show();
 						quad->setSize( spriteSize );
 					} else {
 						quad = new Sprite( m_bitmap, spriteSize.x, spriteSize.y );
-						quad->addAsChild( this );
+						this->addChild( quad, true );
 
-						Object * obj = quad->getQuad();
 						for ( int scene = 0; scene < m_owners.size(); scene++ ) {
-							obj->addOwner( m_owners[ scene ] );
+							quad->addOwner( m_owners[ scene ] );
 						}
-						obj->getMesh()->addMeshUser( obj );
+						quad->getMesh()->addMeshUser( quad );
 
 						if ( m_transparency == true ) {
 							quad->enableTransparency( m_alphaTest, m_alphaTransparency );

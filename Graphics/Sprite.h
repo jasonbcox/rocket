@@ -16,17 +16,12 @@ namespace Rocket {
 		// Sprite - A texture applied to a quad, usually to be drawn in an orthographic space
 		// A sprite sizes and positions based on the assumption that 1.0 units = 1 pixel
 		// A sprite positions based on the assumption that 0,0 is the top left of the orthographic space
-		class Sprite : public Raster {
+		class Sprite : public Raster, public Object {
 		public:
 			Sprite( Texture * texture, int width, int height );
 			virtual ~Sprite();
-			void destroyFromBaseClass();
 
 			static void enableSpritesInScene( Universe * world, Scene * scene, Shader * meshShader );
-			void addToScene( Scene * scene );
-			void addAsChild( Transform * parent );
-
-			Object * getQuad();	// todo: remove this when you find a more elegant solution, because it breaks encapsulation
 
 			void enableTransparency( float alphaTest, float alphaTransparency );
 			void disableTransparency();
@@ -42,7 +37,6 @@ namespace Rocket {
 			static Mesh * Global_SpriteMesh;
 			static int Global_SpriteCount;
 			Texture * m_texture;
-			Object * m_quad;
 
 			Core::vec4i m_uvCoords;
 		};

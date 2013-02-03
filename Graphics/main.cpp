@@ -156,7 +156,8 @@ int main() {
 	Sprite::enableSpritesInScene( world, hudScene, shader_texture );
 	Texture * testTexture2 = world->loadTexture( "test_happyface2", "./Shaders/testTexture1.bmp", false, true );
 	Sprite * testSprite = new Sprite( testTexture2, 64, 64 );
-	testSprite->addToScene( hudScene );
+	//testSprite->addToScene( hudScene );
+	hudScene->addObject( testSprite, NULL );
 	testSprite->setAngle( Rocket::MathConstants::PI / 4.0f );
 	testSprite->setUV(4,4,40,40);
 
@@ -225,7 +226,7 @@ int main() {
 		pickCube->position( pickPos );
 
 		// rotate test sprite
-		testSprite->rotate( Rocket::MathConstants::PI / 400.0f );
+		testSprite->Raster::rotate( Rocket::MathConstants::PI / 400.0f );
 
 		//Core::Debug_StopTimer( "MAIN" );
 
