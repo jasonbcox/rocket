@@ -2,7 +2,9 @@
 #ifndef Rocket_Graphics_Mesh_H
 #define Rocket_Graphics_Mesh_H
 
-#include <set>
+#include <unordered_map>
+#include <map>
+#include <vector>
 
 #include "GL/glew.h"
 #include "GL/glfw.h"
@@ -16,21 +18,27 @@ namespace Rocket {
 
 		static const int MESH_VBO_NUM = 1;
 
+		enum MeshDrawPasses {
+			Opaque = 0,
+			Transparent,
+			END_OF_DRAW_PASSES
+		};
+
 		class Object;
 		class Scene;
+		class Universe;
 		class Mesh {
 		public:
 			Mesh( Shader * shader, int numVertices, Core::vec4 * vertices = NULL, Core::vec3 * normals = NULL, Core::vec2 * uvCoords = NULL );
 			Mesh( const char * OBJ_Wavefront_File, Shader * shader );
-			~Mesh();
+			virtual ~Mesh();
 
-			void addMeshUser( Object * object );					// todo: add key-value map with Scene* keys and Object* values so that meshes can handle multiple scenes
-			void removeMeshUser( Object * object );
+			void startPassesForScene( Scene * scene );
+			void drawCurrentPass( const Core::mat4 * cameraProjection, const Core::mat4 * cameraOrientation );
 
-			void drawOpaqueMeshUsers();
-			void drawTransparentMeshUsers();
-			int getOpaqueMeshUserCount();
-			int getTransparentMeshUserCount();
+			void addMeshUser( Object * object );
+			std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator addSceneToUserList( Scene * scene );
+			void removeMeshUserFromScene( Object * object, Scene * scene );
 
 			GLuint getVertexArrayObject();
 			Shader * getShader();
@@ -41,15 +49,16 @@ namespace Rocket {
 			static void generateSphericalNormals( Mesh * mesh );
 
 #ifdef ENABLE_DEBUG
-			int m_frame_renderedPolygons;
+			unsigned int m_frame_renderedPolygons;
+			unsigned int m_frame_renderedObjects;
 #endif
 
 		private:
 			GLuint m_vao;				// vertex array object
 			GLuint m_vbo[MESH_VBO_NUM];	// vertex buffer object
 
-			std::set<Object*> m_opaqueMeshUsers;
-			std::set<Object*> m_transparentMeshUsers;
+			std::unordered_map<Scene*, std::vector<std::vector<Object*>>> m_objectUsers;
+			std::vector<std::vector<Object*>>::iterator m_currentPassIterator;
 
 			void Mesh::generateBufferObjects();
 
@@ -69,11 +78,11 @@ namespace Rocket {
 			void passMeshToGPU();
 		};
 
-		Mesh * generatePrimitive_Quad( Shader * shader );
+		Mesh * generatePrimitive_Quad( Universe * world, const char * meshName, Shader * shader );
 
-		Mesh * generatePrimitive_Cube( Shader * shader );
+		Mesh * generatePrimitive_Cube( Universe * world, const char * meshName, Shader * shader );
 
-		Mesh * generatePrimitive_Sphere( int divisions, Shader * shader );
+		Mesh * generatePrimitive_Sphere( Universe * world, const char * meshName, int divisions, Shader * shader );
 
 	}
 }

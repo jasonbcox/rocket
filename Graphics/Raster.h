@@ -12,7 +12,8 @@ namespace Rocket {
 		class Raster {
 		public:
 			Raster( Transform * transform );	// transform - the transform to perform positioning, scaling, and rotation
-			~Raster();
+			virtual ~Raster();
+			virtual void destroyFromBaseClass();
 
 			Transform * getTransform();
 

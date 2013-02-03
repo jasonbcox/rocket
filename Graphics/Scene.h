@@ -111,13 +111,15 @@ namespace Rocket {
 		private:
 			void Init();
 
+			void drawPass();
+
 			// set to non-zero to render to texture:
 			unsigned int m_frameTexture;
 			unsigned int m_frameBufferObject;		// 0 to use default (screen buffer)
 			unsigned int m_frameDepthBuffer;
 
 			// GL properties
-			bool glDepthTest;
+			bool m_glDepthTest;
 
 			// Persistant matrices
 			Core::mat4 m_camera_projection;			// Camera View Matrix (Camera to Projection)
@@ -147,11 +149,14 @@ namespace Rocket {
 			Core::vec3 m_camera_turnSpeed;	// ( x - pitch, y - turn, z - roll )
 
 
+			// A list of all meshes used to render objects in this scene
 			std::vector<Mesh*> m_meshes;
 
-			std::vector<Scene*> m_composites;		// Scene children that are rendered directly on top of this Scene
+			// Scene children that are rendered directly on top of this Scene
+			std::vector<Scene*> m_composites;
 
-			std::list<std::pair< Transform*, int >> m_zIndexer;		// List of Transforms to keep track of z ordered items
+			// List of Transforms to keep track of z ordered items
+			std::list<std::pair< Transform*, int >> m_zIndexer;
 
 		};
 	}

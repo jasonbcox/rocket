@@ -94,6 +94,17 @@ namespace Rocket {
 			}
 		}
 
+		void Object_BitmapText::addToScene( Scene * scene ) {
+			m_owners.push_back( scene );
+			for ( unsigned int i = 0; i < m_quads.size(); i++ ) {
+				Object * quad = m_quads[i]->getQuad();
+				quad->addOwner( scene );
+				quad->getMesh()->addMeshUser( quad );
+			}
+
+			scene->addChild( this, false );
+		}
+
 		void Object_BitmapText::setText( const std::string & text ) {
 			m_text = text;
 
@@ -128,6 +139,13 @@ namespace Rocket {
 					} else {
 						quad = new Sprite( m_bitmap, spriteSize.x, spriteSize.y );
 						quad->addAsChild( this );
+
+						Object * obj = quad->getQuad();
+						for ( int scene = 0; scene < m_owners.size(); scene++ ) {
+							obj->addOwner( m_owners[ scene ] );
+						}
+						obj->getMesh()->addMeshUser( obj );
+
 						if ( m_transparency == true ) {
 							quad->enableTransparency( m_alphaTest, m_alphaTransparency );
 						} else {

@@ -12,7 +12,7 @@ namespace Rocket {
 		class Clickable : public Input_Mouse {
 		public:
 			Clickable( int left, int top, int right, int bottom );
-			~Clickable();
+			virtual ~Clickable();
 
 			virtual void update( Input_ButtonState::Input_ButtonState state, int x, int y );
 

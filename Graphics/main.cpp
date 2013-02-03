@@ -62,17 +62,17 @@ int main() {
 	world->addShader( "texture", shader_texture );
 
 	// Load meshes
-	Mesh * testMesh = generatePrimitive_Quad( shader_texture );
+	Mesh * testMesh = generatePrimitive_Quad( world, "testMesh", shader_texture );
 	mainScene->addMesh( testMesh );
 
 	//Mesh * testCubeMesh = generatePrimitive_Cube( shader_texture );
-	Mesh * testCubeMesh = new Mesh( "./Shaders/human.obj", shader_texture );
+	Mesh * testCubeMesh = world->loadMesh( "human", "./Shaders/human.obj", shader_texture ); //new Mesh( "./Shaders/human.obj", shader_texture );
 	mainScene->addMesh( testCubeMesh );
 
-	Mesh * testCubeMesh2 = generatePrimitive_Cube( shader_texture );
+	Mesh * testCubeMesh2 = generatePrimitive_Cube( world, "testCubeMesh", shader_texture );
 	hudScene->addMesh( testCubeMesh2 );
 
-	Mesh * testPlanetMesh = new Mesh ( "./Shaders/StaticPlanet1.obj", shader_texture );
+	Mesh * testPlanetMesh = world->loadMesh( "planet", "./Shaders/StaticPlanet1.obj", shader_texture ); //new Mesh ( "./Shaders/StaticPlanet1.obj", shader_texture );
 	mainScene->addMesh( testPlanetMesh );
 
 	// Load textures and objects
@@ -153,7 +153,7 @@ int main() {
 	hudCube->rotateYaw( Rocket::MathConstants::PI / 4.0f );
 	hudCube->rotatePitch( Rocket::MathConstants::PI / 4.0f );
 
-	Sprite::enableSpritesInScene( hudScene, shader_texture );
+	Sprite::enableSpritesInScene( world, hudScene, shader_texture );
 	Texture * testTexture2 = world->loadTexture( "test_happyface2", "./Shaders/testTexture1.bmp", false, true );
 	Sprite * testSprite = new Sprite( testTexture2, 64, 64 );
 	testSprite->addToScene( hudScene );
@@ -163,7 +163,8 @@ int main() {
 	Texture * testBitmapTexture = world->loadTexture( "test_font", "./Shaders/testFont1.png", false, true );
 	Object_BitmapText * testBitmap = new Object_BitmapText( testBitmapTexture, "The quick, brown fox jumped over the lazy dog.\nTHE QUICK BROWN FOX JUMPED OVER THE LAZY DOG!\n0123456789?" );
 	testBitmap->enableTransparency( 0.0f, 1.0f );
-	hudScene->addChild( testBitmap, false );
+	//hudScene->addChild( testBitmap, false );
+	testBitmap->addToScene( hudScene );
 	testBitmap->setPosition( vec2i( 0, 200 ) );
 
 	// Main Loop

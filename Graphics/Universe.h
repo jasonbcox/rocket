@@ -10,6 +10,7 @@
 #include "GL/glfw.h"
 
 #include "Scene.h"
+#include "Mesh.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "vector.h"
@@ -40,6 +41,10 @@ namespace Rocket {
 			Shader * addShader( const char * shaderName, Shader * shader );
 			Shader * getShader( const char * shaderName );
 
+			Mesh * loadMesh( const char * meshName, const char * file, Shader * shader );
+			void addMesh( const char * meshName, Mesh * mesh );
+			Mesh * getMesh( const char * meshName );
+
 			Texture * loadTexture( const char * textureName, const char * file, bool mipmap, bool invertY );
 			Texture * getTexture( const char * textureName );
 
@@ -55,6 +60,7 @@ namespace Rocket {
 			std::vector<Scene*> m_renderPasses;
 
 			std::unordered_map< std::string, Shader* > m_shaders;
+			std::unordered_map< std::string, Mesh* > m_meshes;
 			std::unordered_map< std::string, Texture* > m_textures;
 		};
 

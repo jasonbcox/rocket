@@ -15,15 +15,20 @@ namespace Rocket {
 
 		Object::Object( Mesh * mesh ) : Transform() {
 			m_mesh = mesh;
+			m_rasterParent = NULL;
 			m_shaderUniforms = NULL;
 
 			disableTransparency();
 		}
 
 		Object::~Object() {
-			if ( m_mesh != NULL ) m_mesh->removeMeshUser( this );
+			std::vector<Scene*>::iterator iter;
+			if ( m_mesh != NULL ) {
+				for ( iter = m_owners.begin(); iter != m_owners.end(); iter++ ) {
+					m_mesh->removeMeshUserFromScene( this, (*iter) );
+				}
+			}
 		}
-
 
 		void Object::clonePropertiesOnto( Object * cloneOnto ) {
 			cloneOnto->m_transparencyEnabled = m_transparencyEnabled;
@@ -41,6 +46,7 @@ namespace Rocket {
 			return r;
 		}
 
+		// Make a clone of this object and add it to the same scene as the original object with the same transform properties
 		Object * Object::cloneInScene( Scene * scene, Transform * parent, Core::vec3 scale, Core::vec4 rotation, Core::vec3 position ) {
 			Object * r = clone();
 
@@ -53,36 +59,41 @@ namespace Rocket {
 			return r;
 		}
 
-		void Object::draw() {
-			if ( m_hidden == false ) {
-				if ( m_mesh != NULL ) {
-					Shader * shader = m_mesh->getShader();
-
-					// Orientation of the object
-					*shader->getObjecTransform() = &getFinalOrientation();
-
-					shader->passUniformDataToGPU( m_shaderUniforms );
-
-					int vertexCount = m_mesh->getVertexCount();
-					glDrawArrays( GL_TRIANGLES, 0, vertexCount );
-
-#ifdef ENABLE_DEBUG
-					m_mesh->m_frame_renderedPolygons += vertexCount/3;
-#endif
-				}
-			}
-		}
-
 		void Object::calculateTransforms( float elapsedMilliseconds, const Core::mat4 & parent_orientation, bool parentCacheIsClean, bool applyUpdates ) {
 			Transform::calculateTransforms( elapsedMilliseconds, parent_orientation, parentCacheIsClean, applyUpdates );
 		}
 
-		void Object::setMesh( Mesh * mesh ) {
-			m_mesh = mesh;
-		}
-
+		// Return the mesh that renders this object
 		Mesh * Object::getMesh() {
 			return m_mesh;
+		}
+
+		void Object::setRasterParent( Raster * parent ) {
+			m_rasterParent = parent;
+		}
+
+		// Add a scene to the list of owners that contain this object
+		void Object::addOwner( Scene * scene ) {
+			std::vector<Scene*>::iterator iter;
+			for ( iter = m_owners.begin(); iter != m_owners.end(); iter++ ) {
+				if ( (*iter) == scene ) return;
+			}
+			m_owners.push_back( scene );
+		}
+		// Remove a scene from the list of owners
+		void Object::removeOwner( Scene * scene ) {
+			std::vector<Scene*>::iterator iter;
+			for ( iter = m_owners.begin(); iter != m_owners.end(); iter++ ) {
+				if ( (*iter) == scene ) {
+					m_owners.erase( iter );
+					m_mesh->removeMeshUserFromScene( this, scene );
+					return;
+				}
+			}
+		}
+		// Return a list of all scene owners of this object
+		std::vector<Scene*> Object::getOwners() {
+			return m_owners;
 		}
 
 		void Object::setShaderUniforms( ShaderUniforms * shaderUniforms ) {

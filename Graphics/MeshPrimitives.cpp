@@ -5,6 +5,7 @@
 #include "mathconstants.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "Universe.h"
 
 namespace Rocket {
 	namespace Graphics {
@@ -20,7 +21,7 @@ namespace Rocket {
 		}
 
 
-		Mesh * generatePrimitive_Quad( Shader * shader ) {
+		Mesh * generatePrimitive_Quad( Universe * world, const char * meshName, Shader * shader ) {
 			Core::vec4 * vertices = new Core::vec4[6];
 			Core::vec3 * normals = new Core::vec3[6];
 			Core::vec2 * uv = new Core::vec2[6];
@@ -46,11 +47,13 @@ namespace Rocket {
 			uv[4] = uv[2];
 			uv[5] = Core::vec2( 0.0, 1.0 );
 
-			return new Mesh( shader, 6, vertices, normals, uv );
+			Mesh * newMesh = new Mesh( shader, 6, vertices, normals, uv );
+			world->addMesh( meshName, newMesh );
+			return newMesh;
 		}
 
 
-		Mesh * generatePrimitive_Cube( Shader * shader ) {
+		Mesh * generatePrimitive_Cube( Universe * world, const char * meshName, Shader * shader ) {
 			// Base cube points
 			Core::vec4 seedPoints[8] = {
 				Core::vec4( 0.5f, 0.5f, 0.5f, 1.0f ),
@@ -101,7 +104,9 @@ namespace Rocket {
 			delete numVertices;
 
 			// todo: add UV coords
-			return new Mesh( shader, numverts, vertices, normals, NULL );
+			Mesh * newMesh = new Mesh( shader, numverts, vertices, normals, NULL );
+			world->addMesh( meshName, newMesh );
+			return newMesh;
 		}
 
 
@@ -134,7 +139,7 @@ namespace Rocket {
 		}
 
 		// Create a sphere mesh by starting with a tetrahedron and dividing it divisions number of times
-		Mesh * generatePrimitive_Sphere( int divisions, Shader * shader ) {
+		Mesh * generatePrimitive_Sphere( Universe * world, const char * meshName, int divisions, Shader * shader ) {
 			if (divisions < 0) divisions = 0;
 
 			int * numVertices = new int(0);
@@ -170,7 +175,9 @@ namespace Rocket {
 			int numverts = *numVertices;
 			delete numVertices;
 
-			return new Mesh( shader, numverts, vertices, normals, uvs );
+			Mesh * newMesh = new Mesh( shader, numverts, vertices, normals, uvs );
+			world->addMesh( meshName, newMesh );
+			return newMesh;
 		}
 
 		// Generate blended normals based on the center of a sphere

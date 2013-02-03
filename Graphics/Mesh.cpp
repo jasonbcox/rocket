@@ -45,32 +45,16 @@ namespace Rocket {
 			passMeshToGPU();
 		}
 		Mesh::~Mesh() {
-			// copy and then clear m_meshUsers before deleting the objects because the Object constructor will attempt to remove that element from m_meshUsers
-			/*std::set<Object*> meshOpaqueList = m_opaqueMeshUsers;
-			m_opaqueMeshUsers.clear();
-			std::set<Object*>::iterator obj;
-			for (obj = meshOpaqueList.begin(); obj != meshOpaqueList.end(); obj++) {
-				delete (*obj);
-			}
-
-			std::set<Object*> meshTransparentList = m_transparentMeshUsers;
-			m_transparentMeshUsers.clear();
-			for (obj = meshTransparentList.begin(); obj != meshTransparentList.end(); obj++) {
-				delete (*obj);
-			}*/
-			while( m_opaqueMeshUsers.size() > 0 ) {
-				std::set<Object*>::iterator iter = m_opaqueMeshUsers.begin();
-				Object * user = (*iter);
-				m_opaqueMeshUsers.erase( iter );
-				user->setMesh( NULL );	// prevent the object from attempt to remove itself from this mesh's user lists
-				//delete user;
-			}
-			while( m_transparentMeshUsers.size() > 0 ) {
-				std::set<Object*>::iterator iter = m_transparentMeshUsers.begin();
-				Object * user = (*iter);
-				m_transparentMeshUsers.erase( iter );
-				user->setMesh( NULL );	// prevent the object from attempt to remove itself from this mesh's user lists
-				//delete user;
+			std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator mapIter;
+			for ( mapIter = m_objectUsers.begin(); mapIter != m_objectUsers.end(); mapIter++ ) {
+				std::vector<std::vector<Object*>>::iterator passIter;
+				for ( passIter = mapIter->second.begin(); passIter != mapIter->second.end(); passIter++ ) {
+					std::vector<Object*>::iterator objIter;
+					while ( ( objIter = passIter->begin() ) != passIter->end() ) {
+						delete (*objIter);
+						passIter->erase( objIter );
+					}
+				}
 			}
 
 			glDeleteVertexArrays( 1, &m_vao );
@@ -84,40 +68,120 @@ namespace Rocket {
 			delete [] m_uv;
 		}
 
-		void Mesh::addMeshUser( Object * object ) {
-			if ( object->isTransparent() == true ) {
-				m_opaqueMeshUsers.erase( object );
-				m_transparentMeshUsers.insert( object );
+		void Mesh::startPassesForScene( Scene * scene ) {
+			std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator mapIter = m_objectUsers.find( scene );
+			if ( mapIter != m_objectUsers.end() ) {
+				m_currentPassIterator = (*mapIter).second.begin();
 			} else {
-				m_transparentMeshUsers.erase( object );
-				m_opaqueMeshUsers.insert( object );
+				// Report a warning/error: Mesh not attached to this scene
+				// todo: Set a flag to skip this Mesh's draw passes until a new Scene is selected
+			}
+
+#ifdef ENABLE_DEBUG
+			m_frame_renderedPolygons = 0;
+			m_frame_renderedObjects = 0;
+#endif
+		}
+
+		void Mesh::drawCurrentPass( const Core::mat4 * cameraProjection, const Core::mat4 * cameraOrientation ) {
+			m_shader->useShaderProgram();
+			glBindVertexArray( getVertexArrayObject() );
+
+			// Orientation of the camera
+			*m_shader->getCameraOrientation() = cameraOrientation;
+
+			// Camera projection
+			*m_shader->getCameraPerspective() = cameraProjection;
+
+			std::vector<Object*>::iterator objIter;
+			for (objIter = m_currentPassIterator->begin(); objIter != m_currentPassIterator->end(); objIter++) {
+				// Draw Object
+				Object * obj = (*objIter);
+				if ( obj->isVisible() == true ) {
+					// Orientation of the object
+					*m_shader->getObjecTransform() = &(obj->getFinalOrientation());
+
+					m_shader->passUniformDataToGPU( obj->getShaderUniforms() );
+
+					int vertexCount = getVertexCount();
+					glDrawArrays( GL_TRIANGLES, 0, vertexCount );
+				}
+			}
+
+#ifdef ENABLE_DEBUG
+			unsigned int vertexCount = getVertexCount();
+			unsigned int objectSetCount = m_currentPassIterator->size();
+			m_frame_renderedPolygons += vertexCount/3 * objectSetCount;
+			m_frame_renderedObjects += objectSetCount;
+#endif
+
+			// Prepare next pass
+			m_currentPassIterator++;
+		}
+
+
+		void Mesh::addMeshUser( Object * object ) {
+			std::vector<Scene*> objectOwners = object->getOwners();
+			MeshDrawPasses removeFromPass = MeshDrawPasses::Transparent;
+			MeshDrawPasses addToPass = MeshDrawPasses::Opaque;
+			if ( object->isTransparent() == true ) {
+				removeFromPass = MeshDrawPasses::Opaque;
+				addToPass = MeshDrawPasses::Transparent;
+			}
+
+			std::vector<Scene*>::iterator sceneIter;
+			for ( sceneIter = objectOwners.begin(); sceneIter != objectOwners.end(); sceneIter++ ) {
+				std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator mapIter = m_objectUsers.find( (*sceneIter) );
+				if ( mapIter != m_objectUsers.end() ) {
+					// Remove existing user from the other pass
+					std::vector<Object*>::iterator objectIter;
+					for ( objectIter = mapIter->second[ removeFromPass ].begin(); objectIter != mapIter->second[ removeFromPass ].end(); objectIter++ ) {
+						if ( (*objectIter) == object ) {
+							mapIter->second[ removeFromPass ].erase( objectIter );
+							break;
+						}
+					}
+				} else {
+					// Add scene to m_objectUsers and add the correct passes
+					mapIter = addSceneToUserList( (*sceneIter) );
+				}
+
+				// If user isn't already there, add user to correct pass
+				bool objectAlreadyInPass = false;
+				std::vector<Object*>::iterator objectIter;
+				for ( objectIter = mapIter->second[ addToPass ].begin(); objectIter != mapIter->second[ addToPass ].end(); objectIter++ ) {
+					if ( (*objectIter) == object ) {
+						objectAlreadyInPass = true;
+						break;
+					}
+				}
+				if ( objectAlreadyInPass == false ) mapIter->second[ addToPass ].push_back( object );
 			}
 		}
 
-		void Mesh::removeMeshUser( Object * object ) {
-			m_opaqueMeshUsers.erase( object );
-			m_transparentMeshUsers.erase( object );
-		}
-
-		void Mesh::drawOpaqueMeshUsers() {
-			std::set<Object*>::iterator obj;
-			for (obj = m_opaqueMeshUsers.begin(); obj != m_opaqueMeshUsers.end(); obj++) {
-				(*obj)->draw();
+		std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator Mesh::addSceneToUserList( Scene * scene ) {
+			std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator mapIter;
+			mapIter = m_objectUsers.insert( std::pair<Scene*, std::vector<std::vector<Object*>>>( scene, std::vector<std::vector<Object*>>() ) ).first;
+			for ( int i = 0; i < MeshDrawPasses::END_OF_DRAW_PASSES; i++ ) {
+				mapIter->second.push_back( std::vector<Object*>() );
 			}
+			return mapIter;
 		}
 
-		void Mesh::drawTransparentMeshUsers() {
-			std::set<Object*>::iterator obj;
-			for (obj = m_transparentMeshUsers.begin(); obj != m_transparentMeshUsers.end(); obj++) {
-				(*obj)->draw();
+		void Mesh::removeMeshUserFromScene( Object * object, Scene * scene ) {
+			std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator mapIter = m_objectUsers.find( scene );
+			if ( mapIter != m_objectUsers.end() ) {
+				// Remove existing user from all passes
+				for ( int i = 0; i < MeshDrawPasses::END_OF_DRAW_PASSES; i++ ) {
+					std::vector<Object*>::iterator objectIter;
+					for ( objectIter = mapIter->second[ i ].begin(); objectIter != mapIter->second[ i ].end(); objectIter++ ) {
+						if ( (*objectIter) == object ) mapIter->second[ i ].erase( objectIter );
+						break;
+					}
+				}
+			} else {
+				// todo: Warning/Error: Mesh is not attached to this scene!
 			}
-		}
-
-		int Mesh::getOpaqueMeshUserCount() {
-			return m_opaqueMeshUsers.size();
-		}
-		int Mesh::getTransparentMeshUserCount() {
-			return m_transparentMeshUsers.size();
 		}
 
 		void Mesh::passMeshToGPU() {

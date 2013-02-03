@@ -12,6 +12,9 @@ namespace Rocket {
 		}
 		Raster::~Raster() {
 		}
+		void Raster::destroyFromBaseClass() {
+			delete this;
+		}
 
 		Transform * Raster::getTransform() {
 			return m_rasterTransform;

@@ -2,10 +2,13 @@
 #ifndef Rocket_Graphics_Object_H
 #define Rocket_Graphics_Object_H
 
+#include <vector>
+
 #include "matrix.h"
 #include "Mesh.h"
 #include "Transform.h"
 #include "Shader.h"
+#include "Raster.h"
 
 namespace Rocket {
 	namespace Graphics {
@@ -14,20 +17,23 @@ namespace Rocket {
 		class Object : public Transform {
 		public:
 			Object( Mesh * mesh = NULL );
-			~Object();
+			virtual ~Object();
 
 			// Creates a copy of this object, sharing the mesh, and copying all object properties (transforms not included)
 			Object * clone();
 			// Clones the object into the specified Scene (transforms included)
 			Object * cloneInScene( Scene * scene, Transform * parent, Core::vec3 scale, Core::vec4 rotation, Core::vec3 position );
 
-			//void draw( Scene * drawer, Core::mat4 parent_orientation, bool opaquePass );
-			void draw();
-			// Calculate the object's world matrices before calling draw()
+			// Calculate the object's world matrices before drawing
 			void calculateTransforms( float elapsedMilliseconds, const Core::mat4 & parent_orientation, bool parentCacheIsClean, bool applyUpdates ) override;
 
-			void setMesh( Mesh * mesh );
 			Mesh * getMesh();
+
+			void setRasterParent( Raster * parent );
+
+			void addOwner( Scene * scene );
+			void removeOwner( Scene * scene );
+			std::vector<Scene*> getOwners();
 
 			void setShaderUniforms( ShaderUniforms * shaderUniforms );
 			ShaderUniforms * getShaderUniforms();
@@ -38,6 +44,8 @@ namespace Rocket {
 
 		protected:
 			Mesh * m_mesh;
+			Raster * m_rasterParent;
+			std::vector<Scene*> m_owners;
 			ShaderUniforms * m_shaderUniforms;
 
 			bool m_transparencyEnabled;

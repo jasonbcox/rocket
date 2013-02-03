@@ -16,7 +16,7 @@ namespace Rocket {
 		class Transform {
 		public:
 			Transform();
-			~Transform();
+			virtual ~Transform();
 
 			// addChild() adds child to this Transform's list of children
 			// if coupleChildToParent is true, child's m_parent is set to this Transform, otherwise, it is not set.
@@ -30,6 +30,7 @@ namespace Rocket {
 
 			// getParentOrientation() returns the concatenation of all ancestor matrices
 			const Core::mat4 & getParentOrientation();
+			const Core::mat4 & Transform::getFinalOrientation();
 			//void positionWorld( Core::vec3 pos );	// todo: position in world space, relative to parent
 			Core::vec3 positionWorld();		// get position in world space (with respect to root parent node)
 
@@ -85,7 +86,7 @@ namespace Rocket {
 			Core::mat4 m_frame_final_orientation;		// m_frame_parent_orientation * orientation()
 
 			void setOrientationCacheAsDirty();
-			const Core::mat4 & getFinalOrientation();
+			//const Core::mat4 & getFinalOrientation();
 
 			Core::vec3 m_scale;
 			Core::vec3 m_position;

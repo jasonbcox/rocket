@@ -1,6 +1,7 @@
 
 
 #include <vector>
+#include <unordered_map>
 
 #include "GL/glew.h"
 #include "GL/glfw.h"
@@ -45,24 +46,28 @@ namespace Rocket {
 			enableDepthTest();
 		}
 		Scene::~Scene() {
-			// Delete all child composites (Transform's deconstructor takes care of children)
+			// Delete all child composites (Transform's deconstructor takes care of children of the composites)
 			std::vector<Scene*>::iterator childComposite;
-			for (childComposite = m_composites.begin(); childComposite != m_composites.end(); childComposite++) {
+			while ( ( childComposite = m_composites.begin() ) != m_composites.end() ) {
 				delete (*childComposite);
+				m_composites.erase( childComposite );
 			}
 
-			// Delete all meshes
-			std::vector<Mesh*>::iterator meshes;
-			for (meshes = m_meshes.begin(); meshes != m_meshes.end(); meshes++) {
-				delete (*meshes);
+			std::vector<Mesh*>::iterator mesh;
+			while ( ( mesh = m_meshes.begin() ) != m_meshes.end() ) {
+				m_meshes.erase( mesh );
+				// Meshes are cleaned up by Universe
 			}
 		}
 
 		void Scene::addMesh( Mesh * mesh ) {
 			m_meshes.push_back( mesh );
+			mesh->addSceneToUserList( this );
 		}
 
 		void Scene::addObject( Object * object, Transform * parent ) {
+			object->addOwner( this );
+			object->getMesh()->addMeshUser( object );
 			if (parent == NULL) {
 				addChild( object, false );
 			} else {
@@ -71,9 +76,20 @@ namespace Rocket {
 			}
 		}
 
+		void Scene::drawPass() {
+			std::vector<Mesh*>::iterator mesh;
+			for (mesh = m_meshes.begin(); mesh != m_meshes.end(); mesh++) {
+				(*mesh)->drawCurrentPass( &getCameraProjection(), &getCameraOrientation() );
+#ifdef ENABLE_DEBUG
+				m_frame_renderedPolygons += (*mesh)->m_frame_renderedPolygons;
+				m_frame_renderedObjects += (*mesh)->m_frame_renderedObjects;
+#endif
+			}
+		}
+
 		void Scene::draw( float elapsedMilliseconds, bool clearScreen ) {
 			glBindFramebuffer( GL_FRAMEBUFFER, m_frameBufferObject );
-			if ( glDepthTest == true ) {
+			if ( m_glDepthTest == true ) {
 				glEnable( GL_DEPTH_TEST );
 			} else {
 				glDisable( GL_DEPTH_TEST );
@@ -86,74 +102,27 @@ namespace Rocket {
 			m_frame_renderedObjects = 0;
 #endif
 
-			//Core::Debug_StartTimer( (std::string( "Scene::calculateTransforms_" ) + (clearScreen ?"mainScene":"hudScene")).c_str() );
 			// Calculate transforms and update all nodes
 			std::vector<Transform*>::iterator child;
 			for (child = m_children.begin(); child != m_children.end(); child++) {
 				(*child)->calculateTransforms( elapsedMilliseconds, Core::mat4(), false, true );
 			}
-			//Core::Debug_StopTimer( (std::string( "Scene::calculateTransforms_" ) + (clearScreen ?"mainScene":"hudScene")).c_str() );
 
-			//Core::Debug_StartTimer( (std::string( "Scene::OpaquePass_" ) + (clearScreen ?"mainScene":"hudScene")).c_str() );
-			// Opaque pass
+			// Prepare meshes for drawing passes
 			std::vector<Mesh*>::iterator mesh;
 			for (mesh = m_meshes.begin(); mesh != m_meshes.end(); mesh++) {
-				//GLuint shader = (*mesh)->getShader()->getShaderNumber();
-				Shader * shader = (*mesh)->getShader();
-				shader->useShaderProgram();
-				glBindVertexArray( (*mesh)->getVertexArrayObject() );
-
-				// Orientation of the camera
-				*shader->getCameraOrientation() = &getCameraOrientation();
-
-				// Camera projection
-				*shader->getCameraPerspective() = &getCameraProjection();
-
-#ifdef ENABLE_DEBUG
-				(*mesh)->m_frame_renderedPolygons = 0;
-#endif
-
-				(*mesh)->drawOpaqueMeshUsers();
-
-#ifdef ENABLE_DEBUG
-				m_frame_renderedPolygons += (*mesh)->m_frame_renderedPolygons;
-				m_frame_renderedObjects += (*mesh)->getOpaqueMeshUserCount();
-#endif
+				(*mesh)->startPassesForScene( this );
 			}
 
-			glEnable( GL_BLEND );
-			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
-			//Core::Debug_StopTimer( (std::string( "Scene::OpaquePass_" ) + (clearScreen ?"mainScene":"hudScene")).c_str() );
-			//Core::Debug_StartTimer( (std::string( "Scene::TransparencyPass_" ) + (clearScreen ?"mainScene":"hudScene")).c_str() );
+			// Opaque pass
+			drawPass();
 
 			// Transparency pass
-			for (mesh = m_meshes.begin(); mesh != m_meshes.end(); mesh++) {
-				//GLuint shader = (*mesh)->getShader()->getShaderNumber();
-				Shader * shader = (*mesh)->getShader();
-				shader->useShaderProgram();
-				glBindVertexArray( (*mesh)->getVertexArrayObject() );
-
-				// Orientation of the camera
-				*shader->getCameraOrientation() = &getCameraOrientation();
-
-				// Camera projection
-				*shader->getCameraPerspective() = &getCameraProjection();
-
-#ifdef ENABLE_DEBUG
-				(*mesh)->m_frame_renderedPolygons = 0;
-#endif
-
-				(*mesh)->drawTransparentMeshUsers();
-
-#ifdef ENABLE_DEBUG
-				m_frame_renderedPolygons += (*mesh)->m_frame_renderedPolygons;
-				m_frame_renderedObjects += (*mesh)->getTransparentMeshUserCount();
-#endif
-			}
+			glEnable( GL_BLEND );
+			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+			drawPass();
 
 			glDisable( GL_BLEND );
-			//Core::Debug_StopTimer( (std::string( "Scene::TransparencyPass_" ) + (clearScreen ?"mainScene":"hudScene")).c_str() );
 
 			//glBindFramebuffer(GL_FRAMEBUFFER, 0 );
 			//glBindTexture( GL_TEXTURE_2D, m_renderPasses[0]->m_frameTexture );
@@ -403,10 +372,10 @@ namespace Rocket {
 		}
 
 		void Scene::enableDepthTest() {
-			glDepthTest = true;
+			m_glDepthTest = true;
 		}
 		void Scene::disableDepthTest() {
-			glDepthTest = false;
+			m_glDepthTest = false;
 		}
 
 		std::list<std::pair< Transform*, int >> * Scene::zIndexer() {

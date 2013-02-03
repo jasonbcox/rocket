@@ -16,7 +16,7 @@ namespace Rocket {
 		public:
 			Object_Newton( Mesh * mesh = NULL );
 			Object_Newton( const Object & base );
-			~Object_Newton();
+			virtual ~Object_Newton();
 
 			void setMass( float m );
 			float getMass();

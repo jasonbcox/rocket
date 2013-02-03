@@ -27,6 +27,7 @@ namespace Rocket {
 			}
 			m_quad = new Object( Global_SpriteMesh );
 			m_rasterTransform = m_quad;
+			m_quad->setRasterParent( this );
 
 			ShaderDefaults::setObjectUniforms_texture( m_quad,
 				Rocket::Graphics::Shader_UniformTexture( 0, m_texture, GL_REPEAT, GL_REPEAT ),
@@ -42,13 +43,17 @@ namespace Rocket {
 		}
 		Sprite::~Sprite() {
 			//delete m_texture; // Do NOT delete m_texture because it is an external entity that might be shared by other objects
-			delete m_quad;
+			if ( m_quad != NULL ) delete m_quad;
 
 			Global_SpriteCount--;
 		}
+		void Sprite::destroyFromBaseClass() {
+			m_quad = NULL;
+			delete this;
+		}
 
-		void Sprite::enableSpritesInScene( Scene * scene, Shader * meshShader ) {
-			if ( Global_SpriteMesh == NULL ) Global_SpriteMesh = generatePrimitive_Quad( meshShader );
+		void Sprite::enableSpritesInScene( Universe * world, Scene * scene, Shader * meshShader ) {
+			if ( Global_SpriteMesh == NULL ) Global_SpriteMesh = generatePrimitive_Quad( world, "SPRITE_MESH", meshShader );
 			scene->addMesh( Global_SpriteMesh );
 		}
 
@@ -58,6 +63,10 @@ namespace Rocket {
 
 		void Sprite::addAsChild( Transform * parent ) {
 			parent->addChild( m_quad, true );
+		}
+
+		Object * Sprite::getQuad() {
+			return m_quad;
 		}
 
 		void Sprite::enableTransparency( float alphaTest, float alphaTransparency ) {

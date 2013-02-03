@@ -10,7 +10,7 @@ namespace Rocket {
 		class Texture {
 		public:
 			Texture( const char * file, bool mipmap, bool invertY );
-			~Texture();
+			virtual ~Texture();
 
 			unsigned int getID();
 

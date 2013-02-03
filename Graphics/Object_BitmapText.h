@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 
+#include "Scene.h"
 #include "Sprite.h"
 #include "Texture.h"
 #include "Transform.h"
@@ -30,7 +31,9 @@ namespace Rocket {
 		class Object_BitmapText : public Transform, public Raster {
 		public:
 			Object_BitmapText( Texture * bitmap, std::string text = "" );
-			~Object_BitmapText();
+			virtual ~Object_BitmapText();
+
+			void addToScene( Scene * scene );
 
 			void setText( const std::string & text );
 			const std::string & getText();
@@ -40,6 +43,7 @@ namespace Rocket {
 
 		protected:
 			Texture * m_bitmap;
+			std::vector<Scene*> m_owners;
 			std::vector<Sprite*> m_quads;
 			std::string m_text;
 

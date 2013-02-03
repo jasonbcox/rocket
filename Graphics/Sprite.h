@@ -19,11 +19,14 @@ namespace Rocket {
 		class Sprite : public Raster {
 		public:
 			Sprite( Texture * texture, int width, int height );
-			~Sprite();
+			virtual ~Sprite();
+			void destroyFromBaseClass();
 
-			static void enableSpritesInScene( Scene * scene, Shader * meshShader );
+			static void enableSpritesInScene( Universe * world, Scene * scene, Shader * meshShader );
 			void addToScene( Scene * scene );
 			void addAsChild( Transform * parent );
+
+			Object * getQuad();	// todo: remove this when you find a more elegant solution, because it breaks encapsulation
 
 			void enableTransparency( float alphaTest, float alphaTransparency );
 			void disableTransparency();
