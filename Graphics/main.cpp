@@ -162,7 +162,6 @@ int main() {
 
 	Texture * testBitmapTexture = world->loadTexture( "test_font", "./Shaders/testFont1.png", false, true );
 	Object_BitmapText * testBitmap = new Object_BitmapText( testBitmapTexture, "The quick, brown fox jumped over the lazy dog.\nTHE QUICK BROWN FOX JUMPED OVER THE LAZY DOG!\n0123456789?" );
-	testBitmap->enableTransparency( 0.0f, 1.0f );
 	hudScene->addObject( testBitmap, NULL );
 	testBitmap->enableTransparency( 0.0f, 1.0f );
 	testBitmap->setPosition( vec2i( 0, 200 ) );

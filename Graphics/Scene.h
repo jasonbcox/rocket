@@ -133,7 +133,6 @@ namespace Rocket {
 			// m_frame_* members are reinitialized every frame
 			bool m_frame_camera_orientationCache;
 			Core::mat4 m_frame_camera_orientation;					// Camera Position and Rotation Matrix (World to Camera) - reinitialized every frame to erase floating point error
-			//std::vector<Object*> m_frame_transparentObjectList;		// List of transparent objects to render after opaque objects
 
 			bool m_frame_camera_orientationInverseCache;
 			Core::mat4 m_frame_camera_orientationInverse;

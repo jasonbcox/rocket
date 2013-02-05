@@ -50,10 +50,10 @@ namespace Rocket {
 				std::vector<std::vector<Object*>>::iterator passIter;
 				for ( passIter = mapIter->second.begin(); passIter != mapIter->second.end(); passIter++ ) {
 					std::vector<Object*>::iterator objIter;
-					while ( ( objIter = passIter->begin() ) != passIter->end() ) {
+					for ( objIter = passIter->begin(); objIter != passIter->end(); objIter++ ) {
 						delete (*objIter);
-						passIter->erase( objIter );
 					}
+					passIter->clear();
 				}
 			}
 
@@ -175,8 +175,10 @@ namespace Rocket {
 				for ( int i = 0; i < MeshDrawPasses::END_OF_DRAW_PASSES; i++ ) {
 					std::vector<Object*>::iterator objectIter;
 					for ( objectIter = mapIter->second[ i ].begin(); objectIter != mapIter->second[ i ].end(); objectIter++ ) {
-						if ( (*objectIter) == object ) mapIter->second[ i ].erase( objectIter );
-						break;
+						if ( (*objectIter) == object ) {
+							mapIter->second[ i ].erase( objectIter );
+							break;
+						}
 					}
 				}
 			} else {

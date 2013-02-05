@@ -38,6 +38,7 @@ namespace Rocket {
 			bool uniformNeedsRefreshing( void * newValue, size_t size );
 
 			void * cachedValue;
+			size_t cacheSize;
 			bool cacheIsClean;
 			long cachedUniformLocation;
 			std::string uniformName;

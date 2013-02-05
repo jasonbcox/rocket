@@ -20,31 +20,31 @@ namespace Rocket {
 		Universe::~Universe() {
 			// Cleanup Scenes
 			std::vector<Scene*>::iterator iter_scenes;
-			while ( ( iter_scenes = m_renderPasses.begin() ) != m_renderPasses.end() ) {
+			for ( iter_scenes = m_renderPasses.begin(); iter_scenes != m_renderPasses.end(); iter_scenes++ ) {
 				delete (*iter_scenes);
-				m_renderPasses.erase( iter_scenes );
 			}
+			m_renderPasses.clear();
 
 			// Cleanup Meshes
 			std::unordered_map< std::string, Mesh* >::iterator iter_meshes;
-			while ( ( iter_meshes = m_meshes.begin() ) != m_meshes.end() ) {
+			for ( iter_meshes = m_meshes.begin(); iter_meshes != m_meshes.end(); iter_meshes++ ) {
 				delete (*iter_meshes).second;
-				m_meshes.erase( iter_meshes );
 			}
+			m_meshes.clear();
 
 			// Cleanup Textures
 			std::unordered_map< std::string, Texture* >::iterator iter_textures;
-			while ( ( iter_textures = m_textures.begin() ) != m_textures.end() ) {
+			for ( iter_textures = m_textures.begin(); iter_textures != m_textures.end(); iter_textures++ ) {
 				delete (*iter_textures).second;
-				m_textures.erase( iter_textures );
 			}
+			m_textures.clear();
 
 			// Cleanup Shaders
 			std::unordered_map< std::string, Shader* >::iterator iter_shaders;
-			while ( ( iter_shaders = m_shaders.begin() ) != m_shaders.end() ) {
+			for ( iter_shaders = m_shaders.begin(); iter_shaders != m_shaders.end(); iter_shaders++ ) {
 				delete (*iter_shaders).second;
-				m_shaders.erase( iter_shaders );
 			}
+			m_shaders.clear();
 		}
 
 		// Add a render pass to the end of the render list.

@@ -27,13 +27,16 @@ namespace Rocket {
 		}
 
 		ShaderUniformCache::ShaderUniformCache() {
-			cachedValue = malloc( sizeof(char*) );
+			cachedValue = NULL;
+			cacheSize = 0;
 			cacheIsClean = false;
 			cachedUniformLocation = InvalidShaderUniformLocation;
 		}
 		ShaderUniformCache::~ShaderUniformCache() {
-			Core::Debug_Scramble( cachedValue, 1 );	// first byte only, because we don't know the size
-			free( cachedValue );
+			if ( cacheSize > 0 ) {
+				Core::Debug_Scramble( cachedValue, cacheSize );
+				free( cachedValue );
+			}
 		}
 
 		void ShaderUniformCache::refreshCache( unsigned int shaderNumber ) {
@@ -44,7 +47,15 @@ namespace Rocket {
 		}
 
 		bool ShaderUniformCache::uniformNeedsRefreshing( void * newValue, size_t size ) {
-			if ( ( cacheIsClean == false ) || ( memcmp( cachedValue, newValue, size ) != 0 ) ) {
+			if ( ( cacheIsClean == false ) || ( cacheSize != size ) || ( memcmp( cachedValue, newValue, size ) != 0 ) ) {
+				if ( cacheSize != size ) {
+					if ( cacheSize > 0 ) {
+						Core::Debug_Scramble( cachedValue, cacheSize );
+						free( cachedValue );
+					}
+					cacheSize = size;
+					cachedValue = malloc( size );
+				}
 				if ( size > 0 ) memcpy( cachedValue, newValue, size );
 				cacheIsClean = true;
 				return true;

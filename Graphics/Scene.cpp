@@ -48,16 +48,13 @@ namespace Rocket {
 		Scene::~Scene() {
 			// Delete all child composites (Transform's deconstructor takes care of children of the composites)
 			std::vector<Scene*>::iterator childComposite;
-			while ( ( childComposite = m_composites.begin() ) != m_composites.end() ) {
+			for ( childComposite = m_composites.begin(); childComposite != m_composites.end(); childComposite++ ) {
 				delete (*childComposite);
-				m_composites.erase( childComposite );
 			}
+			m_composites.clear();
 
-			std::vector<Mesh*>::iterator mesh;
-			while ( ( mesh = m_meshes.begin() ) != m_meshes.end() ) {
-				m_meshes.erase( mesh );
-				// Meshes are cleaned up by Universe
-			}
+			// Meshes are cleaned up by Universe
+			m_meshes.clear();
 		}
 
 		void Scene::addMesh( Mesh * mesh ) {

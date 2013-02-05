@@ -15,6 +15,8 @@ namespace Rocket {
 		Transform::Transform() {
 			m_parent = NULL;
 
+			m_zIndexer = NULL;
+
 			scale( Core::vec3(1,1,1) );
 			position( Core::vec3(0,0,0) );
 			m_rotation = Core::Quaternion( 0.0f, Core::vec3(0,1,0) );
@@ -27,13 +29,12 @@ namespace Rocket {
 		Transform::~Transform() {
 			// Delete all child transforms
 			std::vector<Transform*>::iterator child;
-			//for (child = m_children.begin(); child != m_children.end(); child++) {
-			while ( ( child = m_children.begin() ) != m_children.end() ) {
+			for ( child = m_children.begin(); child != m_children.end(); child++ ) {
 				(*child)->m_parent = NULL;	// The destructor on this Transform (the parent of the child) is already being destroyed, so do NOT attempt to remove
 											//		the child's self from this Transform (the parent)
 				delete (*child);
-				m_children.erase( child );
 			}
+			m_children.clear();
 
 			// Remove self from parent
 			if ( m_parent != NULL ) {
@@ -44,11 +45,13 @@ namespace Rocket {
 					}
 				}
 			}
+
+			m_owners.clear();
 		}
 
 		void Transform::addChild( Transform * child, bool coupleChildToParent ) {
 			m_children.push_back( child );
-			for ( int scene = 0; scene < m_owners.size(); scene++ ) {
+			for ( unsigned int scene = 0; scene < m_owners.size(); scene++ ) {
 				child->addOwner( m_owners[ scene ] );
 			}
 

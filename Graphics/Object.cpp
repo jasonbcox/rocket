@@ -21,8 +21,8 @@ namespace Rocket {
 		}
 
 		Object::~Object() {
-			std::vector<Scene*>::iterator iter;
 			if ( m_mesh != NULL ) {
+				std::vector<Scene*>::iterator iter;
 				for ( iter = m_owners.begin(); iter != m_owners.end(); iter++ ) {
 					m_mesh->removeMeshUserFromScene( this, (*iter) );
 				}

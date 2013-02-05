@@ -313,7 +313,7 @@ namespace Rocket {
 				for ( unsigned int r = 0; r < m_N; r++ ) {
 					delete m_rows[r];
 				}
-				delete m_rows;
+				delete [] m_rows;
 			}
 
 			// Array Subscript
