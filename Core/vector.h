@@ -46,8 +46,8 @@ namespace Rocket {
 
 			// Vector Operations
 			T operator * ( const T_vec2 & R ) const { return x*R.x + y*R.y; }		// Dot Product
-			T lengthSquared() { return x*x + y*y; }
-			T length() { return sqrt( x*x + y*y ); }
+			T lengthSquared() const { return x*x + y*y; }
+			T length() const { return sqrt( x*x + y*y ); }
 
 			// Swizzle
 			T_vec2<T> xy() const { return T_vec2<T>( x, y ); }
@@ -103,8 +103,8 @@ namespace Rocket {
 
 			// Vector Operations
 			T operator * ( const T_vec3 & R ) const { return x*R.x + y*R.y + z*R.z; }	// Dot Product
-			T lengthSquared() { return x*x + y*y + z*z; }
-			T length() { return sqrt( x*x + y*y + z*z ); }
+			T lengthSquared() const { return x*x + y*y + z*z; }
+			T length() const { return sqrt( x*x + y*y + z*z ); }
 
 			// Swizzle
 			T_vec2<T> xy() const { return T_vec2<T>( x, y ); }
@@ -169,8 +169,8 @@ namespace Rocket {
 
 			// Vector Operations
 			T operator * ( const T_vec4 & R ) const { return x*R.x + y*R.y + z*R.z + w*R.w; }	// Dot Product
-			T lengthSquared() { return x*x + y*y + z*z + w*w; }
-			T length() { return sqrt( x*x + y*y + z*z + w*w ); }
+			T lengthSquared() const { return x*x + y*y + z*z + w*w; }
+			T length() const { return sqrt( x*x + y*y + z*z + w*w ); }
 
 			// Swizzle
 			T_vec2<T> xy() const { return T_vec2<T>( x, y ); }
@@ -195,6 +195,21 @@ namespace Rocket {
 			}
 		};
 
+		
+		// Typedefs
+		// --------------------------------------------------------------------------------------------------------------------
+		typedef T_vec2<float> vec2;
+		typedef T_vec2<double> vec2d;
+		typedef T_vec2<int> vec2i;
+		
+		typedef T_vec3<float> vec3;
+		typedef T_vec3<double> vec3d;
+		typedef T_vec3<int> vec3i;
+		
+		typedef T_vec4<float> vec4;
+		typedef T_vec4<double> vec4d;
+		typedef T_vec4<int> vec4i;
+		
 
 		// External Vector Operations
 		template <class T> T dot( const T_vec2<T> & a, const T_vec2<T> & b ) { return a * b; }
@@ -207,9 +222,9 @@ namespace Rocket {
 								a.x * b.y - b.x * a.y );
 		}
 
-		template <class T> T_vec2<T> normalize( T_vec2<T> & v ) { T len = v.length(); return T_vec2<T>( v.x/len, v.y/len ); }
-		template <class T> T_vec3<T> normalize( T_vec3<T> & v ) { T len = v.length(); return T_vec3<T>( v.x/len, v.y/len, v.z/len ); }
-		template <class T> T_vec4<T> normalize( T_vec4<T> & v ) { T len = v.length(); return T_vec4<T>( v.x/len, v.y/len, v.z/len, v.w/len ); }
+		template <class T> T_vec2<T> normalize( const T_vec2<T> & v ) { T len = v.length(); return T_vec2<T>( v.x/len, v.y/len ); }
+		template <class T> T_vec3<T> normalize( const T_vec3<T> & v ) { T len = v.length(); return T_vec3<T>( v.x/len, v.y/len, v.z/len ); }
+		template <class T> T_vec4<T> normalize( const T_vec4<T> & v ) { T len = v.length(); return T_vec4<T>( v.x/len, v.y/len, v.z/len, v.w/len ); }
 
 		template <class T> T_vec4<T> Quaternion( T angle, const T_vec3<T> & axis ) {
 			// Returns a normalized quaternion
@@ -234,21 +249,7 @@ namespace Rocket {
 			// yaw is correct, but pitch and roll are not in the correct XYZ-axis order
 			return T_vec3<T>( pitch, yaw, roll );
 		}
-
-
-		// Typedefs
-		// --------------------------------------------------------------------------------------------------------------------
-		typedef T_vec2<float> vec2;
-		typedef T_vec2<double> vec2d;
-		typedef T_vec2<int> vec2i;
-
-		typedef T_vec3<float> vec3;
-		typedef T_vec3<double> vec3d;
-		typedef T_vec3<int> vec3i;
-
-		typedef T_vec4<float> vec4;
-		typedef T_vec4<double> vec4d;
-		typedef T_vec4<int> vec4i;
+		
 	}
 }
 

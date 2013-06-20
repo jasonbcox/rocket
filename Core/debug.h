@@ -2,6 +2,8 @@
 #ifndef Rocket_Core_Debug_H
 #define Rocket_Core_Debug_H
 
+#include <string.h>
+
 // Comment this out to disable debugging
 #define ENABLE_DEBUG
 

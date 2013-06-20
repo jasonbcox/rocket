@@ -9,6 +9,8 @@
 
 #else
 #include <sys/time.h>
+#include <unistd.h>
+
 #endif
 
 typedef unsigned long long CORE_TIME_TYPE;

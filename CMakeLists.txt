@@ -1,0 +1,37 @@
+cmake_minimum_required( VERSION 2.8 )
+project( Rocket )
+
+set( RUN_TESTS TRUE CACHE BOOL "Run unit tests before finishing build." )
+
+macro( add_test target )
+	add_executable( ${target} ${ARGN} )
+	if ( RUN_TESTS )
+		run_test( ${target} ${${target}_BINARY_DIR} )
+	endif ( RUN_TESTS )
+endmacro( add_test )
+ 
+macro (run_test target)
+	get_property( targetBinaryLocation TARGET ${target} PROPERTY LOCATION )
+	add_custom_command( TARGET ${target} POST_BUILD COMMAND ${BUILD_PROFILE_RUN} ${targetBinaryLocation} )
+endmacro (run_test)
+
+set( Rocket_headers
+	${Rocket_SOURCE_DIR}/UnitTest.h
+)
+
+set( Rocket_sources
+	${Rocket_SOURCE_DIR}/UnitTest.cpp
+	${Rocket_SOURCE_DIR}/main.cpp
+)
+
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/.. )
+
+set( CMAKE_CXX_FLAGS "-g -Wall -std=c++11" )
+
+add_executable( Rocket ${Rocket_sources} ${Rocket_headers} )
+
+add_subdirectory( Core )
+add_subdirectory( Graphics )
+add_subdirectory( Network )
+
+install( TARGETS Rocket RUNTIME DESTINATION bin )

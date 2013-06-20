@@ -15,9 +15,9 @@ namespace Rocket {
 
 			FixedPoint_OutputType p = pow( 10.0f, m_precision );
 			FixedPoint_OutputType v = value * p;
-			m_baseFactor = ((int)v) * m_scalingFactor;
+			m_baseFactor = ((long)v) * m_scalingFactor;
 		}
-		fixedpoint::fixedpoint( int baseFactor, int scalingFactor, int precision ) {
+		fixedpoint::fixedpoint( long baseFactor, int scalingFactor, int precision ) {
 			m_baseFactor = baseFactor;
 			m_scalingFactor = scalingFactor;
 			m_precision = precision;
@@ -38,8 +38,8 @@ namespace Rocket {
 
 
 		const fixedpoint fixedpoint::operator + ( const fixedpoint & other ) const {
-			int leftBaseFactor = m_baseFactor;
-			int rightBaseFactor = other.m_baseFactor;
+			long leftBaseFactor = m_baseFactor;
+			long rightBaseFactor = other.m_baseFactor;
 			int finalScalingFactor = m_scalingFactor;
 
 			// Get common scaling factor before adding
@@ -49,7 +49,7 @@ namespace Rocket {
 			} else if ( other.m_scalingFactor < m_scalingFactor ) {
 				rightBaseFactor *= (int)( m_scalingFactor*1.0/(other.m_scalingFactor*1.0) );
 			}
-			return fixedpoint( leftBaseFactor + rightBaseFactor, m_scalingFactor, m_precision );
+			return fixedpoint( leftBaseFactor + rightBaseFactor, finalScalingFactor, m_precision );
 		}
 		const fixedpoint fixedpoint::operator - ( const fixedpoint & other ) const {
 			return ( *this + (-other) );
@@ -62,7 +62,6 @@ namespace Rocket {
 		const fixedpoint fixedpoint::operator / ( const fixedpoint & other ) const {
 			// Extend the left base by a factor of 10^precision in order to eliminate rounding errors
 			long long leftExtendedBase = (long long)( m_baseFactor * pow( 10.0, m_precision ) );
-			long long rightBaseFactor = other.m_baseFactor;
 
 			if ( other.m_scalingFactor > m_scalingFactor ) {
 				leftExtendedBase *= (long long)( other.m_scalingFactor*1.0/(m_scalingFactor*1.0) );
@@ -182,7 +181,7 @@ namespace Rocket {
 
 
 		FixedPoint_OutputType fixedpoint::sqrt( const fixedpoint input ) {
-			return std::sqrt(((fixedpoint)input).toValue());
+			return sqrt(((fixedpoint)input).toValue());
 		}
 
 

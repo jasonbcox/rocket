@@ -3,7 +3,7 @@
 #define Rocket_Core_FixedPoint_H
 
 #include "string_.h"
-
+#include <cmath>
 
 namespace Rocket {
 	namespace Core {
@@ -18,7 +18,7 @@ namespace Rocket {
 		class fixedpoint {
 		public:
 			fixedpoint( FixedPoint_OutputType value = 0.0f );	// value is assumed to have a scaling factor of FixedPoint_OutputTypeScalingFactor and will be converted to FixedPoint_DefaultScalingFactor
-			fixedpoint( int baseFactor, int scalingFactor, int precision = FixedPoint_DefaultPrecision );
+			fixedpoint( long baseFactor, int scalingFactor, int precision = FixedPoint_DefaultPrecision );
 
 			fixedpoint & operator = ( const fixedpoint & rhs );
 
@@ -60,7 +60,7 @@ namespace Rocket {
 			fixedpoint convert( int scalingFactor, int precision ) const;
 
 		private:
-			int m_baseFactor;
+			long m_baseFactor;
 			int m_scalingFactor;
 			int m_precision;			// Use left-hand precision for all arithmetic.  m_precision is the number of decimal places this numbe is accurate to.
 		};

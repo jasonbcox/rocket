@@ -17,6 +17,7 @@ namespace Rocket {
 		class UnitTest {
 		public:
 			UnitTest( std::string name );
+			virtual ~UnitTest();
 			virtual void run() = 0;
 
 			std::string name() { return m_name; }

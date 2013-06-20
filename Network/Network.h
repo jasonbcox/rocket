@@ -5,17 +5,26 @@
 #include <unordered_map>
 #include <string>
 #include <deque>
+#include <string.h>
 
-#include "system.h"
-#include "string_.h"
+#include "rocket/Core/system.h"
+#include "rocket/Core/string_.h"
 
 #ifdef OS_WINDOWS
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #pragma comment (lib, "Ws2_32.lib")
 #else
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <netdb.h>
+
+typedef int SOCKET;
+const int INVALID_SOCKET = -1;
+const int SOCKET_ERROR = -1;
+typedef struct sockaddr_in SOCKADDR_IN;
+typedef struct sockaddr* LPSOCKADDR;
 #endif
 
 #include "Packet.h"

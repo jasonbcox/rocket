@@ -1,8 +1,11 @@
 
 #include <string>
 
-#include "debug.h"
+#include "../Core/debug.h"
 #include "Network.h"
+
+#include <fcntl.h>
+#include <errno.h>
 
 namespace Rocket {
 	namespace Network {
@@ -47,7 +50,7 @@ namespace Rocket {
 			if (m_settings & NetworkSettings::UDP_Enabled) {
 				//bind to the first open port from port to port+numberofPortTries
 				m_UDP_port = findOpenPort( port, numberOfPortTries );
-				if (m_UDP_port == -1) Core::Debug_AddToLog( "Error: Failed to find an open port." );
+				if (m_UDP_port == 0) Core::Debug_AddToLog( "Error: Failed to find an open port." );
 
 				m_UDP_socket = socket( AF_INET, SOCK_DGRAM, 0 );
 				if (m_UDP_socket == INVALID_SOCKET) Core::Debug_AddToLog( "Error: Failed to create UDP socket." );
@@ -72,7 +75,7 @@ namespace Rocket {
 			if (m_settings & NetworkSettings::TCP_ListeningEnabled) {
 				//bind to the first open port from listenPort to listenPort+numberofPortTries
 				m_TCP_listenPort = findOpenPort( listenPort, numberOfPortTries );
-				if (m_TCP_listenPort == -1) Core::Debug_AddToLog( "Error: Failed to find an open port." );
+				if (m_TCP_listenPort == 0) Core::Debug_AddToLog( "Error: Failed to find an open port." );
 
 				m_TCP_listenSocket = socket( AF_INET, SOCK_STREAM, 0 );
 				if (m_TCP_listenSocket == INVALID_SOCKET) Core::Debug_AddToLog( "Error: Failed to create listenSocket." );
@@ -93,10 +96,15 @@ namespace Rocket {
 					m_TCP_listenSocket = 0;
 				}
 
-				//unblock m_listenSocket
+				// Unblock m_listenSocket
+#ifdef OS_WINDOWS
 				u_long * unblocked = new u_long;
 				*unblocked = 1;	//1 to unblock socket
 				ioctlsocket( m_TCP_listenSocket, FIONBIO, unblocked );
+#else
+				int flags = fcntl( m_TCP_listenSocket, F_GETFL, 0 );
+				fcntl( m_TCP_listenSocket, F_SETFL, flags | O_NONBLOCK );
+#endif
 			}
 
 			return m_TCP_listenPort;
@@ -215,7 +223,11 @@ namespace Rocket {
 						// Accept the new connection
 						SOCKET * acceptSocket = new SOCKET();
 						sockaddr_in addr;
+#ifdef OS_WINDOWS
 						int addrlen = sizeof( sockaddr_in );
+#else
+						socklen_t addrlen = sizeof( sockaddr_in );
+#endif
 						*acceptSocket = accept( m_TCP_listenSocket, (struct sockaddr*)&addr, &addrlen );
 
 						//unblock listenSocket
@@ -224,7 +236,11 @@ namespace Rocket {
 
 						if (*acceptSocket != SOCKET_ERROR) {
 							Core::string addr_IP = "";
+#ifdef OS_WINDOWS
 							addr_IP << addr.sin_addr.S_un.S_un_b.s_b1 << "." << addr.sin_addr.S_un.S_un_b.s_b2 << "." << addr.sin_addr.S_un.S_un_b.s_b3 << "." << addr.sin_addr.S_un.S_un_b.s_b4;
+#else
+							addr_IP << ((addr.sin_addr.s_addr >> 24) & 0xff) << "." << ((addr.sin_addr.s_addr >> 16) & 0xff) << "." << ((addr.sin_addr.s_addr >> 8) & 0xff) << "." << (addr.sin_addr.s_addr & 0xff);
+#endif
 							newConnection = new PacketAccumulator( NetworkSettings::Connection_TCP, addr_IP, ntohs( addr.sin_port ) );
 							m_TCP_connections[ acceptSocket ] = newConnection;
 							Core::Debug_AddToLog( "TCP Peer Connected." );
@@ -235,7 +251,11 @@ namespace Rocket {
 				// timeout
 				Rocket::Core::Debug_AddToLog( "select() timed out" );
 			} else {
+#ifdef OS_WINDOWS
 				int err = WSAGetLastError();
+#else
+				int err = errno;
+#endif
 				Rocket::Core::string err_s = "";
 				err_s << err ;
 				Rocket::Core::Debug_AddToLog( "Error: select() failed" );

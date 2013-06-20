@@ -135,7 +135,8 @@ namespace Rocket {
 			}
 
 			// Returns this matrix with row and col removed
-			T_mat2<T> minor( int row, int col ) {
+			// (minor) is required because sysmacros.h defines minor as a macro
+			T_mat2<T> (minor)( int row, int col ) {
 				T_mat2<T> r;
 				int x = 0, y = 0;
 				for (int i = 0; i < 3; i++) {
@@ -238,7 +239,8 @@ namespace Rocket {
 			}
 
 			// Returns this matrix with row and col removed
-			T_mat3<T> minor( int row, int col ) {
+			// (minor) is required because sysmacros.h defines minor as a macro
+			T_mat3<T> (minor)( int row, int col ) {
 				T_mat3<T> r;
 				int x = 0, y = 0;
 				for (int i = 0; i < 4; i++) {
@@ -356,7 +358,8 @@ namespace Rocket {
 			}
 
 			// Returns this matrix with row and col removed
-			T_matNxM<T> * minor( unsigned int row, unsigned int col ) {
+			// (minor) is required because sysmacros.h defines minor as a macro
+			T_matNxM<T> * (minor)( unsigned int row, unsigned int col ) {
 				T_matNxM<T> r = new T_matNxM<T>( m_N, m_M );
 				int x = 0, y = 0;
 				for ( unsigned int i = 0; i < m_N; i++) {
@@ -423,6 +426,21 @@ namespace Rocket {
 			}
 		};
 
+		
+		// Typedefs
+		// --------------------------------------------------------------------------------------------------------------------
+		typedef T_mat2<float> mat2;
+		typedef T_mat2<double> mat2d;
+		
+		typedef T_mat3<float> mat3;
+		typedef T_mat3<double> mat3d;
+		
+		typedef T_mat4<float> mat4;
+		typedef T_mat4<double> mat4d;
+		
+		typedef T_matNxM<float> matNxM;
+		typedef T_matNxM<double> matNxMd;
+		
 
 		// External Matrix Operations
 		// --------------------------------------------------------------------------------------------------------------------
@@ -539,20 +557,6 @@ namespace Rocket {
 			return r;
 		}
 
-
-		// Typedefs
-		// --------------------------------------------------------------------------------------------------------------------
-		typedef T_mat2<float> mat2;
-		typedef T_mat2<double> mat2d;
-
-		typedef T_mat3<float> mat3;
-		typedef T_mat3<double> mat3d;
-
-		typedef T_mat4<float> mat4;
-		typedef T_mat4<double> mat4d;
-
-		typedef T_matNxM<float> matNxM;
-		typedef T_matNxM<double> matNxMd;
 	}
 }
 

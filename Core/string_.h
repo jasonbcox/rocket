@@ -3,6 +3,7 @@
 #define Rocket_Core_String_H
 
 #include <string>
+#include <stdlib.h>
 
 typedef std::string CORE_STRING_TYPE;
 

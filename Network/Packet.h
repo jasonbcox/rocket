@@ -2,9 +2,9 @@
 #ifndef Rocket_Network_Packet_H
 #define Rocket_Network_Packet_H
 
-#include "system.h"
-#include "string_.h"
-#include "fixedpoint.h"
+#include "rocket/Core/system.h"
+#include "rocket/Core/string_.h"
+#include "rocket/Core/fixedpoint.h"
 
 #ifdef OS_WINDOWS
 #include <WinSock2.h>
@@ -12,6 +12,7 @@
 #else
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>
 #endif
 
 #define PACKET_INT_SIZE 4

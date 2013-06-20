@@ -1,5 +1,5 @@
 
-#include "debug.h"
+#include "../Core/debug.h"
 #include "Packet.h"
 
 namespace Rocket {

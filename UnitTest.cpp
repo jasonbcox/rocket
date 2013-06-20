@@ -16,6 +16,8 @@ namespace Rocket {
 		UnitTest::UnitTest( std::string name ) : m_name(name), m_result( Rocket::Test::Test_Pass ) {
 			Rocket::Test::UnitTests_registerUnitTest( this );
 		}
+		UnitTest::~UnitTest() {
+		}
 
 		// Add a unit test to the list of all unit tests
 		void UnitTests_registerUnitTest( Rocket::Test::UnitTest * test ) {

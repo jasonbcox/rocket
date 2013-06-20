@@ -1,7 +1,7 @@
 
-#include "UnitTest.h"
+#include "rocket/UnitTest.h"
 
-#include "debug.h"
+#include "rocket/Core/debug.h"
 
 #include "Network.h"
 
