@@ -1,6 +1,6 @@
 
 #include "ShaderDefaults.h"
-#include "debug.h"
+#include "rocket/Core/debug.h"
 
 namespace Rocket {
 	namespace Graphics {

@@ -3,7 +3,7 @@
 #define Rocket_Graphics_Raster_H
 
 #include "Transform.h"
-#include "vector.h"
+#include "rocket/Core/vector.h"
 
 namespace Rocket {
 	namespace Graphics {

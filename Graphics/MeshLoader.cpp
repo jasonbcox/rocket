@@ -7,7 +7,12 @@
 #include <vector>
 
 #include "Mesh.h"
-#include "vector.h"
+#include "rocket/Core/vector.h"
+
+#include "rocket/Core/system.h"
+#ifdef OS_WINDOWS
+#define strtok_r strtok_s
+#endif
 
 namespace Rocket {
 	namespace Graphics {
@@ -46,13 +51,13 @@ namespace Rocket {
 					// Tokenize the file line.
 					char * tok;
 					char * next_tok;
-					tok = strtok_s(str, " ", &next_tok);
+					tok = strtok_r(str, " ", &next_tok);
 	
 					std::vector<std::string> curr_line;
 
 					while (tok != NULL) {
 						curr_line.push_back(std::string(tok));
-						tok = strtok_s(NULL, " ", &next_tok);
+						tok = strtok_r(NULL, " ", &next_tok);
 					}
 
 					if (curr_line.empty()) continue;

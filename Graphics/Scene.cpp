@@ -3,15 +3,15 @@
 #include <vector>
 #include <unordered_map>
 
-#include "GL/glew.h"
-#include "GL/glfw.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include "Scene.h"
-#include "matrix.h"
+#include "rocket/Core/matrix.h"
 #include "Transform.h"
 #include "Object.h"
 
-#include "debug.h"
+#include "rocket/Core/debug.h"
 
 namespace Rocket {
 	namespace Graphics {

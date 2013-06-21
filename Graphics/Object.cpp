@@ -1,6 +1,6 @@
 
-#include "GL/glew.h"
-#include "GL/glfw.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include <vector>
 
@@ -8,7 +8,7 @@
 #include "Mesh.h"
 #include "Transform.h"
 #include "Scene.h"
-#include "debug.h"
+#include "rocket/Core/debug.h"
 
 namespace Rocket {
 	namespace Graphics {

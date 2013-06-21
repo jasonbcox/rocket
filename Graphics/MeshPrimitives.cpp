@@ -1,8 +1,8 @@
 
 #include <vector>
 
-#include "vector.h"
-#include "mathconstants.h"
+#include "rocket/Core/vector.h"
+#include "rocket/Core/mathconstants.h"
 #include "Mesh.h"
 #include "Shader.h"
 #include "Universe.h"

@@ -1,8 +1,8 @@
 
 #include <unordered_map>
 
-#include "GL/glew.h"
-#include "GL/glfw.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include "Input.h"
 
@@ -12,7 +12,8 @@ namespace Rocket {
 		// Definition for static member
 		Input * Input::Global_Input = NULL;
 
-		Input::Input() {
+		Input::Input( GLFWwindow * window ) {
+			m_window = window;
 			m_mouseEnabled = true;
 			m_mousePosition = Core::vec2i( 0, 0 );
 			m_mouseMove = Core::vec2i( 0, 0 );
@@ -24,11 +25,11 @@ namespace Rocket {
 			// it being set and the callback declaration
 			setAsActiveInput();
 
-			glfwSetKeyCallback( callback_keyboard );
+			glfwSetKeyCallback( m_window, callback_keyboard );
 
-			glfwSetMousePosCallback( callback_mouseMove );
-			glfwSetMouseButtonCallback( callback_mouseButton );
-			glfwSetMouseWheelCallback( callback_mouseScroll );
+			glfwSetCursorPosCallback( m_window, callback_mouseMove );
+			glfwSetMouseButtonCallback( m_window, callback_mouseButton );
+			glfwSetScrollCallback( m_window, callback_mouseScroll );
 		}
 
 		void Input::setAsActiveInput() {
@@ -38,12 +39,12 @@ namespace Rocket {
 		void Input::showMouse() {
 			// Shows the mouse cursor, completely unlocked
 			m_mouseEnabled = true;
-			glfwEnable( GLFW_MOUSE_CURSOR );
+			glfwSetInputMode( m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL );
 		}
 		void Input::hideMouse() {
 			// Hides the mouse cursor, as well as locking it to the middle of the screen
 			m_mouseEnabled = false;
-			glfwDisable( GLFW_MOUSE_CURSOR );
+			glfwSetInputMode( m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED );
 		}
 
 		void Input::lockMouse( int x, int y ) {
@@ -144,7 +145,7 @@ namespace Rocket {
 		}
 
 
-		void Input::callback_keyboard( int key, int state ) {
+		void Input::callback_keyboard( GLFWwindow * window, int key, int scancode, int state, int modifierKeys ) {
 			Input_ButtonState::Input_ButtonState newstate = Input_ButtonState::Released;
 			if (state == GLFW_PRESS) newstate = Input_ButtonState::Hit;
 			Global_Input->m_keyboard[ key ] = newstate;
@@ -157,13 +158,13 @@ namespace Rocket {
 			}
 		}
 
-		void Input::callback_mouseMove( int x, int y ) {
-			Core::vec2i newPos = Core::vec2i( x, y );
+		void Input::callback_mouseMove( GLFWwindow * window, double x, double y ) {
+			Core::vec2i newPos = Core::vec2i( (int)x, (int)y );
 			Global_Input->m_mouseMove += Global_Input->m_mousePosition - newPos;
 			if ( Global_Input->m_mouseLocked == true ) {
 				Global_Input->m_mousePosition = Global_Input->m_mouseLockTo;
 				//if ( Global_Input->m_mouseEnabled == true ) {
-					glfwSetMousePos( Global_Input->m_mouseLockTo.x, Global_Input->m_mouseLockTo.y );
+				glfwSetCursorPos( window, Global_Input->m_mouseLockTo.x, Global_Input->m_mouseLockTo.y );
 				//}
 			} else {
 				Global_Input->m_mousePosition = newPos;
@@ -179,7 +180,7 @@ namespace Rocket {
 				}
 			}
 		}
-		void Input::callback_mouseButton( int button, int state ) {
+		void Input::callback_mouseButton( GLFWwindow * window, int button, int state, int modifierKeys ) {
 			Input_ButtonState::Input_ButtonState newstate = Input_ButtonState::Released;
 			if (state == GLFW_PRESS) newstate = Input_ButtonState::Hit;
 			Global_Input->m_mouse[ button ] = newstate;
@@ -192,8 +193,8 @@ namespace Rocket {
 				(*iter)->update( newstate, mousePos.x, mousePos.y );
 			}
 		}
-		void Input::callback_mouseScroll( int position ) {
-			Global_Input->m_mouseScroll = position;
+		void Input::callback_mouseScroll( GLFWwindow * window, double xoffset, double yoffset ) {
+			Global_Input->m_mouseScroll += (int)yoffset;
 		}
 
 	}

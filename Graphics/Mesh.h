@@ -6,12 +6,12 @@
 #include <map>
 #include <vector>
 
-#include "GL/glew.h"
-#include "GL/glfw.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
-#include "vector.h"
+#include "rocket/Core/vector.h"
 #include "Shader.h"
-#include "debug.h"
+#include "rocket/Core/debug.h"
 
 namespace Rocket {
 	namespace Graphics {
@@ -60,7 +60,7 @@ namespace Rocket {
 			std::unordered_map<Scene*, std::vector<std::vector<Object*>>> m_objectUsers;
 			std::vector<std::vector<Object*>>::iterator m_currentPassIterator;
 
-			void Mesh::generateBufferObjects();
+			void generateBufferObjects();
 
 			// A shader is the property of the mesh instead of the object because the mesh needs to pass information to a specific shader program
 			Shader * m_shader;

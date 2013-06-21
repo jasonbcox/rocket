@@ -2,15 +2,16 @@
 // Removes security warnings for deprecated functions such as fopen()
 #define _CRT_SECURE_NO_DEPRECATE
 
-#include "timer.h"
+#include "rocket/Core/timer.h"
 
 #include <stdlib.h>
 
-#include "GL/glew.h"
-#include "GL/glfw.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
-#include "debug.h"
+#include "rocket/Core/debug.h"
 
+#include "rocket/UnitTest.h"
 #include "Universe.h"
 #include "Input.h"
 #include "Object_Newton.h"
@@ -22,33 +23,36 @@ using namespace Rocket;
 using namespace Rocket::Core;
 using namespace Rocket::Graphics;
 
-int main() {
+//int main() {
+Rocket_UnitTest ( all_Graphics ) {
 
 	// Setup GLFW Window
+	GLFWwindow * window;
 	if( !glfwInit() ) exit( EXIT_FAILURE );
 	// Require OpenGL 3.0 or higher
-	glfwOpenWindowHint( GLFW_OPENGL_VERSION_MAJOR, 3);
-	glfwOpenWindowHint( GLFW_OPENGL_VERSION_MINOR, 0);
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 0);
 
-	if( !glfwOpenWindow( Graphics::WindowWidth,Graphics::WindowHeight, 0,0,0, 0,0,0, GLFW_WINDOW ) ) { //GLFW_WINDOW, GLFW_FULLSCREEN
+	window = glfwCreateWindow( Graphics::WindowWidth,Graphics::WindowHeight, "ROCKET Engine - Graphics Module", NULL, NULL );
+	//if( !glfwOpenWindow( Graphics::WindowWidth,Graphics::WindowHeight, 0,0,0, 0,0,0, GLFW_WINDOW ) ) { //GLFW_WINDOW, GLFW_FULLSCREEN
+	if ( !window ) {
 		glfwTerminate();
 		exit( EXIT_FAILURE );
 	}
 	GL_GET_ERROR();
+	glfwMakeContextCurrent( window );
 
-	glfwSetWindowTitle( "ROCKET Engine - Graphics Module" );
-	GL_GET_ERROR();
-
-	//glewExperimental = true;
+	glewExperimental = true;
 	if (glewInit() != GLEW_OK) {
 		glfwTerminate();
-		return 1;
+		//return 1;
+		m_result = Rocket::Test::Test_Fail; return;
 	}
 	GL_GET_ERROR();
 	glClearColor( 0.3f, 0.3f, 0.3f, 1.0f );
 
 	// Create an input monitor
-	Input * input = new Input();
+	Input * input = new Input( window );
 
 	// Create a new Universe and Scenes to go with it
 	Universe * world = new Universe();
@@ -58,7 +62,7 @@ int main() {
 	world->addRenderPass( hudScene );
 
 	// Load shaders
-	ShaderDefaults::Shader_Texture * shader_texture = new ShaderDefaults::Shader_Texture( "./Shaders/texture_v.glsl", "./Shaders/texture_f.glsl" );
+	ShaderDefaults::Shader_Texture * shader_texture = new ShaderDefaults::Shader_Texture( "../../Graphics/Shaders/texture_v.glsl", "../../Graphics/Shaders/texture_f.glsl" );
 	world->addShader( "texture", shader_texture );
 
 	// Load meshes
@@ -66,20 +70,20 @@ int main() {
 	mainScene->addMesh( testMesh );
 
 	//Mesh * testCubeMesh = generatePrimitive_Cube( shader_texture );
-	Mesh * testCubeMesh = world->loadMesh( "human", "./Shaders/human.obj", shader_texture ); //new Mesh( "./Shaders/human.obj", shader_texture );
+	Mesh * testCubeMesh = world->loadMesh( "human", "../../Graphics/Shaders/human.obj", shader_texture ); //new Mesh( "../../Graphics/Shaders/human.obj", shader_texture );
 	mainScene->addMesh( testCubeMesh );
 
 	Mesh * testCubeMesh2 = generatePrimitive_Cube( world, "testCubeMesh", shader_texture );
 	hudScene->addMesh( testCubeMesh2 );
 
-	Mesh * testPlanetMesh = world->loadMesh( "planet", "./Shaders/StaticPlanet1.obj", shader_texture ); //new Mesh ( "./Shaders/StaticPlanet1.obj", shader_texture );
+	Mesh * testPlanetMesh = world->loadMesh( "planet", "../../Graphics/Shaders/StaticPlanet1.obj", shader_texture ); //new Mesh ( "../../Graphics/Shaders/StaticPlanet1.obj", shader_texture );
 	mainScene->addMesh( testPlanetMesh );
 
 	// Load textures and objects
 
 	// Yellow smiley-face glass pane
 	Object_Newton * testObject = new Object_Newton( testMesh );
-	Texture * testTexture = world->loadTexture( "test_happyface", "./Shaders/testTexture1.bmp", true, false );
+	Texture * testTexture = world->loadTexture( "test_happyface", "../../Graphics/Shaders/testTexture1.bmp", true, false );
 	ShaderDefaults::setObjectUniforms_texture( testObject,
 		Shader_UniformTexture( 0, testTexture, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE ),
 		vec2( 1.0f, 1.0f ), vec2( 0.0f, 0.0f ), vec3( 0.99f, 0.98f, 0.97f ), true, 0.0f, 0.5f );
@@ -89,7 +93,7 @@ int main() {
 
 	// Test Planet
 	Object * testPlanet = new Object( testPlanetMesh );
-	Texture * testPlanetTexture = world->loadTexture( "test_planet", "./Shaders/StaticPlanet1.png", true, true );
+	Texture * testPlanetTexture = world->loadTexture( "test_planet", "../../Graphics/Shaders/StaticPlanet1.png", true, true );
 	ShaderDefaults::setObjectUniforms_texture( testPlanet,
 		Shader_UniformTexture( 0, testPlanetTexture, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE ),
 		vec2( 1.0f, 1.0f ), vec2( 0.0f, 0.0f ), vec3( 1.0f, 0.8f, 0.5f ), false, 0.0f, 1.0f );
@@ -101,7 +105,7 @@ int main() {
 
 	// Blue test cube
 	Object * testCube = new Object( testCubeMesh );
-	Texture * testHumanTexture = world->loadTexture( "test_human", "./Shaders/human1.png", true, true );
+	Texture * testHumanTexture = world->loadTexture( "test_human", "../../Graphics/Shaders/human1.png", true, true );
 	ShaderDefaults::setObjectUniforms_texture( testCube,
 		Shader_UniformTexture( 0, testHumanTexture, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE ),
 		vec2( 1.0f, 1.0f ), vec2( 0.0f, 0.0f ), vec3( 1.0f, 1.0f, 1.0f ), false, 0.0f, 1.0f );
@@ -154,13 +158,13 @@ int main() {
 	hudCube->rotatePitch( Rocket::MathConstants::PI / 4.0f );
 
 	Sprite::enableSpritesInScene( world, hudScene, shader_texture );
-	Texture * testTexture2 = world->loadTexture( "test_happyface2", "./Shaders/testTexture1.bmp", false, true );
+	Texture * testTexture2 = world->loadTexture( "test_happyface2", "../../Graphics/Shaders/testTexture1.bmp", false, true );
 	Sprite * testSprite = new Sprite( testTexture2, 64, 64 );
 	hudScene->addObject( testSprite, NULL );
 	testSprite->setAngle( Rocket::MathConstants::PI / 4.0f );
 	testSprite->setUV(4,4,40,40);
 
-	Texture * testBitmapTexture = world->loadTexture( "test_font", "./Shaders/testFont1.png", false, true );
+	Texture * testBitmapTexture = world->loadTexture( "test_font", "../../Graphics/Shaders/testFont1.png", false, true );
 	Object_BitmapText * testBitmap = new Object_BitmapText( testBitmapTexture, "The quick, brown fox jumped over the lazy dog.\nTHE QUICK BROWN FOX JUMPED OVER THE LAZY DOG!\n0123456789?" );
 	hudScene->addObject( testBitmap, NULL );
 	testBitmap->enableTransparency( 0.0f, 1.0f );
@@ -239,9 +243,9 @@ int main() {
 		objectCount << world->m_frame_renderedObjects;
 		Core::Debug_AddToLog( objectCount.c_str() );
 
-		// glfwSwapBuffers() calls glfwPollEvents() which recieves input events
-		// If this is not desired, call glfwDisable( GLFW_AUTO_POLL_EVENTS ) and call glfwPollEvents() explicitly
-		glfwSwapBuffers();
+		
+		glfwSwapBuffers( window );
+		glfwPollEvents();
 		
 		
 		std::string debug = Core::Debug_PrintLogView();
@@ -250,8 +254,7 @@ int main() {
 		//Core::Debug_ResetTimer( "Object::draw" );
 
 		// Check if ESC key was pressed or window was closed
-		//running = !glfwGetKey( GLFW_KEY_ESC ) && glfwGetWindowParam( GLFW_OPENED );
-		running = !input->getKeySimple( GLFW_KEY_ESC ) && glfwGetWindowParam( GLFW_OPENED );
+		running = !input->getKeySimple( GLFW_KEY_ESCAPE ) && !glfwWindowShouldClose( window );
 	}
 
 	// Cleanup before closing the context
@@ -259,5 +262,6 @@ int main() {
 
 	glfwTerminate();
 
-	return 0;
+	//return 0;
+	return;
 }

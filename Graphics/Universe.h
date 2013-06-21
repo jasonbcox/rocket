@@ -6,14 +6,14 @@
 #include <unordered_map>
 #include <string>
 
-#include "GL/glew.h"
-#include "GL/glfw.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include "Scene.h"
 #include "Mesh.h"
 #include "Texture.h"
 #include "Shader.h"
-#include "vector.h"
+#include "rocket/Core/vector.h"
 
 namespace Rocket {
 	namespace Graphics {

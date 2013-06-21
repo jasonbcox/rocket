@@ -2,7 +2,7 @@
 #ifndef Rocket_Graphics_Texture_H
 #define Rocket_Graphics_Texture_H
 
-#include "vector.h"
+#include "rocket/Core/vector.h"
 
 namespace Rocket {
 	namespace Graphics {

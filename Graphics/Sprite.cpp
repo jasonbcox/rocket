@@ -1,8 +1,8 @@
 
-#include "GL/glew.h"
-#include "GL/glfw.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
-#include "debug.h"
+#include "rocket/Core/debug.h"
 #include "Sprite.h"
 #include "ShaderDefaults.h"
 

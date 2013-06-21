@@ -11,7 +11,7 @@
 #include "Object.h"
 #include "Raster.h"
 #include "Mesh.h"
-#include "string_.h"
+#include "rocket/Core/string_.h"
 
 namespace Rocket {
 	namespace Graphics {

@@ -8,7 +8,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "Scene.h"
-#include "vector.h"
+#include "rocket/Core/vector.h"
 
 namespace Rocket {
 	namespace Graphics {

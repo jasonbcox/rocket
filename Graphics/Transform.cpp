@@ -1,12 +1,12 @@
 
-#include "GL/glew.h"
-#include "GL/glfw.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include "Transform.h"
 #include "Scene.h"
-#include "matrix.h"
-#include "debug.h"
-#include "string_.h"
+#include "rocket/Core/matrix.h"
+#include "rocket/Core/debug.h"
+#include "rocket/Core/string_.h"
 #include <sstream>
 
 namespace Rocket {

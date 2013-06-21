@@ -7,13 +7,13 @@ macro( add_test target )
 	add_executable( ${target} ${ARGN} )
 	if ( RUN_TESTS )
 		run_test( ${target} ${${target}_BINARY_DIR} )
-	endif ( RUN_TESTS )
-endmacro( add_test )
+	endif()
+endmacro()
  
 macro (run_test target)
 	get_property( targetBinaryLocation TARGET ${target} PROPERTY LOCATION )
 	add_custom_command( TARGET ${target} POST_BUILD COMMAND ${BUILD_PROFILE_RUN} ${targetBinaryLocation} )
-endmacro (run_test)
+endmacro()
 
 set( Rocket_headers
 	${Rocket_SOURCE_DIR}/UnitTest.h

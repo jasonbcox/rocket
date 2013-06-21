@@ -1,9 +1,9 @@
 
-#include "GL/glew.h"
-#include "GL/glfw.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
-#include "vector.h"
-#include "debug.h"
+#include "rocket/Core/vector.h"
+#include "rocket/Core/debug.h"
 #include "Mesh.h"
 #include "Shader.h"
 #include "Universe.h"

@@ -6,7 +6,7 @@
 #include <list>
 #include <utility>
 
-#include "matrix.h"
+#include "rocket/Core/matrix.h"
 
 namespace Rocket {
 	namespace Graphics {
@@ -30,7 +30,7 @@ namespace Rocket {
 
 			// getParentOrientation() returns the concatenation of all ancestor matrices
 			const Core::mat4 & getParentOrientation();
-			const Core::mat4 & Transform::getFinalOrientation();
+			const Core::mat4 & getFinalOrientation();
 			//void positionWorld( Core::vec3 pos );	// todo: position in world space, relative to parent
 			Core::vec3 positionWorld();		// get position in world space (with respect to root parent node)
 

@@ -5,13 +5,13 @@
 #include <vector>
 #include <list>
 
-#include "matrix.h"
+#include "rocket/Core/matrix.h"
 #include "Transform.h"
 #include "Object.h"
 #include "Mesh.h"
 #include "Input.h"
 
-#include "debug.h"
+#include "rocket/Core/debug.h"
 
 namespace Rocket {
 	namespace Graphics {

@@ -2,7 +2,7 @@
 #ifndef Rocket_Graphics_Object_Newton_H
 #define Rocket_Graphics_Object_Newton_H
 
-#include "matrix.h"
+#include "rocket/Core/matrix.h"
 #include "Mesh.h"
 #include "Transform.h"
 #include "Object.h"

@@ -1,12 +1,12 @@
 
-#include "GL/glew.h"
-#include "GL/glfw.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include <vector>
 
 #include "Object_Newton.h"
 #include "Scene.h"
-#include "matrix.h"
+#include "rocket/Core/matrix.h"
 
 namespace Rocket {
 	namespace Graphics {

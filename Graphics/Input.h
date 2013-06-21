@@ -5,10 +5,10 @@
 #include <unordered_map>
 #include <vector>
 
-#include "GL/glew.h"
-#include "GL/glfw.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
-#include "vector.h"
+#include "rocket/Core/vector.h"
 #include "Input_Interactable.h"
 
 namespace Rocket {
@@ -17,7 +17,7 @@ namespace Rocket {
 		// Input - monitors and records all input events
 		class Input {
 		public:
-			Input();
+			Input( GLFWwindow * window );
 
 			// Set this Input object as the active input object.
 			// All input callbacks will update this object ONLY.
@@ -57,15 +57,16 @@ namespace Rocket {
 			// Add an input binding (button, device, etc.) to react to mouse events
 			void addMouseBinding( int button, Input_Mouse * binding );
 
-			static void callback_keyboard( int key, int state );
+			static void callback_keyboard( GLFWwindow * window, int key, int scancode, int state, int modifierKeys );
 
-			static void callback_mouseMove( int x, int y );
-			static void callback_mouseButton( int button, int state );
-			static void callback_mouseScroll( int position );
+			static void callback_mouseMove( GLFWwindow * window, double x, double y );
+			static void callback_mouseButton( GLFWwindow * window, int button, int state, int modifierKeys );
+			static void callback_mouseScroll( GLFWwindow * window, double xoffset, double yoffset );
 
 		private:
 			static Input * Global_Input;
-
+			GLFWwindow * m_window;
+			
 			std::unordered_map< int, Input_ButtonState::Input_ButtonState > m_keyboard;
 			std::unordered_map< int, std::vector< Input_Keyboard* > > m_keyboardBindings;
 

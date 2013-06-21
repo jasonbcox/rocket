@@ -4,12 +4,12 @@
 #include <vector>
 #include <string>
 
-#include "GL/glew.h"
-#include "GL/glfw.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include "Universe.h"
 #include "Shader.h"
-#include "matrix.h"
+#include "rocket/Core/matrix.h"
 #include "Texture.h"
 
 namespace Rocket {

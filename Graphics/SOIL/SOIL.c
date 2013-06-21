@@ -15,20 +15,20 @@
 
 #define SOIL_CHECK_FOR_GL_ERRORS 0
 
-//#ifdef WIN32
+#ifdef WIN32
 	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
 	#include <wingdi.h>
 	#include <GL/gl.h>
-//#elif defined(__APPLE__) || defined(__APPLE_CC__)
+#elif defined(__APPLE__) || defined(__APPLE_CC__)
 	/*	I can't test this Apple stuff!	*/
-	/*#include <OpenGL/gl.h>
+	#include <OpenGL/gl.h>
 	#include <Carbon/Carbon.h>
 	#define APIENTRY
 #else
 	#include <GL/gl.h>
 	#include <GL/glx.h>
-#endif*/
+#endif
 
 #include "SOIL.h"
 #include "stb_image_aug.h"
