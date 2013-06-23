@@ -84,8 +84,8 @@ namespace Rocket {
 			for (mesh = m_meshes.begin(); mesh != m_meshes.end(); mesh++) {
 				(*mesh)->drawCurrentPass( &getCameraProjection(), &getCameraOrientation() );
 #ifdef ENABLE_DEBUG
-				m_cache_renderedPolygons += (*mesh)->m_frame_renderedPolygons;
-				m_cache_renderedObjects += (*mesh)->m_frame_renderedObjects;
+				m_cache_renderedPolygons += (*mesh)->m_cache_renderedPolygons;
+				m_cache_renderedObjects += (*mesh)->m_cache_renderedObjects;
 #endif
 			}
 		}

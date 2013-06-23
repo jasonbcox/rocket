@@ -200,15 +200,15 @@ namespace Rocket {
 		void Transform::setOrientationCacheAsDirty() {
 			m_cache_orientationIsClean = false;
 			m_cache_descendantOrientationIsClean = false;
-			m_frame_final_orientation_cache = false;
+			m_cache_finalOrientationIsClean = false;
 		}
 
 		const Core::mat4 & Transform::getFinalOrientation() {
-			if ( m_frame_final_orientation_cache == false ) {
-				m_frame_final_orientation = m_cache_parentOrientation * orientation();
-				m_frame_final_orientation_cache = true;
+			if ( m_cache_finalOrientationIsClean == false ) {
+				m_cache_finalOrientation = m_cache_parentOrientation * orientation();
+				m_cache_finalOrientationIsClean = true;
 			}
-			return m_frame_final_orientation;
+			return m_cache_finalOrientation;
 		}
 
 		// Z-Indexing Functions

@@ -126,9 +126,9 @@ namespace Rocket {
 
 			// Camera Data
 			Core::vec3 m_camera_position;
-			void calculateNewPosition( Core::mat4 orientation );	// sets m_camera_position and updates m_frame_camera_orientation
+			void calculateNewPosition( Core::mat4 orientation );	// sets m_camera_position and updates m_cache_camera_orientation
 			Core::vec4 m_camera_rotation;							// Quaterion
-			void calculateNewRotation( Core::mat4 orientation );	// sets m_camera_rotation and updates m_frame_camera_orientation
+			void calculateNewRotation( Core::mat4 orientation );	// sets m_camera_rotation and updates m_cache_camera_orientation
 
 			bool m_cache_camera_orientationIsClean;
 			Core::mat4 m_cache_camera_orientation;					// Camera Position and Rotation Matrix (World to Camera) - reinitialized every frame to erase floating point error

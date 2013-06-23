@@ -86,8 +86,8 @@ namespace Rocket {
 			Core::mat4 m_cache_parentOrientation;		// cache for the concatenation of orientation matrices of all parent nodes
 			bool cleanParentOrientationCache();			// recalculates m_cache_descendantOrientation if needed. returns false if an update was required
 
-			bool m_frame_final_orientation_cache;
-			Core::mat4 m_frame_final_orientation;		// m_cache_descendantOrientation * orientation()
+			bool m_cache_finalOrientationIsClean;
+			Core::mat4 m_cache_finalOrientation;		// m_cache_descendantOrientation * orientation()
 
 			void setOrientationCacheAsDirty();
 			//const Core::mat4 & getFinalOrientation();

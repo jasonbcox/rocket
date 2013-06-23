@@ -43,6 +43,11 @@ namespace Rocket {
 			generateBufferObjects();
 
 			passMeshToGPU();
+			
+#ifdef ENABLE_DEBUG
+			m_cache_renderedPolygons = 0;
+			m_cache_renderedObjects = 0;
+#endif
 		}
 		Mesh::~Mesh() {
 			std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator mapIter;
@@ -78,8 +83,8 @@ namespace Rocket {
 			}
 
 #ifdef ENABLE_DEBUG
-			m_frame_renderedPolygons = 0;
-			m_frame_renderedObjects = 0;
+			m_cache_renderedPolygons = 0;
+			m_cache_renderedObjects = 0;
 #endif
 		}
 
@@ -111,8 +116,8 @@ namespace Rocket {
 #ifdef ENABLE_DEBUG
 			unsigned int vertexCount = getVertexCount();
 			unsigned int objectSetCount = m_currentPassIterator->size();
-			m_frame_renderedPolygons += vertexCount/3 * objectSetCount;
-			m_frame_renderedObjects += objectSetCount;
+			m_cache_renderedPolygons += vertexCount/3 * objectSetCount;
+			m_cache_renderedObjects += objectSetCount;
 #endif
 
 			// Prepare next pass

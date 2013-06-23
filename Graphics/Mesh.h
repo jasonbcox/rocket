@@ -49,8 +49,8 @@ namespace Rocket {
 			static void generateSphericalNormals( Mesh * mesh );
 
 #ifdef ENABLE_DEBUG
-			unsigned int m_frame_renderedPolygons;
-			unsigned int m_frame_renderedObjects;
+			unsigned int m_cache_renderedPolygons;
+			unsigned int m_cache_renderedObjects;
 #endif
 
 		private:
