@@ -79,19 +79,19 @@ namespace Rocket {
 		string string::tostring( int i_int ) {
 			if ( i_int < 0 ) {
 				string r = "-";
-				return string("-") + tostring( (unsigned int)(-i_int) );
+				return string( "-" ) + tostring( (unsigned int)(-i_int) );
 			} else {
 				return tostring( (unsigned int)i_int );
 			}
 		}
 		void tostringhelper( unsigned int i, string & s ) {
 			unsigned int n = i % 10;
-			unsigned int rest = (i - n)/10;
+			unsigned int rest = ( i - n ) / 10;
 			if ( rest > 0 ) tostringhelper( rest, s );
-			s += ('0' + n);
+			s += ( '0' + n );
 		}
 		string string::tostring( unsigned int i_uint ) {
-			string r("");
+			string r( "" );
 			tostringhelper( i_uint, r );
 			return r;
 		}

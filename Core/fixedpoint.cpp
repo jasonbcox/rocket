@@ -24,7 +24,7 @@ namespace Rocket {
 		}
 
 		fixedpoint & fixedpoint::operator = ( const fixedpoint & rhs ) {
-			if (this != & rhs) {
+			if ( this != & rhs ) {
 				m_baseFactor = rhs.m_baseFactor;
 				m_scalingFactor = rhs.m_scalingFactor;
 			}
@@ -127,7 +127,7 @@ namespace Rocket {
 			if ( m_precision > 1 ) {
 				long long num = (long long)m_baseFactor * (long long)m_scalingFactor;
 				num /= (long long)pow( 10.0, m_precision - 1 );
-				long long rest = (num/10)*10;
+				long long rest = ( num / 10 ) * 10;
 				rest *= (long long)pow( 10.0, m_precision - 1 );
 				return fixedpoint( (int)( rest / (long long)m_scalingFactor ), m_scalingFactor, m_precision );
 			}
@@ -137,7 +137,7 @@ namespace Rocket {
 			if ( m_precision > 1 ) {
 				long long num = (long long)m_baseFactor * (long long)m_scalingFactor;
 				num /= (long long)pow( 10.0, m_precision - 1 );
-				long long rest = (num/10)*10;
+				long long rest = ( num / 10 ) * 10;
 				num -= rest;
 				if ( num > 0 ) rest += 10;
 				rest *= (long long)pow( 10.0, m_precision - 1 );
@@ -149,7 +149,7 @@ namespace Rocket {
 			if ( m_precision > 1 ) {
 				long long num = (long long)m_baseFactor * (long long)m_scalingFactor;
 				num /= (long long)pow( 10.0, m_precision - 1 );
-				long long rest = (num/10)*10;
+				long long rest = ( num / 10 ) * 10;
 				num -= rest;
 				if ( num >= 5 ) rest += 10;
 				rest *= (long long)pow( 10.0, m_precision - 1 );
@@ -181,7 +181,7 @@ namespace Rocket {
 
 
 		FixedPoint_OutputType fixedpoint::sqrt( const fixedpoint input ) {
-			return sqrt(((fixedpoint)input).toValue());
+			return sqrt( ((fixedpoint)input).toValue() );
 		}
 
 

@@ -237,10 +237,10 @@ Rocket_UnitTest ( all_Graphics ) {
 		world->display( (float)elapsed );
 
 		Core::string polyCount = "Polys(tris): ";
-		polyCount << world->m_frame_renderedPolygons;
+		polyCount << world->m_cache_renderedPolygons;
 		Core::Debug_AddToLog( polyCount.c_str() );
 		Core::string objectCount = "Objects: ";
-		objectCount << world->m_frame_renderedObjects;
+		objectCount << world->m_cache_renderedObjects;
 		Core::Debug_AddToLog( objectCount.c_str() );
 
 		

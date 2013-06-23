@@ -14,25 +14,25 @@ namespace Rocket {
 		}
 
 		PacketAccumulator::~PacketAccumulator() {
-			for (unsigned int in = 0; in < packets_inbound.size(); in++) {
-				delete packets_inbound[in];
+			for (unsigned int in = 0; in < m_packets_inbound.size(); in++) {
+				delete m_packets_inbound[in];
 			}
-			for (unsigned int out = 0; out < packets_outbound.size(); out++) {
-				delete packets_outbound[out];
+			for (unsigned int out = 0; out < m_packets_outbound.size(); out++) {
+				delete m_packets_outbound[out];
 			}
 			delete [] m_packets_buffer;
 		}
 
 		// Queue a packet for sending
 		void PacketAccumulator::send( Packet * p ) {
-			packets_outbound.push_back( p );
+			m_packets_outbound.push_back( p );
 		}
 
 		// Return the next available packet on the receiving queue, or NULL if there is none
 		Packet * PacketAccumulator::receive() {
-			if ( packets_inbound.size() > 0 ) {
-				Packet * r = packets_inbound[0];
-				packets_inbound.pop_front();
+			if ( m_packets_inbound.size() > 0 ) {
+				Packet * r = m_packets_inbound[0];
+				m_packets_inbound.pop_front();
 				return r;
 			} else {
 				return NULL;
@@ -69,7 +69,7 @@ namespace Rocket {
 			if ( packet_size <= m_packets_buffer_index ) {
 				// create new Packet and queue it up for reading
 				Packet * newPacket = new Packet( m_packets_buffer, packet_size );
-				packets_inbound.push_back( newPacket );
+				m_packets_inbound.push_back( newPacket );
 
 				shiftBuffer( packet_size );
 			}
@@ -77,9 +77,9 @@ namespace Rocket {
 
 		// toSocket() returns the next packet ready for sending across the socket, or NULL if there are no packets to send
 		Packet * PacketAccumulator::toSocket() {
-			if ( packets_outbound.size() > 0 ) {
-				Packet * r = packets_outbound[0];
-				packets_outbound.pop_front();
+			if ( m_packets_outbound.size() > 0 ) {
+				Packet * r = m_packets_outbound[0];
+				m_packets_outbound.pop_front();
 				return r;
 			} else {
 				return NULL;

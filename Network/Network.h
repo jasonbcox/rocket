@@ -123,8 +123,8 @@ namespace Rocket {
 		private:
 			friend Network;
 
-			std::deque<Packet*> packets_outbound;
-			std::deque<Packet*> packets_inbound;
+			std::deque< Packet* > m_packets_outbound;
+			std::deque< Packet* > m_packets_inbound;
 			char * m_packets_buffer;
 			unsigned int m_packets_buffer_index;
 

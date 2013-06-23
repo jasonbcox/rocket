@@ -34,8 +34,9 @@ namespace Rocket {
 			Core::vec4i getUV();
 
 		protected:
-			static Mesh * Global_SpriteMesh;
-			static int Global_SpriteCount;
+			static Mesh * g_SpriteMesh;
+			static int g_SpriteCount;
+			
 			Texture * m_texture;
 
 			Core::vec4i m_uvCoords;

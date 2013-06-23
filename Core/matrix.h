@@ -34,7 +34,7 @@ namespace Rocket {
 			// Arithmetic
 			// M * V
 			T_vec2<T> operator * ( const T_vec2<T> & vector ) const {
-				T_vec2<T> r(0,0);
+				T_vec2<T> r( 0, 0 );
 				for (unsigned int i = 0; i < 2; i++) {
 					for (unsigned int j = 0; j < 2; j++) {
 						r.m_elements[i] += m_rows[i][j] * vector.m_elements[j];
@@ -43,7 +43,7 @@ namespace Rocket {
 			}
 			// M * M
 			T_mat2 operator * ( const T_mat2 & R ) const {
-				T_mat2 r(0,0,0,0);
+				T_mat2 r( 0, 0, 0, 0 );
 				for (unsigned int i = 0; i < 2; i++) {
 					for (unsigned int j = 0; j < 2; j++) {
 						for (unsigned int k = 0; k < 2; k++) {
@@ -65,7 +65,7 @@ namespace Rocket {
 			}
 
 			T_mat2<T> inverse() {
-				T adbc = 1/(m_rows[0][0]*m_rows[1][1] - m_rows[0][1]*m_rows[1][0]);
+				T adbc = 1 / ( m_rows[0][0]*m_rows[1][1] - m_rows[0][1]*m_rows[1][0] );
 				return T_mat2( m_rows[1][1]*adbc, m_rows[0][1]*(-adbc), m_rows[1][0]*(-adbc), m_rows[0][0]*adbc );
 			}
 			
@@ -87,7 +87,7 @@ namespace Rocket {
 			T_vec3<T> m_rows[3];
 
 			// Constructors
-			T_mat3() { m_rows[0] = T_vec3<T>(1,0,0); m_rows[1] = T_vec3<T>(0,1,0); m_rows[2] = T_vec3<T>(0,0,1); }
+			T_mat3() { m_rows[0] = T_vec3<T>( 1, 0, 0 ); m_rows[1] = T_vec3<T>( 0, 1, 0 ); m_rows[2] = T_vec3<T>( 0, 0, 1 ); }
 			T_mat3( T m00, T m01, T m02, T m10, T m11, T m12, T m20, T m21, T m22 ) { m_rows[0] = T_vec3<T>(m00,m01,m02); m_rows[1] = T_vec3<T>(m10,m11,m12); m_rows[2] = T_vec3<T>(m20,m21,m22); }
 			T_mat3( T_vec3<T> r0, T_vec3<T> r1, T_vec3<T> r2 ) { m_rows[0] = r0; m_rows[1] = r1; m_rows[2] = r2; }
 
@@ -97,7 +97,7 @@ namespace Rocket {
 			// Arithmetic
 			// M * V
 			T_vec3<T> operator * ( const T_vec3<T> & vector ) const {
-				T_vec3<T> r(0,0,0);
+				T_vec3<T> r( 0, 0, 0 );
 				for (unsigned int i = 0; i < 3; i++) {
 					for (unsigned int j = 0; j < 3; j++) {
 						r.m_elements[i] += m_rows[i][j] * vector.m_elements[j];
@@ -106,7 +106,7 @@ namespace Rocket {
 			}
 			// M * M
 			T_mat3 operator * ( const T_mat3 & R ) const {
-				T_mat3 r(0,0,0,0,0,0,0,0,0);
+				T_mat3 r( 0, 0, 0, 0, 0, 0, 0, 0, 0 );
 				for (unsigned int i = 0; i < 3; i++) {
 					for (unsigned int j = 0; j < 3; j++) {
 						for (unsigned int k = 0; k < 3; k++) {
@@ -190,7 +190,7 @@ namespace Rocket {
 			T_vec4<T> m_rows[4];
 
 			// Constructors
-			T_mat4() { m_rows[0] = T_vec4<T>(1,0,0,0); m_rows[1] = T_vec4<T>(0,1,0,0); m_rows[2] = T_vec4<T>(0,0,1,0); m_rows[3] = T_vec4<T>(0,0,0,1); }
+			T_mat4() { m_rows[0] = T_vec4<T>( 1, 0, 0, 0 ); m_rows[1] = T_vec4<T>( 0, 1, 0, 0 ); m_rows[2] = T_vec4<T>( 0, 0, 1, 0 ); m_rows[3] = T_vec4<T>( 0, 0, 0, 1 ); }
 			T_mat4( T m00, T m01, T m02, T m03, T m10, T m11, T m12, T m13, T m20, T m21, T m22, T m23, T m30, T m31, T m32, T m33 ) {
 				m_rows[0] = T_vec4<T>(m00,m01,m02,m03);
 				m_rows[1] = T_vec4<T>(m10,m11,m12,m13);
@@ -205,7 +205,7 @@ namespace Rocket {
 			// Arithmetic
 			// M * V
 			T_vec4<T> operator * ( const T_vec4<T> & vector ) const {
-				T_vec4<T> r(0,0,0,0);
+				T_vec4<T> r( 0, 0, 0, 0 );
 				for (unsigned int i = 0; i < 4; i++) {
 					for (unsigned int j = 0; j < 4; j++) {
 						r.m_elements[i] += m_rows[i][j] * vector.m_elements[j];
@@ -214,7 +214,7 @@ namespace Rocket {
 			}
 			// M * M
 			T_mat4 operator * ( const T_mat4 & R ) const {
-				T_mat4 r(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+				T_mat4 r( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
 				for (unsigned int i = 0; i < 4; i++) {
 					for (unsigned int j = 0; j < 4; j++) {
 						for (unsigned int k = 0; k < 4; k++) {

@@ -104,8 +104,8 @@ namespace Rocket {
 			std::list<std::pair< Transform*, int >> * zIndexer();
 
 #ifdef ENABLE_DEBUG
-			int m_frame_renderedPolygons;
-			int m_frame_renderedObjects;
+			int m_cache_renderedPolygons;
+			int m_cache_renderedObjects;
 #endif
 
 		private:
@@ -130,12 +130,11 @@ namespace Rocket {
 			Core::vec4 m_camera_rotation;							// Quaterion
 			void calculateNewRotation( Core::mat4 orientation );	// sets m_camera_rotation and updates m_frame_camera_orientation
 
-			// m_frame_* members are reinitialized every frame
-			bool m_frame_camera_orientationCache;
-			Core::mat4 m_frame_camera_orientation;					// Camera Position and Rotation Matrix (World to Camera) - reinitialized every frame to erase floating point error
+			bool m_cache_camera_orientationIsClean;
+			Core::mat4 m_cache_camera_orientation;					// Camera Position and Rotation Matrix (World to Camera) - reinitialized every frame to erase floating point error
 
-			bool m_frame_camera_orientationInverseCache;
-			Core::mat4 m_frame_camera_orientationInverse;
+			bool m_cache_camera_orientationInverseIsClean;
+			Core::mat4 m_cache_camera_orientationInverse;
 
 			// always call setCameraOrientation() instead of setting it to a value manually, as the cache variables will not be updated properly
 			void setCameraOrientation( Core::mat4 orientation );

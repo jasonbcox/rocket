@@ -16,6 +16,10 @@ namespace Rocket {
 
 		// Creates an empty Universe
 		Universe::Universe() {
+#ifdef ENABLE_DEBUG
+			m_cache_renderedPolygons = 0;
+			m_cache_renderedObjects = 0;
+#endif
 		}
 		Universe::~Universe() {
 			// Cleanup Scenes
@@ -126,8 +130,8 @@ namespace Rocket {
 			std::vector<Scene*>::iterator iter;
 
 #ifdef ENABLE_DEBUG
-			m_frame_renderedPolygons = 0;
-			m_frame_renderedObjects = 0;
+			m_cache_renderedPolygons = 0;
+			m_cache_renderedObjects = 0;
 #endif
 
 			for (iter = m_renderPasses.begin(); iter != m_renderPasses.end(); iter++) {
@@ -135,8 +139,8 @@ namespace Rocket {
 				clearScreen = false;
 
 #ifdef ENABLE_DEBUG
-				m_frame_renderedPolygons += (*iter)->m_frame_renderedPolygons;
-				m_frame_renderedObjects += (*iter)->m_frame_renderedObjects;
+				m_cache_renderedPolygons += (*iter)->m_cache_renderedPolygons;
+				m_cache_renderedObjects += (*iter)->m_cache_renderedObjects;
 #endif
 			}
 		}

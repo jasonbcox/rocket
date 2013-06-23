@@ -10,10 +10,10 @@ namespace Rocket {
 	namespace Graphics {
 
 		// Definition for static members
-		Mesh * Sprite::Global_SpriteMesh = NULL;
-		int Sprite::Global_SpriteCount = 0;
+		Mesh * Sprite::g_SpriteMesh = NULL;
+		int Sprite::g_SpriteCount = 0;
 
-		Sprite::Sprite( Texture * texture, int width, int height ) : Raster( this ), Object( Global_SpriteMesh ) {
+		Sprite::Sprite( Texture * texture, int width, int height ) : Raster( this ), Object( g_SpriteMesh ) {
 			m_texture = texture;
 
 			if ( ( width <= 0 ) || ( height <= 0 ) ) {
@@ -21,7 +21,7 @@ namespace Rocket {
 				exit( 0 );
 			}
 
-			if ( Global_SpriteMesh == NULL ) {
+			if ( g_SpriteMesh == NULL ) {
 				Core::Debug_AddToLog( "Error: Sprites must be enabled in a scene [ Sprite::enableSpritesInScene( scene ) ] before initializing sprite objects." );
 				exit( 0 );
 			}
@@ -36,17 +36,17 @@ namespace Rocket {
 			setPosition( Core::vec2i( 0, 0 ) );
 			m_angle = 0.0f;	// do not use setAngle() to init because it relies on m_angle
 
-			Global_SpriteCount++;
+			g_SpriteCount++;
 		}
 		Sprite::~Sprite() {
 			//delete m_texture; // Do NOT delete m_texture because it is an external entity that might be shared by other objects
 
-			Global_SpriteCount--;
+			g_SpriteCount--;
 		}
 
 		void Sprite::enableSpritesInScene( Universe * world, Scene * scene, Shader * meshShader ) {
-			if ( Global_SpriteMesh == NULL ) Global_SpriteMesh = generatePrimitive_Quad( world, "SPRITE_MESH", meshShader );
-			scene->addMesh( Global_SpriteMesh );
+			if ( g_SpriteMesh == NULL ) g_SpriteMesh = generatePrimitive_Quad( world, "SPRITE_MESH", meshShader );
+			scene->addMesh( g_SpriteMesh );
 		}
 
 		void Sprite::enableTransparency( float alphaTest, float alphaTransparency ) {

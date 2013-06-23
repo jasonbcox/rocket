@@ -62,33 +62,32 @@ namespace Rocket {
 			virtual void calculateTransforms( float elapsedMilliseconds, const Core::mat4 & parent_orientation, bool parentCacheIsClean, bool applyUpdates );
 
 			// Optional z-indexing functions
-			void zIndexer_Add( std::list<std::pair< Transform*, int >> * zIndexer, int zIndexTag );
+			void zIndexer_Add( std::list< std::pair< Transform*, int > > * zIndexer, int zIndexTag );
 			std::list<std::pair< Transform*, int >>::iterator zIndexer_AddBehind( Transform * relativeTo, int zIndexTag );
 			std::list<std::pair< Transform*, int >>::iterator zIndexer_AddInFront( Transform * relativeTo, int zIndexTag );
 
 			virtual void addOwner( Scene * scene );
 			virtual void removeOwner( Scene * scene );
-			std::vector<Scene*> getOwners();
+			std::vector< Scene* > getOwners();
 
 		protected:
 			Transform * m_parent;
-			std::vector<Scene*> m_owners;
+			std::vector< Scene* > m_owners;
 
 			bool m_hidden;
 			bool m_updated;
 
-			std::vector<Transform*> m_children;
+			std::vector< Transform* > m_children;
 
-			// m_frame_* members are reinitialized every frame
-			bool m_frame_clean_orientation_cache;		// true if this Transform's own orientation cache is up-to-date
-			Core::mat4 m_frame_orientation;
+			bool m_cache_orientationIsClean;		// true if this Transform's own orientation cache is up-to-date
+			Core::mat4 m_cache_orientation;
 
-			bool m_frame_clean_cache;					// true if this Tranform's children have up-to-date m_frame_parent_orientation
-			Core::mat4 m_frame_parent_orientation;		// cache for the concatenation of orientation matrices of all parent nodes
-			bool cleanParentOrientationCache();			// recalculates m_frame_parent_orientation if needed. returns false if an update was required
+			bool m_cache_descendantOrientationIsClean;		// true if this Tranform's children have up-to-date parent orientation
+			Core::mat4 m_cache_parentOrientation;		// cache for the concatenation of orientation matrices of all parent nodes
+			bool cleanParentOrientationCache();			// recalculates m_cache_descendantOrientation if needed. returns false if an update was required
 
 			bool m_frame_final_orientation_cache;
-			Core::mat4 m_frame_final_orientation;		// m_frame_parent_orientation * orientation()
+			Core::mat4 m_frame_final_orientation;		// m_cache_descendantOrientation * orientation()
 
 			void setOrientationCacheAsDirty();
 			//const Core::mat4 & getFinalOrientation();
@@ -98,8 +97,8 @@ namespace Rocket {
 			Core::vec4 m_rotation;		// quaternion
 
 			// Optional z-indexing members
-			std::list<std::pair< Transform*, int >> * m_zIndexer;						// The zIndexer that this Transform belongs to (optional; NULL if it does not belong to any)
-			std::list<std::pair< Transform*, int >>::iterator m_zIndexer_myIterator;	// The iterator that points to this Transform in m_zIndexer
+			std::list< std::pair< Transform*, int > > * m_zIndexer;						// The zIndexer that this Transform belongs to (optional; NULL if it does not belong to any)
+			std::list< std::pair< Transform*, int > >::iterator m_zIndexer_myIterator;	// The iterator that points to this Transform in m_zIndexer
 		};
 
 	}

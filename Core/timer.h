@@ -40,17 +40,17 @@ namespace Rocket {
 		class clock {
 		public:
 			clock();
-			clock(CORE_TIME_TYPE time);
-			clock(int days, int hours, int minutes, int seconds, int milliseconds);
+			clock( CORE_TIME_TYPE time );
+			clock( int days, int hours, int minutes, int seconds, int milliseconds );
 
-			void add_ms(int milliseconds);
-			void add_s(int seconds);
-			void add_min(int minutes);
-			void add_hours(int hours);
-			void add_days(int days);
-			void add_month(CORE_MONTHS month);
-			void add_months(CORE_MONTHS start_month, CORE_MONTHS end_month);
-			void add_years(int years);
+			void add_ms( int milliseconds );
+			void add_s( int seconds );
+			void add_min( int minutes );
+			void add_hours( int hours );
+			void add_days( int days );
+			void add_month( CORE_MONTHS month );
+			void add_months( CORE_MONTHS start_month, CORE_MONTHS end_month );
+			void add_years( int years );
 
 		private:
 			CORE_TIME_TYPE m_time;

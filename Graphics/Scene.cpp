@@ -19,12 +19,17 @@ namespace Rocket {
 		void Scene::Init() {
 			m_camera_position = Core::vec3(0,0,0);
 			m_camera_rotation = Core::Quaternion( 0.0f, Core::vec3(0,1,0) );
-			m_frame_camera_orientationCache = false;
-			m_frame_camera_orientationInverseCache = false;
+			m_cache_camera_orientationIsClean = false;
+			m_cache_camera_orientationInverseIsClean = false;
 
 			m_frameTexture = 0;
 			m_frameBufferObject = 0;
 			m_frameDepthBuffer = 0;
+			
+#ifdef ENABLE_DEBUG
+			m_cache_renderedPolygons = 0;
+			m_cache_renderedObjects = 0;
+#endif
 
 			setCameraInput( NULL );
 		}
@@ -79,8 +84,8 @@ namespace Rocket {
 			for (mesh = m_meshes.begin(); mesh != m_meshes.end(); mesh++) {
 				(*mesh)->drawCurrentPass( &getCameraProjection(), &getCameraOrientation() );
 #ifdef ENABLE_DEBUG
-				m_frame_renderedPolygons += (*mesh)->m_frame_renderedPolygons;
-				m_frame_renderedObjects += (*mesh)->m_frame_renderedObjects;
+				m_cache_renderedPolygons += (*mesh)->m_frame_renderedPolygons;
+				m_cache_renderedObjects += (*mesh)->m_frame_renderedObjects;
 #endif
 			}
 		}
@@ -96,8 +101,8 @@ namespace Rocket {
 			if ( clearScreen == true ) glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 #ifdef ENABLE_DEBUG
-			m_frame_renderedPolygons = 0;
-			m_frame_renderedObjects = 0;
+			m_cache_renderedPolygons = 0;
+			m_cache_renderedObjects = 0;
 #endif
 
 			// Calculate transforms and update all nodes
@@ -178,47 +183,47 @@ namespace Rocket {
 		}
 
 		const Core::mat4 & Scene::getCameraOrientation() {
-			if (m_frame_camera_orientationCache == false) {
-				m_frame_camera_orientationCache = true;
-				m_frame_camera_orientation = Core::Translate( m_camera_position ) * Core::QuaternionRotate( m_camera_rotation );
+			if ( m_cache_camera_orientationIsClean == false ) {
+				m_cache_camera_orientationIsClean = true;
+				m_cache_camera_orientation = Core::Translate( m_camera_position ) * Core::QuaternionRotate( m_camera_rotation );
 			}
-			return m_frame_camera_orientation;
+			return m_cache_camera_orientation;
 		}
 
 		const Core::mat4 & Scene::getCameraOrientationInverse() {
-			if (m_frame_camera_orientationInverseCache == false) {
-				m_frame_camera_orientationInverseCache = true;
-				m_frame_camera_orientationInverse = m_frame_camera_orientation.inverse();
+			if ( m_cache_camera_orientationInverseIsClean == false ) {
+				m_cache_camera_orientationInverseIsClean = true;
+				m_cache_camera_orientationInverse = m_cache_camera_orientation.inverse();
 			}
-			return m_frame_camera_orientationInverse;
+			return m_cache_camera_orientationInverse;
 		}
 
 		void Scene::setCameraOrientation( Core::mat4 orientation ) {
-			m_frame_camera_orientation = orientation;
-			m_frame_camera_orientationCache = true;
-			m_frame_camera_orientationInverseCache = false;
+			m_cache_camera_orientation = orientation;
+			m_cache_camera_orientationIsClean = true;
+			m_cache_camera_orientationInverseIsClean = false;
 		}
 		
 		void Scene::Camera_Rotate( float angle, Core::vec3 axis ) {
 			Core::mat4 cameraOrientation = getCameraOrientation();
 			//m_camera_rotation = Core::Rotate( angle, axis ) * m_camera_rotation;
 			setCameraOrientation( Core::Rotate( angle, axis ) * cameraOrientation );
-			calculateNewRotation( m_frame_camera_orientation );
+			calculateNewRotation( m_cache_camera_orientation );
 		}
 		void Scene::Camera_Move( float distance ) {
 			Core::mat4 cameraOrientation = getCameraOrientation();
 			setCameraOrientation( Core::Translate( Core::vec3( 0.0f, 0.0f, distance ) ) * cameraOrientation );
-			calculateNewPosition( m_frame_camera_orientation );
+			calculateNewPosition( m_cache_camera_orientation );
 		}
 		void Scene::Camera_Strafe( float distance ) {
 			Core::mat4 cameraOrientation = getCameraOrientation();
 			setCameraOrientation( Core::Translate( Core::vec3( -distance, 0.0f, 0.0f ) ) * cameraOrientation );
-			calculateNewPosition( m_frame_camera_orientation );
+			calculateNewPosition( m_cache_camera_orientation );
 		}
 		void Scene::Camera_Elevate( float distance ) {
 			Core::mat4 cameraOrientation = getCameraOrientation();
 			setCameraOrientation( Core::Translate( Core::vec3( 0.0f, -distance, 0.0f ) ) * cameraOrientation );
-			calculateNewPosition( m_frame_camera_orientation );
+			calculateNewPosition( m_cache_camera_orientation );
 		}
 
 		void Scene::Camera_Move( Core::vec3 velocity ) {
@@ -228,12 +233,12 @@ namespace Rocket {
 
 			Core::vec4 move = cameraOrientation * Core::vec4( velocity, 0.0f );
 			setCameraOrientation( Core::Translate( (-move).xyz() ) * cameraOrientation );
-			calculateNewPosition( m_frame_camera_orientation );
+			calculateNewPosition( m_cache_camera_orientation );
 		}
 
 		void Scene::Camera_Orient( Core::mat4 orientation ) {
 			setCameraOrientation( orientation );
-			calculateNewPosition( m_frame_camera_orientation );
+			calculateNewPosition( m_cache_camera_orientation );
 		}
 
 		void Scene::Camera_Position( Core::vec3 position ) {
@@ -241,12 +246,12 @@ namespace Rocket {
 			Core::vec4 move = orientationAtOrigin * Core::vec4( position, 0.0f );
 
 			setCameraOrientation( Core::Translate( (-move).xyz() ) * orientationAtOrigin );
-			calculateNewPosition( m_frame_camera_orientation );
+			calculateNewPosition( m_cache_camera_orientation );
 		}
 
 		void Scene::Camera_SetRotation( Core::vec4 quaternion ) {
 			setCameraOrientation( Translate( getCameraPosition() ) * Core::QuaternionRotate( quaternion ) );
-			calculateNewRotation( m_frame_camera_orientation );
+			calculateNewRotation( m_cache_camera_orientation );
 		}
 
 
@@ -267,28 +272,28 @@ namespace Rocket {
 			m_camera_mouseSensitivity = sensitivity;
 		}
 		void Scene::setCameraControl_Move( int forward, int backward ) {
-			m_camera_controls[CameraControls::MoveForward] = forward;
-			m_camera_controls[CameraControls::MoveBackward] = backward;
+			m_camera_controls[ CameraControls::MoveForward ] = forward;
+			m_camera_controls[ CameraControls::MoveBackward ] = backward;
 		}
 		void Scene::setCameraControl_Strafe( int left, int right ) {
-			m_camera_controls[CameraControls::StrafeLeft] = left;
-			m_camera_controls[CameraControls::StrafeRight] = right;
+			m_camera_controls[ CameraControls::StrafeLeft ] = left;
+			m_camera_controls[ CameraControls::StrafeRight ] = right;
 		}
 		void Scene::setCameraControl_Elevate( int up, int down ) {
-			m_camera_controls[CameraControls::ElevateUp] = up;
-			m_camera_controls[CameraControls::ElevateDown] = down;
+			m_camera_controls[ CameraControls::ElevateUp ] = up;
+			m_camera_controls[ CameraControls::ElevateDown ] = down;
 		}
 		void Scene::setCameraControl_Turn( int left, int right ) {
-			m_camera_controls[CameraControls::TurnLeft] = left;
-			m_camera_controls[CameraControls::TurnRight] = right;
+			m_camera_controls[ CameraControls::TurnLeft ] = left;
+			m_camera_controls[ CameraControls::TurnRight ] = right;
 		}
 		void Scene::setCameraControl_Pitch( int up, int down ) {
-			m_camera_controls[CameraControls::PitchUp] = up;
-			m_camera_controls[CameraControls::PitchDown] = down;
+			m_camera_controls[ CameraControls::PitchUp ] = up;
+			m_camera_controls[ CameraControls::PitchDown ] = down;
 		}
 		void Scene::setCameraControl_Roll( int left, int right ) {
-			m_camera_controls[CameraControls::RollLeft] = left;
-			m_camera_controls[CameraControls::RollRight] = right;
+			m_camera_controls[ CameraControls::RollLeft ] = left;
+			m_camera_controls[ CameraControls::RollRight ] = right;
 		}
 
 		void Scene::setCameraMoveSpeed( const Core::vec3 & speed ) {
@@ -300,30 +305,30 @@ namespace Rocket {
 		void Scene::ControlCamera( float elapsedTime ) {
 			Core::vec3 strafeAxis = ( getCameraOrientationInverse() * Core::vec4( 1, 0, 0, 0 ) ).xyz();
 			strafeAxis.y = 0;
-			if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::StrafeLeft] ) ) Camera_Move( strafeAxis * -m_camera_moveSpeed.x * elapsedTime );
-			if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::StrafeRight] ) ) Camera_Move( strafeAxis * m_camera_moveSpeed.x * elapsedTime );
+			if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::StrafeLeft ] ) ) Camera_Move( strafeAxis * -m_camera_moveSpeed.x * elapsedTime );
+			if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::StrafeRight ] ) ) Camera_Move( strafeAxis * m_camera_moveSpeed.x * elapsedTime );
 
 			Core::vec3 moveAxis = ( getCameraOrientationInverse() * Core::vec4( 0, 0, 1, 0 ) ).xyz();
 			moveAxis.y = 0;
-			if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::MoveForward] ) ) Camera_Move( moveAxis * -m_camera_moveSpeed.z * elapsedTime );
-			if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::MoveBackward] ) ) Camera_Move( moveAxis * m_camera_moveSpeed.z * elapsedTime );
+			if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::MoveForward ] ) ) Camera_Move( moveAxis * -m_camera_moveSpeed.z * elapsedTime );
+			if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::MoveBackward ] ) ) Camera_Move( moveAxis * m_camera_moveSpeed.z * elapsedTime );
 
 			// Control looking with mouse if all look controls aren't set
 			Core::vec3 lookSpeed = Core::vec3( 0.0f, 0.0f, 0.0f );
-			if ( ( m_camera_controls[CameraControls::TurnLeft] == 0 )
-				|| ( m_camera_controls[CameraControls::TurnRight] == 0 )
-				|| ( m_camera_controls[CameraControls::PitchUp] == 0 )
-				|| ( m_camera_controls[CameraControls::PitchDown] == 0 ) ) {
+			if ( ( m_camera_controls[ CameraControls::TurnLeft ] == 0 )
+				|| ( m_camera_controls[ CameraControls::TurnRight ] == 0 )
+				|| ( m_camera_controls[ CameraControls::PitchUp ] == 0 )
+				|| ( m_camera_controls[ CameraControls::PitchDown ] == 0 ) ) {
 
 					Core::vec2i mouseMove = m_camera_input->getMouseMove();
 					lookSpeed.x = -m_camera_turnSpeed.x * mouseMove.y * 1.0f / m_camera_mouseSensitivity;
 					lookSpeed.y = -m_camera_turnSpeed.y * mouseMove.x * 1.0f / m_camera_mouseSensitivity;
 			} else {
-				if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::TurnLeft] ) ) lookSpeed.y -= m_camera_turnSpeed.y;
-				if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::TurnRight] ) ) lookSpeed.y += m_camera_turnSpeed.y;
+				if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::TurnLeft ] ) ) lookSpeed.y -= m_camera_turnSpeed.y;
+				if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::TurnRight ] ) ) lookSpeed.y += m_camera_turnSpeed.y;
 
-				if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::PitchUp] ) ) lookSpeed.x -= m_camera_turnSpeed.x;
-				if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::PitchDown] ) ) lookSpeed.x += m_camera_turnSpeed.x;
+				if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::PitchUp ] ) ) lookSpeed.x -= m_camera_turnSpeed.x;
+				if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::PitchDown ] ) ) lookSpeed.x += m_camera_turnSpeed.x;
 			}
 
 			// rotate around local X-axis
@@ -334,21 +339,21 @@ namespace Rocket {
 			Core::vec3 rotationAxis = ( cameraOrientationInverse.transpose() * Core::vec4( 0, 1, 0, 0 ) ).xyz();
 			Camera_Rotate( lookSpeed.y * elapsedTime, rotationAxis );
 
-			if ( ( m_camera_controls[CameraControls::ElevateUp] != 0 )
-				&& ( m_camera_controls[CameraControls::ElevateDown] != 0 ) ) {
+			if ( ( m_camera_controls[ CameraControls::ElevateUp ] != 0 )
+				&& ( m_camera_controls[ CameraControls::ElevateDown ] != 0 ) ) {
 
 					Core::vec3 elevateAxis = ( getCameraOrientationInverse() * Core::vec4( 0, 1, 0, 0 ) ).xyz();
 					elevateAxis.x = 0;	elevateAxis.z = 0;
-					if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::ElevateUp] ) ) Camera_Move( elevateAxis * m_camera_moveSpeed.z * elapsedTime );
-					if ( m_camera_input->getKeySimple( m_camera_controls[CameraControls::ElevateDown] ) ) Camera_Move( elevateAxis * -m_camera_moveSpeed.z * elapsedTime );
+					if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::ElevateUp ] ) ) Camera_Move( elevateAxis * m_camera_moveSpeed.z * elapsedTime );
+					if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::ElevateDown ] ) ) Camera_Move( elevateAxis * -m_camera_moveSpeed.z * elapsedTime );
 			}
 		}
 
 
 		Rocket::Core::vec4 Scene::pickScreen( int x, int y, float optionalDepth ) {
 			GLint viewport[4];
-			GLdouble modelview[16];
-			GLdouble projection[16];
+			GLdouble modelview[ 16 ];
+			GLdouble projection[ 16 ];
 			GLfloat winX, winY, winZ;
 			GLdouble posX, posY, posZ;
 
@@ -376,7 +381,7 @@ namespace Rocket {
 			m_glDepthTest = false;
 		}
 
-		std::list<std::pair< Transform*, int >> * Scene::zIndexer() {
+		std::list< std::pair< Transform*, int > > * Scene::zIndexer() {
 			return &m_zIndexer;
 		}
 

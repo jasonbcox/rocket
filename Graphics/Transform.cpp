@@ -28,7 +28,7 @@ namespace Rocket {
 		}
 		Transform::~Transform() {
 			// Delete all child transforms
-			std::vector<Transform*>::iterator child;
+			std::vector< Transform* >::iterator child;
 			for ( child = m_children.begin(); child != m_children.end(); child++ ) {
 				(*child)->m_parent = NULL;	// The destructor on this Transform (the parent of the child) is already being destroyed, so do NOT attempt to remove
 											//		the child's self from this Transform (the parent)
@@ -75,15 +75,15 @@ namespace Rocket {
 
 		bool Transform::cleanParentOrientationCache() {
 			if ( m_parent == NULL ) {
-				if ( m_frame_clean_cache == false ) {
+				if ( m_cache_descendantOrientationIsClean == false ) {
 					calculateTransforms( 0.0f, Core::mat4(), false, false );
 					return false;
 				}
 				return true;
 			} else {
 				bool clean = m_parent->cleanParentOrientationCache();
-				if ( ( clean == true ) && ( m_frame_clean_cache == false ) ) {
-					calculateTransforms( 0.0f, m_frame_parent_orientation, false, false );
+				if ( ( clean == true ) && ( m_cache_descendantOrientationIsClean == false ) ) {
+					calculateTransforms( 0.0f, m_cache_parentOrientation, false, false );
 					return false;
 				}
 				// if the parent's cache was not clean, the updates have already been made
@@ -92,7 +92,7 @@ namespace Rocket {
 		}
 		const Core::mat4 & Transform::getParentOrientation() {
 			cleanParentOrientationCache();
-			return m_frame_parent_orientation;
+			return m_cache_parentOrientation;
 		}
 		/*void Transform::positionWorld( Core::vec3 pos ) {
 			// todo: position in world space, relative to parent
@@ -131,11 +131,11 @@ namespace Rocket {
 		}
 
 		const Core::mat4 & Transform::orientation() {
-			if ( m_frame_clean_orientation_cache == false ) {
-				m_frame_orientation = Translate( m_position ) * QuaternionRotate( m_rotation ) * Scale( m_scale );
-				m_frame_clean_orientation_cache = true;
+			if ( m_cache_orientationIsClean == false ) {
+				m_cache_orientation = Translate( m_position ) * QuaternionRotate( m_rotation ) * Scale( m_scale );
+				m_cache_orientationIsClean = true;
 			}
-			return m_frame_orientation;
+			return m_cache_orientation;
 		}
 
 		void Transform::move( float distance ) {
@@ -160,7 +160,7 @@ namespace Rocket {
 
 		void Transform::updateBase( bool recursive, float elapsedMilliseconds ) {
 			if ( recursive == true ) {
-				std::vector<Transform*>::iterator child;
+				std::vector< Transform* >::iterator child;
 				for(child = m_children.begin(); child != m_children.end(); child++) {
 					(*child)->update( true, elapsedMilliseconds );
 				}
@@ -176,10 +176,10 @@ namespace Rocket {
 			// don't save parent matrix if the cache is clean!
 			bool nextParentCacheIsClean = true;
 			if ( parentCacheIsClean == false ) {
-				m_frame_parent_orientation = parent_orientation;
+				m_cache_parentOrientation = parent_orientation;
 			}
-			if ( m_frame_clean_cache == false ) {
-				m_frame_clean_cache = true;
+			if ( m_cache_descendantOrientationIsClean == false ) {
+				m_cache_descendantOrientationIsClean = true;
 				nextParentCacheIsClean = false;
 			}
 
@@ -187,8 +187,8 @@ namespace Rocket {
 				if ( m_updated == false ) update( false, elapsedMilliseconds );
 			}
 
-			std::vector<Transform*>::iterator child;
-			for(child = m_children.begin(); child != m_children.end(); child++) {
+			std::vector< Transform* >::iterator child;
+			for ( child = m_children.begin(); child != m_children.end(); child++ ) {
 				(*child)->calculateTransforms( elapsedMilliseconds, getFinalOrientation(), nextParentCacheIsClean, applyUpdates );
 			}
 
@@ -198,21 +198,21 @@ namespace Rocket {
 		}
 
 		void Transform::setOrientationCacheAsDirty() {
-			m_frame_clean_orientation_cache = false;
-			m_frame_clean_cache = false;
+			m_cache_orientationIsClean = false;
+			m_cache_descendantOrientationIsClean = false;
 			m_frame_final_orientation_cache = false;
 		}
 
 		const Core::mat4 & Transform::getFinalOrientation() {
 			if ( m_frame_final_orientation_cache == false ) {
-				m_frame_final_orientation = m_frame_parent_orientation * orientation();
+				m_frame_final_orientation = m_cache_parentOrientation * orientation();
 				m_frame_final_orientation_cache = true;
 			}
 			return m_frame_final_orientation;
 		}
 
 		// Z-Indexing Functions
-		void Transform::zIndexer_Add( std::list<std::pair< Transform*, int >> * zIndexer, int zIndexTag ) {
+		void Transform::zIndexer_Add( std::list< std::pair< Transform*, int > > * zIndexer, int zIndexTag ) {
 			m_zIndexer = zIndexer;
 
 			// Find the nearest elements to zIndexTag
@@ -252,46 +252,46 @@ namespace Rocket {
 				position( pos );
 			}
 		}
-		std::list<std::pair< Transform*, int >>::iterator Transform::zIndexer_AddBehind( Transform * relativeTo, int zIndexTag ) {
+		std::list< std::pair< Transform*, int > >::iterator Transform::zIndexer_AddBehind( Transform * relativeTo, int zIndexTag ) {
 			m_zIndexer = relativeTo->m_zIndexer;
-			std::list<std::pair< Transform*, int >>::iterator iter = relativeTo->m_zIndexer_myIterator;
+			std::list< std::pair< Transform*, int > >::iterator iter = relativeTo->m_zIndexer_myIterator;
 			float highZ = iter->first->position().z;
 			iter++;
 			float lowZ = iter->first->position().z;
 			Core::vec3 pos = position();
-			pos.z = (highZ - lowZ) / 2.0f;
+			pos.z = ( highZ - lowZ ) / 2.0f;
 			position( pos );
 			return m_zIndexer->insert( iter, std::pair< Transform*, int >( this, zIndexTag ) );
 		}
-		std::list<std::pair< Transform*, int >>::iterator Transform::zIndexer_AddInFront( Transform * relativeTo, int zIndexTag ) {
+		std::list< std::pair< Transform*, int > >::iterator Transform::zIndexer_AddInFront( Transform * relativeTo, int zIndexTag ) {
 			m_zIndexer = relativeTo->m_zIndexer;
 			std::list<std::pair< Transform*, int >>::iterator iter = relativeTo->m_zIndexer_myIterator;
 			float lowZ = iter->first->position().z;
 			iter--;
 			float highZ = iter->first->position().z;
 			Core::vec3 pos = position();
-			pos.z = (highZ - lowZ) / 2.0f;
+			pos.z = ( highZ - lowZ ) / 2.0f;
 			position( pos );
 			return m_zIndexer->insert( relativeTo->m_zIndexer_myIterator, std::pair< Transform*, int >( this, zIndexTag ) );
 		}
 
 		// Add a scene to the list of owners that contain this object
 		void Transform::addOwner( Scene * scene ) {
-			std::vector<Scene*>::iterator iter;
+			std::vector< Scene* >::iterator iter;
 			for ( iter = m_owners.begin(); iter != m_owners.end(); iter++ ) {
 				if ( (*iter) == scene ) return;
 			}
 			m_owners.push_back( scene );
 
 			// Add owner for children too
-			std::vector<Transform*>::iterator child;
+			std::vector< Transform* >::iterator child;
 			for ( child = m_children.begin(); child != m_children.end(); child++ ) {
 				(*child)->addOwner( scene );
 			}
 		}
 		// Remove a scene from the list of owners
 		void Transform::removeOwner( Scene * scene ) {
-			std::vector<Scene*>::iterator iter;
+			std::vector< Scene* >::iterator iter;
 			for ( iter = m_owners.begin(); iter != m_owners.end(); iter++ ) {
 				if ( (*iter) == scene ) {
 					m_owners.erase( iter );
@@ -300,7 +300,7 @@ namespace Rocket {
 			}
 		}
 		// Return a list of all scene owners of this object
-		std::vector<Scene*> Transform::getOwners() {
+		std::vector< Scene* > Transform::getOwners() {
 			return m_owners;
 		}
 

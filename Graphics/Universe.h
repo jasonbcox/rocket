@@ -52,8 +52,8 @@ namespace Rocket {
 			// elapsedMilliseconds since the last call to display(). This value is used to correctly sync interpolating within all render passes.
 
 #ifdef ENABLE_DEBUG
-			int m_frame_renderedPolygons;
-			int m_frame_renderedObjects;
+			int m_cache_renderedPolygons;
+			int m_cache_renderedObjects;
 #endif
 
 		private:
