@@ -13,7 +13,7 @@ namespace Rocket {
 			class ShaderUniforms_Texture : public ShaderUniforms {
 			public:
 				ShaderUniforms_Texture();
-				~ShaderUniforms_Texture();
+				virtual ~ShaderUniforms_Texture();
 
 				ShaderUniforms_Texture * clone();
 
@@ -29,7 +29,7 @@ namespace Rocket {
 			class Shader_Texture : public Shader {
 			public:
 				Shader_Texture( const char * file_vertexShader, const char * file_fragmentShader );
-				~Shader_Texture();
+				virtual ~Shader_Texture();
 
 				Shader_UniformTexture ** getTexture();
 				Core::vec2 ** getTextureScale();

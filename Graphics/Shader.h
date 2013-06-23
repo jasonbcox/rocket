@@ -19,7 +19,7 @@ namespace Rocket {
 		class Shader_UniformTexture {
 		public:
 			Shader_UniformTexture( unsigned int textureSlot = 0, Texture * texture = NULL, unsigned int wrapS = GL_CLAMP_TO_EDGE, unsigned int wrapT = GL_CLAMP_TO_EDGE );
-			~Shader_UniformTexture();
+			virtual ~Shader_UniformTexture();
 
 			unsigned int m_textureSlot;		// 0, etc...
 			Texture * m_texture;
@@ -32,7 +32,7 @@ namespace Rocket {
 		class ShaderUniformCache {
 		public:
 			ShaderUniformCache();
-			~ShaderUniformCache();
+			virtual ~ShaderUniformCache();
 			
 			void refreshCache( unsigned int shaderNumber );
 			bool uniformNeedsRefreshing( void * newValue, size_t size );
@@ -47,7 +47,7 @@ namespace Rocket {
 		class ShaderUniforms {
 		public:
 			ShaderUniforms();
-			~ShaderUniforms();
+			virtual ~ShaderUniforms();
 
 			virtual ShaderUniforms * clone();
 		};
@@ -55,7 +55,7 @@ namespace Rocket {
 		class Shader {
 		public:
 			Shader( const char * file_vertexShader, const char * file_fragmentShader );
-			~Shader();
+			virtual ~Shader();
 
 			unsigned int getShaderNumber();
 
