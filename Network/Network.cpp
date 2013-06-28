@@ -47,7 +47,7 @@ namespace Rocket {
 		// Create a socket to send and recieve UDP packets
 		// This socket sends and recieves for all UDP connections, regardless of destination
 		unsigned int Network::setupUDP( unsigned int port, unsigned int numberOfPortTries ) {
-			if ( m_settings & NetworkSettings::UDP_Enabled ) {
+			if ( m_settings & (int)NetworkSettings::UDP_Enabled ) {
 				//bind to the first open port from port to port+numberofPortTries
 				m_UDP_port = findOpenPort( port, numberOfPortTries );
 				if ( m_UDP_port == 0 ) Core::Debug_AddToLog( "Error: Failed to find an open port." );
@@ -72,7 +72,7 @@ namespace Rocket {
 
 		// Create a socket to listen for new, incoming TCP stream connections
 		unsigned int Network::setupTCP_listen( unsigned int listenPort, unsigned int numberOfPortTries ) {
-			if ( m_settings & NetworkSettings::TCP_ListeningEnabled ) {
+			if ( m_settings & (int)NetworkSettings::TCP_ListeningEnabled ) {
 				//bind to the first open port from listenPort to listenPort+numberofPortTries
 				m_TCP_listenPort = findOpenPort( listenPort, numberOfPortTries );
 				if ( m_TCP_listenPort == 0 ) Core::Debug_AddToLog( "Error: Failed to find an open port." );
@@ -140,7 +140,7 @@ namespace Rocket {
 			Core::Debug_AddToLog( "Connecting (UDP) to:" );
 			Core::Debug_AddToLog( IP.c_str() );
 
-			Rocket::Network::PacketAccumulator * conn = new PacketAccumulator( NetworkSettings::Connection_UDP, IP, port );
+			Rocket::Network::PacketAccumulator * conn = new PacketAccumulator( ConnectionTypes::Connection_UDP, IP, port );
 			Core::string IPandPort = (IP << ":" << port);
 			m_UDP_connections[ IPandPort.std_str() ] = conn;
 			return conn;
@@ -153,7 +153,7 @@ namespace Rocket {
 			Core::Debug_AddToLog( "Connecting (TCP) to:" );
 			Core::Debug_AddToLog( IP.c_str() );
 
-			Rocket::Network::PacketAccumulator * conn = new PacketAccumulator( NetworkSettings::Connection_TCP, IP, port );
+			Rocket::Network::PacketAccumulator * conn = new PacketAccumulator( ConnectionTypes::Connection_TCP, IP, port );
 			// Create new socket
 			SOCKET * newSocket = new SOCKET();
 			sockaddr_in target;
@@ -201,7 +201,7 @@ namespace Rocket {
 			if ( maxFD > 0 ) r = select( maxFD+1, &ReadFDs, NULL, NULL, &timeout );
 			if ( r > 0 ) {
 				// Receive on the UDP socket
-				if ( m_settings & NetworkSettings::UDP_Enabled ) {
+				if ( m_settings & (int)NetworkSettings::UDP_Enabled ) {
 					if ( FD_ISSET( m_UDP_socket, &ReadFDs ) ) {
 						receive_UDP( &m_UDP_socket );
 					}
@@ -218,7 +218,7 @@ namespace Rocket {
 				}
 
 				// Accept incoming connections
-				if ( m_settings & NetworkSettings::TCP_ListeningEnabled ) {
+				if ( m_settings & (int)NetworkSettings::TCP_ListeningEnabled ) {
 					if ( FD_ISSET( m_TCP_listenSocket, &ReadFDs ) ) {
 						// Accept the new connection
 						SOCKET * acceptSocket = new SOCKET();
@@ -241,7 +241,7 @@ namespace Rocket {
 #else
 							addr_IP << ((addr.sin_addr.s_addr >> 24) & 0xff) << "." << ((addr.sin_addr.s_addr >> 16) & 0xff) << "." << ((addr.sin_addr.s_addr >> 8) & 0xff) << "." << (addr.sin_addr.s_addr & 0xff);
 #endif
-							newConnection = new PacketAccumulator( NetworkSettings::Connection_TCP, addr_IP, ntohs( addr.sin_port ) );
+							newConnection = new PacketAccumulator( ConnectionTypes::Connection_TCP, addr_IP, ntohs( addr.sin_port ) );
 							m_TCP_connections[ acceptSocket ] = newConnection;
 							Core::Debug_AddToLog( "TCP Peer Connected." );
 						}
@@ -415,7 +415,7 @@ namespace Rocket {
 			// Find the maxFD
 			int maxFD = 0;
 			// Check the listen socket (and FD_SET it) if this network has TCP enabled
-			if ( m_settings & NetworkSettings::TCP_ListeningEnabled ) {
+			if ( m_settings & (int)NetworkSettings::TCP_ListeningEnabled ) {
 				if ( m_TCP_listenSocket != INVALID_SOCKET ) {
 					FD_SET( m_TCP_listenSocket, &ReadFDs );
 					//FD_SET( m_TCP_listenSocket, &ExceptFDs );
@@ -423,7 +423,7 @@ namespace Rocket {
 				}
 			}
 			// Check the UDP socket (and FD_SET it) if this network has UDP enabled
-			if ( m_settings & NetworkSettings::UDP_Enabled ) {
+			if ( m_settings & (int)NetworkSettings::UDP_Enabled ) {
 				if ( m_UDP_socket != INVALID_SOCKET ) {
 					FD_SET( m_UDP_socket, &ReadFDs );
 					if ( m_UDP_socket > (SOCKET)maxFD ) maxFD = m_UDP_socket;
@@ -431,7 +431,7 @@ namespace Rocket {
 			}
 
 			// Check all connections and FD_SET them
-			if ( m_settings & NetworkSettings::TCP_Enabled ) {
+			if ( m_settings & (int)NetworkSettings::TCP_Enabled ) {
 				// Add TCP client connections
 				std::unordered_map< SOCKET*, PacketAccumulator* >::iterator iter;
 				for ( iter = m_TCP_connections.begin(); iter != m_TCP_connections.end(); iter++ ) {

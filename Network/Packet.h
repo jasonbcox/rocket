@@ -26,34 +26,30 @@ namespace Rocket {
 			int i;
 		};
 
-		namespace PacketElementTypes {
 		// Base types denote how the data is stored:
 			// char - readable ascii characters
 			// raw - data type is its exact byte representation
 			// comp - compressed data type
 		// empty is NOT to be used as a packet element type and is there
 		// only for processing purposes
-		enum PacketElementTypes {
+		enum class PacketElementTypes : int {
 			empty = 0,
 			char_string,
 			raw_int,
 			raw_uint,
 			raw_fixedpoint
 		};
-		}
 
-		namespace PacketTypes {
 		// Typeless packets can only be created, not received (for special outbound circumstances)
-		enum PacketTypes {
+		enum class PacketTypes : int {
 			Typeless = 0,
 			Test
 		};
-		}
 
 		// --------------------------------------------------------------------------------------------------------------------
 		// Packet Types (warning: all arrays must end with empty!)
 		// --------------------------------------------------------------------------------------------------------------------
-		const PacketElementTypes::PacketElementTypes Packet_Test[] = {
+		const PacketElementTypes Packet_Test[] = {
 			PacketElementTypes::char_string,
 			PacketElementTypes::raw_fixedpoint,
 			PacketElementTypes::raw_fixedpoint,
@@ -74,7 +70,7 @@ namespace Rocket {
 		public:
 			void init();
 			// Create a new packet; it's type must be set (the type will be added to the packet automatically)
-			Packet( PacketTypes::PacketTypes type, bool explicitPacketElements = false );
+			Packet( PacketTypes type, bool explicitPacketElements = false );
 			// Receive a packet; the first byte is the packet type and the rest is data
 			Packet( char * data, unsigned int size, bool explicitPacketElements = false );
 			// explicitPacketElements is false by default.  This means that packet element types do not precede
@@ -111,7 +107,7 @@ namespace Rocket {
 
 
 		private:
-			PacketTypes::PacketTypes m_type;
+			PacketTypes m_type;
 			char * m_data;
 			unsigned int m_size;		// amount of memory used for this packet
 			unsigned int m_maxsize;		// maximum memory allocated for this packet
@@ -122,7 +118,7 @@ namespace Rocket {
 			// These values are set based on the packet type, and elements being added that
 			// don't correspond to the expected types will not succeed
 			unsigned int m_current_element;
-			PacketElementTypes::PacketElementTypes * c_element_list;
+			PacketElementTypes * c_element_list;
 			bool m_explicitPacketElements;
 
 			// used to determine if a type is being used within a type
@@ -133,7 +129,7 @@ namespace Rocket {
 			// call nestedElement() on get*() when reading or add( * ) when writing a packet element that is embedded within another packet element
 #define nestedElement( func ) do { m_nestedElements++; (func); } while(0)
 			
-			bool nextElementMatches( PacketElementTypes::PacketElementTypes type );
+			bool nextElementMatches( PacketElementTypes type );
 
 			void setPacketSizeInData();
 		};

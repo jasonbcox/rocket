@@ -140,9 +140,9 @@ namespace Rocket {
 				if ( mapIter != m_objectUsers.end() ) {
 					// Remove existing user from the other pass
 					std::vector<Object*>::iterator objectIter;
-					for ( objectIter = mapIter->second[ removeFromPass ].begin(); objectIter != mapIter->second[ removeFromPass ].end(); objectIter++ ) {
+					for ( objectIter = mapIter->second[ (unsigned int)removeFromPass ].begin(); objectIter != mapIter->second[ (unsigned int)removeFromPass ].end(); objectIter++ ) {
 						if ( (*objectIter) == object ) {
-							mapIter->second[ removeFromPass ].erase( objectIter );
+							mapIter->second[ (unsigned int)removeFromPass ].erase( objectIter );
 							break;
 						}
 					}
@@ -154,20 +154,20 @@ namespace Rocket {
 				// If user isn't already there, add user to correct pass
 				bool objectAlreadyInPass = false;
 				std::vector<Object*>::iterator objectIter;
-				for ( objectIter = mapIter->second[ addToPass ].begin(); objectIter != mapIter->second[ addToPass ].end(); objectIter++ ) {
+				for ( objectIter = mapIter->second[ (unsigned int)addToPass ].begin(); objectIter != mapIter->second[ (unsigned int)addToPass ].end(); objectIter++ ) {
 					if ( (*objectIter) == object ) {
 						objectAlreadyInPass = true;
 						break;
 					}
 				}
-				if ( objectAlreadyInPass == false ) mapIter->second[ addToPass ].push_back( object );
+				if ( objectAlreadyInPass == false ) mapIter->second[ (unsigned int)addToPass ].push_back( object );
 			}
 		}
 
 		std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator Mesh::addSceneToUserList( Scene * scene ) {
 			std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator mapIter;
 			mapIter = m_objectUsers.insert( std::pair<Scene*, std::vector<std::vector<Object*>>>( scene, std::vector<std::vector<Object*>>() ) ).first;
-			for ( int i = 0; i < MeshDrawPasses::END_OF_DRAW_PASSES; i++ ) {
+			for ( unsigned int i = 0; i < (unsigned int)MeshDrawPasses::END_OF_DRAW_PASSES; i++ ) {
 				mapIter->second.push_back( std::vector<Object*>() );
 			}
 			return mapIter;
@@ -177,7 +177,7 @@ namespace Rocket {
 			std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator mapIter = m_objectUsers.find( scene );
 			if ( mapIter != m_objectUsers.end() ) {
 				// Remove existing user from all passes
-				for ( int i = 0; i < MeshDrawPasses::END_OF_DRAW_PASSES; i++ ) {
+				for ( unsigned int i = 0; i < (unsigned int)MeshDrawPasses::END_OF_DRAW_PASSES; i++ ) {
 					std::vector<Object*>::iterator objectIter;
 					for ( objectIter = mapIter->second[ i ].begin(); objectIter != mapIter->second[ i ].end(); objectIter++ ) {
 						if ( (*objectIter) == object ) {

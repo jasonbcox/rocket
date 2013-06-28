@@ -14,7 +14,7 @@ namespace Rocket {
 			Clickable( int left, int top, int right, int bottom );
 			virtual ~Clickable();
 
-			virtual void update( Input_ButtonState::Input_ButtonState state, int x, int y );
+			virtual void update( Input_ButtonState state, int x, int y );
 
 		protected:
 			Core::vec4i m_clickableArea;

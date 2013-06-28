@@ -32,7 +32,7 @@ namespace Rocket {
 			// Returns the state of the given key
 			// If the state is Hit, it transitions to Pressed upon calling getKey()
 			// If the state is Released, it transitions to NotPressed upon calling getKey()
-			Input_ButtonState::Input_ButtonState getKey( int key );
+			Input_ButtonState getKey( int key );
 			// Returns true if the key is Hit or Pressed
 			// Hit and Released do not transistion upon calling getKeySimple()
 			bool getKeySimple( int key );
@@ -47,7 +47,7 @@ namespace Rocket {
 			// Returns the state of the given mouse button
 			// If the state is Hit, it transitions to Pressed upon calling getMouseButton()
 			// If the state is Released, it transitions to NotPressed upon calling getMouseButton()
-			Input_ButtonState::Input_ButtonState getMouseButton( int button );
+			Input_ButtonState getMouseButton( int button );
 			// Returns true if the mouse button is Hit or Pressed
 			// Hit and Released do not transistion upon calling getMouseButtonSimple()
 			bool getMouseButtonSimple( int button );
@@ -67,10 +67,10 @@ namespace Rocket {
 			static Input * Global_Input;
 			GLFWwindow * m_window;
 			
-			std::unordered_map< int, Input_ButtonState::Input_ButtonState > m_keyboard;
+			std::unordered_map< int, Input_ButtonState > m_keyboard;
 			std::unordered_map< int, std::vector< Input_Keyboard* > > m_keyboardBindings;
 
-			std::unordered_map< int, Input_ButtonState::Input_ButtonState > m_mouse;
+			std::unordered_map< int, Input_ButtonState > m_mouse;
 			std::unordered_map< int, std::vector< Input_Mouse* > > m_mouseBindings;
 
 			bool m_mouseEnabled;

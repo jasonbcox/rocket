@@ -4,7 +4,7 @@
 namespace Rocket {
 	namespace Graphics {
 
-		Input_Interactable::Input_Interactable( Input_ButtonState::Input_ButtonState defaultState ) {
+		Input_Interactable::Input_Interactable( Input_ButtonState defaultState ) {
 			m_state = defaultState;
 		}
 
@@ -17,14 +17,14 @@ namespace Rocket {
 			}
 		}
 
-		Input_Button::Input_Button( Input_ButtonState::Input_ButtonState defaultState ) : Input_Interactable( defaultState ) {
+		Input_Button::Input_Button( Input_ButtonState defaultState ) : Input_Interactable( defaultState ) {
 		}
 
 		// Return the state
 		// If the state is Hit, change it to Pressed and return Hit (this way, the hit was known to have been processed)
 		// If the state is Released, change it to NotPressed and return Released
 		// Otherwise, just return the state
-		Input_ButtonState::Input_ButtonState Input_Button::getState() {
+		Input_ButtonState Input_Button::getState() {
 			if ( m_state == Input_ButtonState::Hit ) {
 				m_state = Input_ButtonState::Pressed;
 				return Input_ButtonState::Hit;
@@ -35,10 +35,10 @@ namespace Rocket {
 			return m_state;
 		}
 
-		Input_Keyboard::Input_Keyboard( Input_ButtonState::Input_ButtonState defaultState ) : Input_Button( defaultState ) {
+		Input_Keyboard::Input_Keyboard( Input_ButtonState defaultState ) : Input_Button( defaultState ) {
 		}
 
-		Input_Mouse::Input_Mouse( Input_ButtonState::Input_ButtonState defaultState ) : Input_Button( defaultState ) {
+		Input_Mouse::Input_Mouse( Input_ButtonState defaultState ) : Input_Button( defaultState ) {
 		}
 
 	}

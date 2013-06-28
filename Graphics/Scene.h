@@ -19,8 +19,7 @@ namespace Rocket {
 		static const float OrthographicDrawDistance = 10000.0f;
 		static const int NoZIndexTag = 10001;		// Always greater OrthographicDrawDistance
 
-		namespace CameraControls {
-		enum CameraControls {
+		enum class CameraControls : unsigned int {
 			MoveForward = 0,
 			MoveBackward,
 			StrafeLeft,
@@ -35,7 +34,6 @@ namespace Rocket {
 			RollRight,
 			END_OF_CAMERA_CONTROLS
 		};
-		}
 
 		class Scene : public Transform {
 		public:
@@ -141,20 +139,20 @@ namespace Rocket {
 
 			Input * m_camera_input;
 			float m_camera_mouseSensitivity;
-			int m_camera_controls[CameraControls::END_OF_CAMERA_CONTROLS];
+			int m_camera_controls[ (unsigned int)CameraControls::END_OF_CAMERA_CONTROLS ];
 
 			Core::vec3 m_camera_moveSpeed;	// ( x - strafe, y - elevate, z - move )
 			Core::vec3 m_camera_turnSpeed;	// ( x - pitch, y - turn, z - roll )
 
 
 			// A list of all meshes used to render objects in this scene
-			std::vector<Mesh*> m_meshes;
+			std::vector< Mesh* > m_meshes;
 
 			// Scene children that are rendered directly on top of this Scene
-			std::vector<Scene*> m_composites;
+			std::vector< Scene* > m_composites;
 
 			// List of Transforms to keep track of z ordered items
-			std::list<std::pair< Transform*, int >> m_zIndexer;
+			std::list< std::pair< Transform*, int > > m_zIndexer;
 
 		};
 	}

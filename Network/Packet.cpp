@@ -19,7 +19,7 @@ namespace Rocket {
 			m_current_element = 0;
 		}
 
-		Packet::Packet( PacketTypes::PacketTypes type, bool explicitPacketElements ) {
+		Packet::Packet( PacketTypes type, bool explicitPacketElements ) {
 			init();
 			m_type = type;
 			m_explicitPacketElements = explicitPacketElements;
@@ -27,7 +27,7 @@ namespace Rocket {
 			// Selects the appropriate element list to make sure only the right elements added
 			switch( type ) {
 			case PacketTypes::Test :
-				c_element_list = (PacketElementTypes::PacketElementTypes*)(&Packet_Test);
+				c_element_list = (PacketElementTypes*)(&Packet_Test);
 				break;
 
 			default:
@@ -56,9 +56,9 @@ namespace Rocket {
 			char byte = getByte();
 			// Selects the appropriate element list to make sure only the right elements read
 			switch ( byte ) {
-				case PacketTypes::Test :
+				case (int)PacketTypes::Test :
 					m_type = PacketTypes::Test;
-					c_element_list = (PacketElementTypes::PacketElementTypes*)(&Packet_Test);
+					c_element_list = (PacketElementTypes*)(&Packet_Test);
 					break;
 
 				default:
@@ -113,7 +113,7 @@ namespace Rocket {
 		//											OR the element is a nested part of a larger type ( add( * ) is called within nestedElement() )
 
 		void Packet::add( int i ) {
-			PacketElementTypes::PacketElementTypes type = PacketElementTypes::raw_int;
+			PacketElementTypes type = PacketElementTypes::raw_int;
 			if ( nextElementMatches( type ) ) {
 				if ( m_explicitPacketElements == true ) add( (char*)(&type), 1 );
 
@@ -125,7 +125,7 @@ namespace Rocket {
 		}
 
 		void Packet::add( unsigned int u ) {
-			PacketElementTypes::PacketElementTypes type = PacketElementTypes::raw_uint;
+			PacketElementTypes type = PacketElementTypes::raw_uint;
 			if ( nextElementMatches( type ) ) {
 				if ( m_explicitPacketElements == true ) add( (char*)(&type), 1 );
 
@@ -137,7 +137,7 @@ namespace Rocket {
 		}
 
 		void Packet::add( Core::fixedpoint f ) {
-			PacketElementTypes::PacketElementTypes type = PacketElementTypes::raw_fixedpoint;
+			PacketElementTypes type = PacketElementTypes::raw_fixedpoint;
 			if ( nextElementMatches( type ) ) {
 				if ( m_explicitPacketElements == true ) add( (char*)(&type), 1 );
 				
@@ -151,7 +151,7 @@ namespace Rocket {
 		}
 
 		void Packet::add( Core::string s ) {
-			PacketElementTypes::PacketElementTypes type = PacketElementTypes::char_string;
+			PacketElementTypes type = PacketElementTypes::char_string;
 			if ( nextElementMatches( type ) ) {
 				if ( m_explicitPacketElements == true ) add( (char*)(&type), 1 );
 
@@ -182,7 +182,7 @@ namespace Rocket {
 
 		int Packet::getInt() {
 			char type = 0;
-			if ( ( m_explicitPacketElements == false ) || (nextElementMatches( (PacketElementTypes::PacketElementTypes)(type = getByte()) )) ) {
+			if ( ( m_explicitPacketElements == false ) || (nextElementMatches( (PacketElementTypes)(type = getByte()) )) ) {
 				unsigned int size = PACKET_INT_SIZE;
 				int i = 0;
 				memcpy( &i, &(m_data[m_seek]), size );
@@ -198,7 +198,7 @@ namespace Rocket {
 
 		unsigned int Packet::getUInt() {
 			char type = 0;
-			if ( ( m_explicitPacketElements == false ) || (nextElementMatches( (PacketElementTypes::PacketElementTypes)(type = getByte()) )) ) {
+			if ( ( m_explicitPacketElements == false ) || (nextElementMatches( (PacketElementTypes)(type = getByte()) )) ) {
 				unsigned int size = PACKET_INT_SIZE;
 				unsigned int u = 0;
 				memcpy( &u, &(m_data[m_seek]), size );
@@ -214,7 +214,7 @@ namespace Rocket {
 
 		Core::fixedpoint Packet::getfixedpoint() {
 			char type = 0;
-			if ( ( m_explicitPacketElements == false ) || (nextElementMatches( (PacketElementTypes::PacketElementTypes)(type = getByte()) )) ) {
+			if ( ( m_explicitPacketElements == false ) || (nextElementMatches( (PacketElementTypes)(type = getByte()) )) ) {
 				fswap cf;
 				int nbo_i;
 				memcpy( &nbo_i, &(m_data[m_seek]), PACKET_INT_SIZE );
@@ -231,7 +231,7 @@ namespace Rocket {
 
 		Core::string Packet::getString() {
 			char type = 0;
-			if ( ( m_explicitPacketElements == false ) || (nextElementMatches( (PacketElementTypes::PacketElementTypes)(type = getByte()) )) ) {
+			if ( ( m_explicitPacketElements == false ) || (nextElementMatches( (PacketElementTypes)(type = getByte()) )) ) {
 				// get string length
 				unsigned int s_length;
 				nestedElement( s_length = getUInt() );
@@ -264,7 +264,7 @@ namespace Rocket {
 		}
 
 		// Returns true if type matches the next expected packet element type
-		bool Packet::nextElementMatches( PacketElementTypes::PacketElementTypes type ) {
+		bool Packet::nextElementMatches( PacketElementTypes type ) {
 			if ( c_element_list == NULL ) return true;
 			if ( m_nestedElements > 0 ) return true;
 			if ( c_element_list[ m_current_element ] == PacketElementTypes::empty ) return false;

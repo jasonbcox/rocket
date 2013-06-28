@@ -60,8 +60,8 @@ namespace Rocket {
 		// If the state is Hit, change it to Pressed and return Hit (this way, the hit was known to have been processed)
 		// If the state is Released, change it to NotPressed and return Released
 		// Otherwise, just return the state
-		Input_ButtonState::Input_ButtonState Input::getKey( int key ) {
-			std::unordered_map< int, Input_ButtonState::Input_ButtonState >::iterator iter = m_keyboard.find( key );
+		Input_ButtonState Input::getKey( int key ) {
+			std::unordered_map< int, Input_ButtonState >::iterator iter = m_keyboard.find( key );
 			if (iter == m_keyboard.end()) {
 				return Input_ButtonState::NotPressed;
 			} else {
@@ -77,7 +77,7 @@ namespace Rocket {
 		}
 		// Return true if the key is Hit or Pressed
 		bool Input::getKeySimple( int key ) {
-			std::unordered_map< int, Input_ButtonState::Input_ButtonState >::iterator iter = m_keyboard.find( key );
+			std::unordered_map< int, Input_ButtonState >::iterator iter = m_keyboard.find( key );
 			if (iter == m_keyboard.end()) {
 				return false;
 			} else {
@@ -107,8 +107,8 @@ namespace Rocket {
 		// If the state is Hit, change it to Pressed and return Hit (this way, the hit was known to have been processed)
 		// If the state is Released, change it to NotPressed and return Released
 		// Otherwise, just return the state
-		Input_ButtonState::Input_ButtonState Input::getMouseButton( int button ) {
-			std::unordered_map< int, Input_ButtonState::Input_ButtonState >::iterator iter = m_mouse.find( button );
+		Input_ButtonState Input::getMouseButton( int button ) {
+			std::unordered_map< int, Input_ButtonState >::iterator iter = m_mouse.find( button );
 			if (iter == m_mouse.end()) {
 				return Input_ButtonState::NotPressed;
 			} else {
@@ -124,7 +124,7 @@ namespace Rocket {
 		}
 		// Return true if the mouse button is Hit or Pressed
 		bool Input::getMouseButtonSimple( int button ) {
-			std::unordered_map< int, Input_ButtonState::Input_ButtonState >::iterator iter = m_mouse.find( button );
+			std::unordered_map< int, Input_ButtonState >::iterator iter = m_mouse.find( button );
 			if (iter == m_mouse.end()) {
 				return false;
 			} else {
@@ -146,7 +146,7 @@ namespace Rocket {
 
 
 		void Input::callback_keyboard( GLFWwindow * window, int key, int scancode, int state, int modifierKeys ) {
-			Input_ButtonState::Input_ButtonState newstate = Input_ButtonState::Released;
+			Input_ButtonState newstate = Input_ButtonState::Released;
 			if (state == GLFW_PRESS) newstate = Input_ButtonState::Hit;
 			Global_Input->m_keyboard[ key ] = newstate;
 
@@ -171,7 +171,7 @@ namespace Rocket {
 			}
 
 			// Update mouse bindings for all buttons
-			std::unordered_map< int, Input_ButtonState::Input_ButtonState >::iterator iterButton;
+			std::unordered_map< int, Input_ButtonState >::iterator iterButton;
 			for ( iterButton = Global_Input->m_mouse.begin(); iterButton != Global_Input->m_mouse.end(); iterButton++ ) {
 				std::vector< Input_Mouse* > bindingsToButton = Global_Input->m_mouseBindings[ (*iterButton).first ];
 				std::vector< Input_Mouse* >::iterator iter;
@@ -181,7 +181,7 @@ namespace Rocket {
 			}
 		}
 		void Input::callback_mouseButton( GLFWwindow * window, int button, int state, int modifierKeys ) {
-			Input_ButtonState::Input_ButtonState newstate = Input_ButtonState::Released;
+			Input_ButtonState newstate = Input_ButtonState::Released;
 			if (state == GLFW_PRESS) newstate = Input_ButtonState::Hit;
 			Global_Input->m_mouse[ button ] = newstate;
 

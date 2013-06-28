@@ -18,7 +18,7 @@ namespace Rocket {
 
 		static const int MESH_VBO_NUM = 1;
 
-		enum MeshDrawPasses {
+		enum class MeshDrawPasses : unsigned int {
 			Opaque = 0,
 			Transparent,
 			END_OF_DRAW_PASSES

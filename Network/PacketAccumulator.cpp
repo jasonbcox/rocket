@@ -4,7 +4,7 @@
 namespace Rocket {
 	namespace Network {
 
-		PacketAccumulator::PacketAccumulator( NetworkSettings::ConnectionTypes protocol, Core::string IP, unsigned int port ) {
+		PacketAccumulator::PacketAccumulator( ConnectionTypes protocol, Core::string IP, unsigned int port ) {
 			m_protocol = protocol;
 			m_destination_IP = IP;
 			m_destination_port = port;

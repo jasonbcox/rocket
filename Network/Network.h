@@ -42,18 +42,16 @@ namespace Rocket {
 		static const unsigned int	NETWORK_BUFFER_SIZE = 1048576;
 		static const unsigned int	NETWORK_PACKET_BUFFER_SIZE = 4096;
 
-		namespace NetworkSettings {
-		enum NetworkSettings {
+		enum class NetworkSettings : int {
 			UDP_Enabled = 1,
 			TCP_Enabled = 2,
 			TCP_ListeningEnabled = 4
 		};
 
-		enum ConnectionTypes {
+		enum class ConnectionTypes : int {
 			Connection_UDP = 1,
 			Connection_TCP
 		};
-		}
 
 		class PacketAccumulator;
 		class Network {
@@ -109,7 +107,7 @@ namespace Rocket {
 		// Outbound packets are sent at the next cycle
 		class PacketAccumulator {
 		public:
-			PacketAccumulator( NetworkSettings::ConnectionTypes protocol, Core::string IP, unsigned int port );
+			PacketAccumulator( ConnectionTypes protocol, Core::string IP, unsigned int port );
 			~PacketAccumulator();
 
 			void send( Packet * p );	// queue a packet for sending
@@ -128,7 +126,7 @@ namespace Rocket {
 			char * m_packets_buffer;
 			unsigned int m_packets_buffer_index;
 
-			NetworkSettings::ConnectionTypes m_protocol;
+			ConnectionTypes m_protocol;
 			Core::string m_destination_IP;
 			unsigned int m_destination_port;
 

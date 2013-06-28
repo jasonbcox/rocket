@@ -7,11 +7,11 @@
 
 Rocket_UnitTest ( Network_TCP ) {
 	// Setup local server
-	Rocket::Network::Network * server = new Rocket::Network::Network( Rocket::Network::NetworkSettings::TCP_ListeningEnabled | Rocket::Network::NetworkSettings::TCP_Enabled, 1000 );
+	Rocket::Network::Network * server = new Rocket::Network::Network( (int)Rocket::Network::NetworkSettings::TCP_ListeningEnabled | (int)Rocket::Network::NetworkSettings::TCP_Enabled, 1000 );
 	unsigned int server_port = server->setupTCP_listen( 1234, 100 );
 
 	// Connect client to server
-	Rocket::Network::Network * client = new Rocket::Network::Network( Rocket::Network::NetworkSettings::TCP_Enabled, 1000 );
+	Rocket::Network::Network * client = new Rocket::Network::Network( (int)Rocket::Network::NetworkSettings::TCP_Enabled, 1000 );
 	Rocket::Network::PacketAccumulator * client_acc = client->connect_TCP_IP4( "127.0.0.1", server_port );
 	Rocket_UnitTest_Check_Expression( client_acc != NULL );
 
@@ -46,11 +46,11 @@ Rocket_UnitTest ( Network_TCP ) {
 
 Rocket_UnitTest ( Network_UDP ) {
 	// Setup sender
-	Rocket::Network::Network * sender = new Rocket::Network::Network( Rocket::Network::NetworkSettings::UDP_Enabled, 100 );
+	Rocket::Network::Network * sender = new Rocket::Network::Network( (int)Rocket::Network::NetworkSettings::UDP_Enabled, 100 );
 	unsigned int sender_port = sender->setupUDP( 1234, 100 );
 
 	// Setup receiver
-	Rocket::Network::Network * receiver = new Rocket::Network::Network( Rocket::Network::NetworkSettings::UDP_Enabled, 100 );
+	Rocket::Network::Network * receiver = new Rocket::Network::Network( (int)Rocket::Network::NetworkSettings::UDP_Enabled, 100 );
 	unsigned int receiver_port = receiver->setupUDP( 1234, 100 );
 
 	// Sender: get ready to send to destination
@@ -88,7 +88,7 @@ Rocket_UnitTest ( Network_UDP ) {
 
 Rocket_UnitTest ( Network_HTTP ) {
 	// Connect to a test web server
-	Rocket::Network::Network * web = new Rocket::Network::Network( Rocket::Network::NetworkSettings::TCP_Enabled, 1000 );
+	Rocket::Network::Network * web = new Rocket::Network::Network( (int)Rocket::Network::NetworkSettings::TCP_Enabled, 1000 );
 	Rocket::Core::string hostname = "www.jasonbcox.com";
 	Rocket::Network::PacketAccumulator * acc = web->connect_TCP_IP4( hostname, 80 );
 	Rocket_UnitTest_Check_Expression( acc != NULL );

@@ -272,28 +272,28 @@ namespace Rocket {
 			m_camera_mouseSensitivity = sensitivity;
 		}
 		void Scene::setCameraControl_Move( int forward, int backward ) {
-			m_camera_controls[ CameraControls::MoveForward ] = forward;
-			m_camera_controls[ CameraControls::MoveBackward ] = backward;
+			m_camera_controls[ (unsigned int)CameraControls::MoveForward ] = forward;
+			m_camera_controls[ (unsigned int)CameraControls::MoveBackward ] = backward;
 		}
 		void Scene::setCameraControl_Strafe( int left, int right ) {
-			m_camera_controls[ CameraControls::StrafeLeft ] = left;
-			m_camera_controls[ CameraControls::StrafeRight ] = right;
+			m_camera_controls[ (unsigned int)CameraControls::StrafeLeft ] = left;
+			m_camera_controls[ (unsigned int)CameraControls::StrafeRight ] = right;
 		}
 		void Scene::setCameraControl_Elevate( int up, int down ) {
-			m_camera_controls[ CameraControls::ElevateUp ] = up;
-			m_camera_controls[ CameraControls::ElevateDown ] = down;
+			m_camera_controls[ (unsigned int)CameraControls::ElevateUp ] = up;
+			m_camera_controls[ (unsigned int)CameraControls::ElevateDown ] = down;
 		}
 		void Scene::setCameraControl_Turn( int left, int right ) {
-			m_camera_controls[ CameraControls::TurnLeft ] = left;
-			m_camera_controls[ CameraControls::TurnRight ] = right;
+			m_camera_controls[ (unsigned int)CameraControls::TurnLeft ] = left;
+			m_camera_controls[ (unsigned int)CameraControls::TurnRight ] = right;
 		}
 		void Scene::setCameraControl_Pitch( int up, int down ) {
-			m_camera_controls[ CameraControls::PitchUp ] = up;
-			m_camera_controls[ CameraControls::PitchDown ] = down;
+			m_camera_controls[ (unsigned int)CameraControls::PitchUp ] = up;
+			m_camera_controls[ (unsigned int)CameraControls::PitchDown ] = down;
 		}
 		void Scene::setCameraControl_Roll( int left, int right ) {
-			m_camera_controls[ CameraControls::RollLeft ] = left;
-			m_camera_controls[ CameraControls::RollRight ] = right;
+			m_camera_controls[ (unsigned int)CameraControls::RollLeft ] = left;
+			m_camera_controls[ (unsigned int)CameraControls::RollRight ] = right;
 		}
 
 		void Scene::setCameraMoveSpeed( const Core::vec3 & speed ) {
@@ -305,30 +305,30 @@ namespace Rocket {
 		void Scene::ControlCamera( float elapsedTime ) {
 			Core::vec3 strafeAxis = ( getCameraOrientationInverse() * Core::vec4( 1, 0, 0, 0 ) ).xyz();
 			strafeAxis.y = 0;
-			if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::StrafeLeft ] ) ) Camera_Move( strafeAxis * -m_camera_moveSpeed.x * elapsedTime );
-			if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::StrafeRight ] ) ) Camera_Move( strafeAxis * m_camera_moveSpeed.x * elapsedTime );
+			if ( m_camera_input->getKeySimple( m_camera_controls[ (unsigned int)CameraControls::StrafeLeft ] ) ) Camera_Move( strafeAxis * -m_camera_moveSpeed.x * elapsedTime );
+			if ( m_camera_input->getKeySimple( m_camera_controls[ (unsigned int)CameraControls::StrafeRight ] ) ) Camera_Move( strafeAxis * m_camera_moveSpeed.x * elapsedTime );
 
 			Core::vec3 moveAxis = ( getCameraOrientationInverse() * Core::vec4( 0, 0, 1, 0 ) ).xyz();
 			moveAxis.y = 0;
-			if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::MoveForward ] ) ) Camera_Move( moveAxis * -m_camera_moveSpeed.z * elapsedTime );
-			if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::MoveBackward ] ) ) Camera_Move( moveAxis * m_camera_moveSpeed.z * elapsedTime );
+			if ( m_camera_input->getKeySimple( m_camera_controls[ (unsigned int)CameraControls::MoveForward ] ) ) Camera_Move( moveAxis * -m_camera_moveSpeed.z * elapsedTime );
+			if ( m_camera_input->getKeySimple( m_camera_controls[ (unsigned int)CameraControls::MoveBackward ] ) ) Camera_Move( moveAxis * m_camera_moveSpeed.z * elapsedTime );
 
 			// Control looking with mouse if all look controls aren't set
 			Core::vec3 lookSpeed = Core::vec3( 0.0f, 0.0f, 0.0f );
-			if ( ( m_camera_controls[ CameraControls::TurnLeft ] == 0 )
-				|| ( m_camera_controls[ CameraControls::TurnRight ] == 0 )
-				|| ( m_camera_controls[ CameraControls::PitchUp ] == 0 )
-				|| ( m_camera_controls[ CameraControls::PitchDown ] == 0 ) ) {
+			if ( ( m_camera_controls[ (unsigned int)CameraControls::TurnLeft ] == 0 )
+				|| ( m_camera_controls[ (unsigned int)CameraControls::TurnRight ] == 0 )
+				|| ( m_camera_controls[ (unsigned int)CameraControls::PitchUp ] == 0 )
+				|| ( m_camera_controls[ (unsigned int)CameraControls::PitchDown ] == 0 ) ) {
 
 					Core::vec2i mouseMove = m_camera_input->getMouseMove();
 					lookSpeed.x = -m_camera_turnSpeed.x * mouseMove.y * 1.0f / m_camera_mouseSensitivity;
 					lookSpeed.y = -m_camera_turnSpeed.y * mouseMove.x * 1.0f / m_camera_mouseSensitivity;
 			} else {
-				if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::TurnLeft ] ) ) lookSpeed.y -= m_camera_turnSpeed.y;
-				if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::TurnRight ] ) ) lookSpeed.y += m_camera_turnSpeed.y;
+				if ( m_camera_input->getKeySimple( m_camera_controls[ (unsigned int)CameraControls::TurnLeft ] ) ) lookSpeed.y -= m_camera_turnSpeed.y;
+				if ( m_camera_input->getKeySimple( m_camera_controls[ (unsigned int)CameraControls::TurnRight ] ) ) lookSpeed.y += m_camera_turnSpeed.y;
 
-				if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::PitchUp ] ) ) lookSpeed.x -= m_camera_turnSpeed.x;
-				if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::PitchDown ] ) ) lookSpeed.x += m_camera_turnSpeed.x;
+				if ( m_camera_input->getKeySimple( m_camera_controls[ (unsigned int)CameraControls::PitchUp ] ) ) lookSpeed.x -= m_camera_turnSpeed.x;
+				if ( m_camera_input->getKeySimple( m_camera_controls[ (unsigned int)CameraControls::PitchDown ] ) ) lookSpeed.x += m_camera_turnSpeed.x;
 			}
 
 			// rotate around local X-axis
@@ -339,13 +339,13 @@ namespace Rocket {
 			Core::vec3 rotationAxis = ( cameraOrientationInverse.transpose() * Core::vec4( 0, 1, 0, 0 ) ).xyz();
 			Camera_Rotate( lookSpeed.y * elapsedTime, rotationAxis );
 
-			if ( ( m_camera_controls[ CameraControls::ElevateUp ] != 0 )
-				&& ( m_camera_controls[ CameraControls::ElevateDown ] != 0 ) ) {
+			if ( ( m_camera_controls[ (unsigned int)CameraControls::ElevateUp ] != 0 )
+				&& ( m_camera_controls[ (unsigned int)CameraControls::ElevateDown ] != 0 ) ) {
 
 					Core::vec3 elevateAxis = ( getCameraOrientationInverse() * Core::vec4( 0, 1, 0, 0 ) ).xyz();
 					elevateAxis.x = 0;	elevateAxis.z = 0;
-					if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::ElevateUp ] ) ) Camera_Move( elevateAxis * m_camera_moveSpeed.z * elapsedTime );
-					if ( m_camera_input->getKeySimple( m_camera_controls[ CameraControls::ElevateDown ] ) ) Camera_Move( elevateAxis * -m_camera_moveSpeed.z * elapsedTime );
+					if ( m_camera_input->getKeySimple( m_camera_controls[ (unsigned int)CameraControls::ElevateUp ] ) ) Camera_Move( elevateAxis * m_camera_moveSpeed.z * elapsedTime );
+					if ( m_camera_input->getKeySimple( m_camera_controls[ (unsigned int)CameraControls::ElevateDown ] ) ) Camera_Move( elevateAxis * -m_camera_moveSpeed.z * elapsedTime );
 			}
 		}
 
