@@ -23,9 +23,8 @@ namespace Rocket {
 		}
 		Universe::~Universe() {
 			// Cleanup Scenes
-			std::vector<Scene*>::iterator iter_scenes;
-			for ( iter_scenes = m_renderPasses.begin(); iter_scenes != m_renderPasses.end(); iter_scenes++ ) {
-				delete (*iter_scenes);
+			for ( auto pass : m_renderPasses ) {
+				delete pass;
 			}
 			m_renderPasses.clear();
 
@@ -127,20 +126,19 @@ namespace Rocket {
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 			bool clearScreen = true;
-			std::vector<Scene*>::iterator iter;
 
 #ifdef ENABLE_DEBUG
 			m_cache_renderedPolygons = 0;
 			m_cache_renderedObjects = 0;
 #endif
 
-			for (iter = m_renderPasses.begin(); iter != m_renderPasses.end(); iter++) {
-				(*iter)->draw( elapsedMilliseconds, clearScreen );
+			for ( auto pass : m_renderPasses ) {
+				pass->draw( elapsedMilliseconds, clearScreen );
 				clearScreen = false;
 
 #ifdef ENABLE_DEBUG
-				m_cache_renderedPolygons += (*iter)->m_cache_renderedPolygons;
-				m_cache_renderedObjects += (*iter)->m_cache_renderedObjects;
+				m_cache_renderedPolygons += pass->m_cache_renderedPolygons;
+				m_cache_renderedObjects += pass->m_cache_renderedObjects;
 #endif
 			}
 		}

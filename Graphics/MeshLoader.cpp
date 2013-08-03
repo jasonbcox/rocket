@@ -74,10 +74,10 @@ namespace Rocket {
 						tex_coords.push_back( Core::vec2( (float)atof(curr_line[1].c_str()), (float)atof(curr_line[2].c_str()) ) );
 					} else if(curr_line[0] == "f") {
 						// Face
-						for (unsigned int n = 1; n < curr_line.size(); n++) {
+						for ( unsigned int n = 1; n < curr_line.size(); n++ ) {
 							std::vector<std::string> point = split( curr_line[n], '/' );
 							std::vector<int> p;
-							for (std::vector<std::string>::iterator it = point.begin(); it != point.end(); it++) {
+							for ( std::vector<std::string>::iterator it = point.begin(); it != point.end(); it++ ) {
 								p.push_back(atoi(it->c_str()));
 							}
 							faces.push_back(p);
@@ -92,18 +92,16 @@ namespace Rocket {
 				std::cerr << "Unable to open file.\n";
 			}
 
-	
 			// Order the raw data into ordered vectors.
 			std::vector<Core::vec4> vertices_ordered;
 			std::vector<Core::vec3> vertex_normals_ordered;
 			std::vector<Core::vec2> tex_coords_ordered;
 
-			for (std::vector<std::vector<int>>::iterator it = faces.begin(); it != faces.end(); it++) {
-				vertices_ordered.push_back(vertices[it->at(0) - 1]);
-				tex_coords_ordered.push_back(tex_coords[it->at(1) - 1]);
-				vertex_normals_ordered.push_back(vertex_normals[it->at(2) - 1]);
+			for ( std::vector<std::vector<int>>::iterator it = faces.begin(); it != faces.end(); it++ ) {
+				vertices_ordered.push_back( vertices[it->at(0) - 1] );
+				tex_coords_ordered.push_back( tex_coords[it->at(1) - 1] );
+				vertex_normals_ordered.push_back( vertex_normals[it->at(2) - 1] );
 			}
-
 
 			// Copy ordered data to dynamically allocated arrays.
 			m_vertexCount = vertices_ordered.size();
@@ -112,13 +110,13 @@ namespace Rocket {
 			m_uv = new Core::vec2[tex_coords_ordered.size()];
 
 			int vIndex = 0;
-			for(std::vector<Core::vec4>::iterator it = vertices_ordered.begin(); it != vertices_ordered.end(); it++) {
-				m_vertices[vIndex] = *it;
+			for ( auto vertex : vertices_ordered ) {
+				m_vertices[vIndex] = vertex;
 				vIndex++;
 			}
 			int vnIndex = 0;
-			for(std::vector<Core::vec3>::iterator it = vertex_normals_ordered.begin(); it != vertex_normals_ordered.end(); it++) {
-				m_normals[vnIndex] = *it;
+			for ( auto normal : vertex_normals_ordered ) {
+				m_normals[vnIndex] = normal;
 				vnIndex++;
 			}
 			int uvIndex = 0;

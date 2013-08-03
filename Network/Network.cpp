@@ -380,7 +380,7 @@ namespace Rocket {
 			int result, result2;
 			unsigned int returnPort = startingPort;
 
-			for( unsigned int port = returnPort; port < returnPort + numberOfTries; port++ ) {
+			for ( unsigned int port = returnPort; port < returnPort + numberOfTries; port++ ) {
 				Core::string returnPortStr = Core::string::tostring( port );
 
 				// Test both TCP and UDP bindings

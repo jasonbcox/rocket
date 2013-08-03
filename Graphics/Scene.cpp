@@ -52,9 +52,8 @@ namespace Rocket {
 		}
 		Scene::~Scene() {
 			// Delete all child composites (Transform's deconstructor takes care of children of the composites)
-			std::vector<Scene*>::iterator childComposite;
-			for ( childComposite = m_composites.begin(); childComposite != m_composites.end(); childComposite++ ) {
-				delete (*childComposite);
+			for ( auto childComposite : m_composites ) {
+				delete childComposite;
 			}
 			m_composites.clear();
 
@@ -80,12 +79,11 @@ namespace Rocket {
 		}
 
 		void Scene::drawPass() {
-			std::vector<Mesh*>::iterator mesh;
-			for (mesh = m_meshes.begin(); mesh != m_meshes.end(); mesh++) {
-				(*mesh)->drawCurrentPass( &getCameraProjection(), &getCameraOrientation() );
+			for ( auto mesh : m_meshes ) {
+				mesh->drawCurrentPass( &getCameraProjection(), &getCameraOrientation() );
 #ifdef ENABLE_DEBUG
-				m_cache_renderedPolygons += (*mesh)->m_cache_renderedPolygons;
-				m_cache_renderedObjects += (*mesh)->m_cache_renderedObjects;
+				m_cache_renderedPolygons += mesh->m_cache_renderedPolygons;
+				m_cache_renderedObjects += mesh->m_cache_renderedObjects;
 #endif
 			}
 		}
@@ -106,15 +104,13 @@ namespace Rocket {
 #endif
 
 			// Calculate transforms and update all nodes
-			std::vector<Transform*>::iterator child;
-			for (child = m_children.begin(); child != m_children.end(); child++) {
-				(*child)->calculateTransforms( elapsedMilliseconds, Core::mat4(), false, true );
+			for ( auto child : m_children ) {
+				child->calculateTransforms( elapsedMilliseconds, Core::mat4(), false, true );
 			}
 
 			// Prepare meshes for drawing passes
-			std::vector<Mesh*>::iterator mesh;
-			for (mesh = m_meshes.begin(); mesh != m_meshes.end(); mesh++) {
-				(*mesh)->startPassesForScene( this );
+			for ( auto mesh : m_meshes ) {
+				mesh->startPassesForScene( this );
 			}
 
 			// Opaque pass

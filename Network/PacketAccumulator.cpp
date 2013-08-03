@@ -14,11 +14,11 @@ namespace Rocket {
 		}
 
 		PacketAccumulator::~PacketAccumulator() {
-			for (unsigned int in = 0; in < m_packets_inbound.size(); in++) {
-				delete m_packets_inbound[in];
+			for ( auto inboundPacket : m_packets_inbound ) {
+				delete inboundPacket;
 			}
-			for (unsigned int out = 0; out < m_packets_outbound.size(); out++) {
-				delete m_packets_outbound[out];
+			for ( auto outboundPacket : m_packets_outbound ) {
+				delete outboundPacket;
 			}
 			delete [] m_packets_buffer;
 		}

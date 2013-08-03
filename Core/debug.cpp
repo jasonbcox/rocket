@@ -50,9 +50,8 @@ namespace Rocket {
 
 				// clear screen
 				if ( DEBUG_PRINT_TO_CONSOLE ) std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-				std::vector<std::string>::iterator iter;
-				for ( iter = Debug_LogView.begin(); iter != Debug_LogView.end(); iter++ ) {
-					output += (*iter);
+				for ( auto entry : Debug_LogView ) {
+					output += entry;
 					output += "\n";
 				}
 				Debug_LogView.clear();

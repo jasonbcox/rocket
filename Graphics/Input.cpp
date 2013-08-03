@@ -152,9 +152,8 @@ namespace Rocket {
 
 			// Update keyboard bindings
 			std::vector< Input_Keyboard* > bindingsToKey = Global_Input->m_keyboardBindings[ key ];
-			std::vector< Input_Keyboard* >::iterator iter;
-			for ( iter = bindingsToKey.begin(); iter != bindingsToKey.end(); iter++ ) {
-				(*iter)->update( newstate );
+			for ( auto binding : bindingsToKey ) {
+				binding->update( newstate );
 			}
 		}
 
@@ -174,9 +173,8 @@ namespace Rocket {
 			std::unordered_map< int, Input_ButtonState >::iterator iterButton;
 			for ( iterButton = Global_Input->m_mouse.begin(); iterButton != Global_Input->m_mouse.end(); iterButton++ ) {
 				std::vector< Input_Mouse* > bindingsToButton = Global_Input->m_mouseBindings[ (*iterButton).first ];
-				std::vector< Input_Mouse* >::iterator iter;
-				for ( iter = bindingsToButton.begin(); iter != bindingsToButton.end(); iter++ ) {
-					(*iter)->update( (*iterButton).second, x, y );
+				for ( auto binding : bindingsToButton ) {
+					binding->update( (*iterButton).second, x, y );
 				}
 			}
 		}
@@ -188,9 +186,8 @@ namespace Rocket {
 			// Update mouse bindings on the button that was pressed
 			Core::vec2i mousePos = Global_Input->getMousePosition();
 			std::vector< Input_Mouse* > bindingsToButton = Global_Input->m_mouseBindings[ button ];
-			std::vector< Input_Mouse* >::iterator iter;
-			for ( iter = bindingsToButton.begin(); iter != bindingsToButton.end(); iter++ ) {
-				(*iter)->update( newstate, mousePos.x, mousePos.y );
+			for ( auto binding : bindingsToButton ) {
+				binding->update( newstate, mousePos.x, mousePos.y );
 			}
 		}
 		void Input::callback_mouseScroll( GLFWwindow * window, double xoffset, double yoffset ) {

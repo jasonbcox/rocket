@@ -28,17 +28,17 @@ namespace Rocket {
 		}
 		Transform::~Transform() {
 			// Delete all child transforms
-			std::vector< Transform* >::iterator child;
-			for ( child = m_children.begin(); child != m_children.end(); child++ ) {
-				(*child)->m_parent = NULL;	// The destructor on this Transform (the parent of the child) is already being destroyed, so do NOT attempt to remove
+			for ( auto child : m_children ) {
+				child->m_parent = NULL;	// The destructor on this Transform (the parent of the child) is already being destroyed, so do NOT attempt to remove
 											//		the child's self from this Transform (the parent)
-				delete (*child);
+				delete child;
 			}
 			m_children.clear();
 
 			// Remove self from parent
 			if ( m_parent != NULL ) {
-				for (child = m_parent->m_children.begin(); child != m_parent->m_children.end(); child++) {
+				std::vector< Transform* >::iterator child;
+				for ( child = m_parent->m_children.begin(); child != m_parent->m_children.end(); child++ ) {
 					if ( (*child) == this ) {
 						m_parent->m_children.erase( child );
 						break;
@@ -51,8 +51,8 @@ namespace Rocket {
 
 		void Transform::addChild( Transform * child, bool coupleChildToParent ) {
 			m_children.push_back( child );
-			for ( unsigned int scene = 0; scene < m_owners.size(); scene++ ) {
-				child->addOwner( m_owners[ scene ] );
+			for ( auto scene : m_owners ) {
+				child->addOwner( scene );
 			}
 
 			// todo: since coupleChildToParent is almost always only false with Scene parents, maybe just
@@ -160,9 +160,8 @@ namespace Rocket {
 
 		void Transform::updateBase( bool recursive, float elapsedMilliseconds ) {
 			if ( recursive == true ) {
-				std::vector< Transform* >::iterator child;
-				for(child = m_children.begin(); child != m_children.end(); child++) {
-					(*child)->update( true, elapsedMilliseconds );
+				for ( auto child : m_children ) {
+					child->update( true, elapsedMilliseconds );
 				}
 			}
 			m_updated = true;
@@ -187,9 +186,8 @@ namespace Rocket {
 				if ( m_updated == false ) update( false, elapsedMilliseconds );
 			}
 
-			std::vector< Transform* >::iterator child;
-			for ( child = m_children.begin(); child != m_children.end(); child++ ) {
-				(*child)->calculateTransforms( elapsedMilliseconds, getFinalOrientation(), nextParentCacheIsClean, applyUpdates );
+			for ( auto child : m_children ) {
+				child->calculateTransforms( elapsedMilliseconds, getFinalOrientation(), nextParentCacheIsClean, applyUpdates );
 			}
 
 			if ( applyUpdates == true ) {
@@ -277,16 +275,14 @@ namespace Rocket {
 
 		// Add a scene to the list of owners that contain this object
 		void Transform::addOwner( Scene * scene ) {
-			std::vector< Scene* >::iterator iter;
-			for ( iter = m_owners.begin(); iter != m_owners.end(); iter++ ) {
-				if ( (*iter) == scene ) return;
+			for ( auto owner : m_owners ) {
+				if ( owner == scene ) return;
 			}
 			m_owners.push_back( scene );
 
 			// Add owner for children too
-			std::vector< Transform* >::iterator child;
-			for ( child = m_children.begin(); child != m_children.end(); child++ ) {
-				(*child)->addOwner( scene );
+			for ( auto child : m_children ) {
+				child->addOwner( scene );
 			}
 		}
 		// Remove a scene from the list of owners

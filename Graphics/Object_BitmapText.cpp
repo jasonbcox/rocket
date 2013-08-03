@@ -89,8 +89,8 @@ namespace Rocket {
 			setText( text );
 		}
 		Object_BitmapText::~Object_BitmapText() {
-			for ( unsigned int i = 0; i < m_quads.size(); i++ ) {
-				delete m_quads[i];
+			for ( auto quad : m_quads ) {
+				delete quad;
 			}
 		}
 
@@ -98,8 +98,8 @@ namespace Rocket {
 			m_text = text;
 
 			// Cleanup old quads
-			for ( unsigned int i = 0; i < m_quads.size(); i++ ) {
-				m_quads[i]->Raster::hide();
+			for ( auto quad : m_quads ) {
+				quad->Raster::hide();
 			}
 
 			// Generate new quads
@@ -160,18 +160,16 @@ namespace Rocket {
 			m_alphaTest = alphaTest;
 			m_alphaTransparency = alphaTransparency;
 
-			std::vector<Sprite*>::iterator iter;
-			for( iter = m_quads.begin(); iter != m_quads.end(); iter++ ) {
-				(*iter)->enableTransparency( alphaTest, alphaTransparency );
+			for ( auto quad : m_quads ) {
+				quad->enableTransparency( alphaTest, alphaTransparency );
 			}
 		}
 
 		void Object_BitmapText::disableTransparency() {
 			m_transparency = false;
 
-			std::vector<Sprite*>::iterator iter;
-			for( iter = m_quads.begin(); iter != m_quads.end(); iter++ ) {
-				(*iter)->disableTransparency();
+			for ( auto quad : m_quads ) {
+				quad->disableTransparency();
 			}
 		}
 
