@@ -51,8 +51,10 @@ namespace Rocket {
 			// for Scenes, the orientation is not taken into account in the same manner as Object nodes (as camera positions are inverted, etc.)
 			void addObject( Object * object, Transform * parent );
 
+			void addComposite( Scene * scene );
+
 			//void draw( bool drawTransparentObjects );
-			void draw( float elapsedMilliseconds, bool clearScreen );
+			virtual void draw( float elapsedMilliseconds, bool clearScreen );
 			// elapsedMilliseconds since the last call to draw(). This value is used to correctly interpolate movement of objects within the scene.
 
 			//void queueTransparentObject( Object * object );
@@ -106,7 +108,7 @@ namespace Rocket {
 			int m_cache_renderedObjects;
 #endif
 
-		private:
+		protected:
 			void Init();
 
 			void drawPass();

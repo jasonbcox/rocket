@@ -69,6 +69,10 @@ namespace Rocket {
 				parent->addChild( object, true );
 			}
 		}
+		
+		void Scene::addComposite( Scene * scene ) {
+			m_composites.push_back( static_pointer_cast< Scene >( scene->shared_from_this() ) );
+		}
 
 		void Scene::drawPass() {
 			for ( auto mesh : m_meshes ) {
@@ -118,6 +122,16 @@ namespace Rocket {
 			//glBindFramebuffer(GL_FRAMEBUFFER, 0 );
 			//glBindTexture( GL_TEXTURE_2D, m_renderPasses[0]->m_frameTexture );
 			//glGenerateMipmap(GL_TEXTURE_2D);
+			
+			// Render composites
+			for ( auto composite : m_composites ) {
+				composite->draw( elapsedMilliseconds, false );
+				
+#ifdef ENABLE_DEBUG
+				m_cache_renderedPolygons += composite->m_cache_renderedPolygons;
+				m_cache_renderedObjects += composite->m_cache_renderedObjects;
+#endif
+			}
 		}
 
 		void Scene::renderToTexture( int width, int height ) {

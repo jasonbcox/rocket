@@ -28,6 +28,7 @@ set( RocketGraphics_headers
 	Object_Newton.h
 	Raster.h
 	Scene.h
+	Scissor.h
 	Shader.h
 	ShaderDefaults.h
 	Sprite.h
@@ -47,6 +48,7 @@ set( RocketGraphics_sources
 	Object_Newton.cpp
 	Raster.cpp
 	Scene.cpp
+	Scissor.cpp
 	Shader.cpp
 	ShaderDefaults.cpp
 	Sprite.cpp

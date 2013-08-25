@@ -18,6 +18,7 @@
 #include "ShaderDefaults.h"
 #include "Sprite.h"
 #include "Object_BitmapText.h"
+#include "Scissor.h"
 
 using namespace Rocket;
 using namespace Rocket::Core;
@@ -58,7 +59,8 @@ Rocket_UnitTest ( all_Graphics ) {
 	Universe * world = new Universe();
 	auto mainScene = make_shared< Scene >( 63.0f, (Graphics::WindowWidth * 1.0f)/(Graphics::WindowHeight * 1.0f), 1.0f, 1000.0f );
 	world->addRenderPass( mainScene.get() );
-	auto hudScene = make_shared< Scene >( Graphics::WindowWidth * 1.0f, Graphics::WindowHeight * 1.0f );
+	//auto hudScene = make_shared< Scene >( Graphics::WindowWidth * 1.0f, Graphics::WindowHeight * 1.0f );
+	auto hudScene = make_shared< Scissor >( Graphics::WindowWidth * 1.0f, Graphics::WindowHeight * 1.0f, 0, 20, 400, 400 );
 	world->addRenderPass( hudScene.get() );
 
 	// Load shaders
