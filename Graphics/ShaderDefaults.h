@@ -5,6 +5,8 @@
 #include "Shader.h"
 #include "Universe.h"
 
+using namespace Rocket::Core;
+
 namespace Rocket {
 	namespace Graphics {
 
@@ -15,7 +17,7 @@ namespace Rocket {
 				ShaderUniforms_Texture();
 				virtual ~ShaderUniforms_Texture();
 
-				ShaderUniforms_Texture * clone();
+				shared_ptr< ShaderUniforms > clone();
 
 				Shader_UniformTexture m_texture;
 				Core::vec2 m_textureScale;

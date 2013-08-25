@@ -5,6 +5,9 @@
 #include <unordered_map>
 #include <map>
 #include <vector>
+#include <memory>
+
+using namespace std;
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -23,13 +26,17 @@ namespace Rocket {
 			Transparent,
 			END_OF_DRAW_PASSES
 		};
-
+		
 		class Object;
+		
+		typedef std::vector< shared_ptr< Object > > objectUsersListType;
+		typedef std::vector< objectUsersListType > renderPassListType;
+
 		class Scene;
 		class Universe;
-		class Mesh {
+		class Mesh : public enable_shared_from_this< Mesh > {
 		public:
-			Mesh( Shader * shader, int numVertices, Core::vec4 * vertices = NULL, Core::vec3 * normals = NULL, Core::vec2 * uvCoords = NULL );
+			Mesh( Shader * shader, int numVertices, Core::vec4 * vertices = nullptr, Core::vec3 * normals = nullptr, Core::vec2 * uvCoords = nullptr );
 			Mesh( const char * OBJ_Wavefront_File, Shader * shader );
 			virtual ~Mesh();
 
@@ -37,14 +44,14 @@ namespace Rocket {
 			void drawCurrentPass( const Core::mat4 * cameraProjection, const Core::mat4 * cameraOrientation );
 
 			void addMeshUser( Object * object );
-			std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator addSceneToUserList( Scene * scene );
-			void removeMeshUserFromScene( Object * object, Scene * scene );
+			std::unordered_map< Scene*, renderPassListType >::iterator addSceneToUserList( Scene * scene );
+			void removeMeshUserFromScene( const Object * meshUser, Scene * scene );
 
 			GLuint getVertexArrayObject();
 			Shader * getShader();
 			int getVertexCount();
 
-			void editMesh( int startVertex, int endVertex, Core::vec4 * vertices, Core::vec3 * normals = NULL, Core::vec2 * uvCoords = NULL );
+			void editMesh( int startVertex, int endVertex, Core::vec4 * vertices, Core::vec3 * normals = nullptr, Core::vec2 * uvCoords = nullptr );
 
 			static void generateSphericalNormals( Mesh * mesh );
 
@@ -57,13 +64,13 @@ namespace Rocket {
 			GLuint m_vao;				// vertex array object
 			GLuint m_vbo[MESH_VBO_NUM];	// vertex buffer object
 
-			std::unordered_map<Scene*, std::vector<std::vector<Object*>>> m_objectUsers;
-			std::vector<std::vector<Object*>>::iterator m_currentPassIterator;
+			std::unordered_map< Scene*, renderPassListType > m_objectUsers;
+			renderPassListType::iterator m_currentPassIterator;
 
 			void generateBufferObjects();
 
 			// A shader is the property of the mesh instead of the object because the mesh needs to pass information to a specific shader program
-			Shader * m_shader;
+			shared_ptr< Shader > m_shader;
 
 			int m_vertexCount;
 			Core::vec4 * m_vertices;

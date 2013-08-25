@@ -19,7 +19,11 @@ namespace Rocket {
 
 		Shader_UniformTexture::Shader_UniformTexture( unsigned int textureSlot, Texture * texture, unsigned int wrapS, unsigned int wrapT ) {
 			m_textureSlot = textureSlot;
-			m_texture = texture;
+			if ( texture == nullptr ) {
+				m_texture = shared_ptr< Texture >();
+			} else {
+				m_texture = texture->shared_from_this();
+			}
 			m_wrapS = wrapS;
 			m_wrapT = wrapT;
 		}
@@ -27,7 +31,7 @@ namespace Rocket {
 		}
 
 		ShaderUniformCache::ShaderUniformCache() {
-			cachedValue = NULL;
+			cachedValue = nullptr;
 			cacheSize = 0;
 			cacheIsClean = false;
 			cachedUniformLocation = InvalidShaderUniformLocation;
@@ -68,8 +72,8 @@ namespace Rocket {
 		ShaderUniforms::~ShaderUniforms() {
 		}
 
-		ShaderUniforms * ShaderUniforms::clone() {
-			ShaderUniforms * r = new ShaderUniforms();
+		shared_ptr< ShaderUniforms > ShaderUniforms::clone() {
+			auto r = make_shared< ShaderUniforms >();
 			return r;
 		}
 

@@ -9,7 +9,7 @@ namespace Rocket {
 		// Packet Constructors/Destructors
 		// --------------------------------------------------------------------------------------------------------------------
 		void Packet::init() {
-			m_data = NULL;
+			m_data = nullptr;
 			m_size = 0;
 			m_maxsize = 0;
 			m_seek = 0;
@@ -32,7 +32,7 @@ namespace Rocket {
 
 			default:
 				m_type = PacketTypes::Typeless;
-				c_element_list = NULL;
+				c_element_list = nullptr;
 			}
 
 			if ( m_type != PacketTypes::Typeless ) {
@@ -63,7 +63,7 @@ namespace Rocket {
 
 				default:
 					m_type = PacketTypes::Typeless;
-					c_element_list = NULL;
+					c_element_list = nullptr;
 			}
 		}
 
@@ -87,7 +87,7 @@ namespace Rocket {
 				m_data = new char[ size ];
 
 				if ( m_size > size ) m_size = size;
-				if ( olddata != NULL ) {
+				if ( olddata != nullptr ) {
 					memcpy( m_data, olddata, m_size );
 					delete [] olddata;
 				}
@@ -136,7 +136,7 @@ namespace Rocket {
 			}
 		}
 
-		void Packet::add( Core::fixedpoint f ) {
+		void Packet::add( fixedpoint f ) {
 			PacketElementTypes type = PacketElementTypes::raw_fixedpoint;
 			if ( nextElementMatches( type ) ) {
 				if ( m_explicitPacketElements == true ) add( (char*)(&type), 1 );
@@ -150,7 +150,7 @@ namespace Rocket {
 			}
 		}
 
-		void Packet::add( Core::string s ) {
+		void Packet::add( rstring s ) {
 			PacketElementTypes type = PacketElementTypes::char_string;
 			if ( nextElementMatches( type ) ) {
 				if ( m_explicitPacketElements == true ) add( (char*)(&type), 1 );
@@ -212,14 +212,14 @@ namespace Rocket {
 			}
 		}
 
-		Core::fixedpoint Packet::getfixedpoint() {
+		fixedpoint Packet::getfixedpoint() {
 			char type = 0;
 			if ( ( m_explicitPacketElements == false ) || (nextElementMatches( (PacketElementTypes)(type = getByte()) )) ) {
 				fswap cf;
 				int nbo_i;
 				memcpy( &nbo_i, &(m_data[m_seek]), PACKET_INT_SIZE );
 				cf.i =  ntohl( nbo_i );
-				Core::FixedPoint_OutputType f = cf.f;
+				FixedPoint_OutputType f = cf.f;
 
 				m_seek += PACKET_INT_SIZE;
 				( m_nestedElements == 0 ) ? m_current_element++ : m_nestedElements--;
@@ -229,7 +229,7 @@ namespace Rocket {
 			}
 		}
 
-		Core::string Packet::getString() {
+		rstring Packet::getString() {
 			char type = 0;
 			if ( ( m_explicitPacketElements == false ) || (nextElementMatches( (PacketElementTypes)(type = getByte()) )) ) {
 				// get string length
@@ -242,7 +242,7 @@ namespace Rocket {
 				c[ s_length ] = '\0';
 
 				m_seek += s_length;
-				Core::string r = c;
+				rstring r = c;
 				delete [] c;
 
 				( m_nestedElements == 0 ) ? m_current_element++ : m_nestedElements--;
@@ -265,7 +265,7 @@ namespace Rocket {
 
 		// Returns true if type matches the next expected packet element type
 		bool Packet::nextElementMatches( PacketElementTypes type ) {
-			if ( c_element_list == NULL ) return true;
+			if ( c_element_list == nullptr ) return true;
 			if ( m_nestedElements > 0 ) return true;
 			if ( c_element_list[ m_current_element ] == PacketElementTypes::empty ) return false;
 			if ( c_element_list[ m_current_element ] == type ) return true;

@@ -4,7 +4,7 @@
 namespace Rocket {
 	namespace Network {
 
-		PacketAccumulator::PacketAccumulator( ConnectionTypes protocol, Core::string IP, unsigned int port ) {
+		PacketAccumulator::PacketAccumulator( ConnectionTypes protocol, rstring IP, unsigned int port ) {
 			m_protocol = protocol;
 			m_destination_IP = IP;
 			m_destination_port = port;
@@ -28,14 +28,14 @@ namespace Rocket {
 			m_packets_outbound.push_back( p );
 		}
 
-		// Return the next available packet on the receiving queue, or NULL if there is none
+		// Return the next available packet on the receiving queue, or nullptr if there is none
 		Packet * PacketAccumulator::receive() {
 			if ( m_packets_inbound.size() > 0 ) {
 				Packet * r = m_packets_inbound[0];
 				m_packets_inbound.pop_front();
 				return r;
 			} else {
-				return NULL;
+				return nullptr;
 			}
 		}
 
@@ -75,14 +75,14 @@ namespace Rocket {
 			}
 		}
 
-		// toSocket() returns the next packet ready for sending across the socket, or NULL if there are no packets to send
+		// toSocket() returns the next packet ready for sending across the socket, or nullptr if there are no packets to send
 		Packet * PacketAccumulator::toSocket() {
 			if ( m_packets_outbound.size() > 0 ) {
 				Packet * r = m_packets_outbound[0];
 				m_packets_outbound.pop_front();
 				return r;
 			} else {
-				return NULL;
+				return nullptr;
 			}
 		}
 

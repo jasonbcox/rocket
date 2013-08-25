@@ -5,6 +5,9 @@
 
 #include "Network.h"
 
+using namespace Rocket::Core;
+using namespace Rocket::Network;
+
 Rocket_UnitTest ( Network_TCP ) {
 	// Setup local server
 	Rocket::Network::Network * server = new Rocket::Network::Network( (int)Rocket::Network::NetworkSettings::TCP_ListeningEnabled | (int)Rocket::Network::NetworkSettings::TCP_Enabled, 1000 );
@@ -13,11 +16,11 @@ Rocket_UnitTest ( Network_TCP ) {
 	// Connect client to server
 	Rocket::Network::Network * client = new Rocket::Network::Network( (int)Rocket::Network::NetworkSettings::TCP_Enabled, 1000 );
 	Rocket::Network::PacketAccumulator * client_acc = client->connect_TCP_IP4( "127.0.0.1", server_port );
-	Rocket_UnitTest_Check_Expression( client_acc != NULL );
+	Rocket_UnitTest_Check_Expression( client_acc != nullptr );
 
 	// Server: accept client connection
 	Rocket::Network::PacketAccumulator * server_acc = server->update();
-	Rocket_UnitTest_Check_Expression( server_acc != NULL );
+	Rocket_UnitTest_Check_Expression( server_acc != nullptr );
 
 	// Client: send data
 	Rocket::Network::Packet * p = new Rocket::Network::Packet( Rocket::Network::PacketTypes::Test );
@@ -32,7 +35,7 @@ Rocket_UnitTest ( Network_TCP ) {
 	// Server: receive data
 	server->update();
 	Rocket::Network::Packet * p2 = server_acc->receive();
-	Rocket_UnitTest_Check_Expression( p2 != NULL );
+	Rocket_UnitTest_Check_Expression( p2 != nullptr );
 
 	Rocket_UnitTest_Check_CharStringEqual( p2->getString().c_str(), "Hello server!" );
 	Rocket_UnitTest_Check_FloatEqual( p2->getfixedpoint().toValue(), 0.5f, 0.001f );
@@ -55,11 +58,11 @@ Rocket_UnitTest ( Network_UDP ) {
 
 	// Sender: get ready to send to destination
 	Rocket::Network::PacketAccumulator * sender_acc = sender->connect_UDP_IP4( "127.0.0.1", receiver_port );
-	Rocket_UnitTest_Check_Expression( sender_acc != NULL );
+	Rocket_UnitTest_Check_Expression( sender_acc != nullptr );
 
 	// Receiver: get ready to receive from the sender
 	Rocket::Network::PacketAccumulator * receiver_acc = receiver->connect_UDP_IP4( "127.0.0.1", sender_port );
-	Rocket_UnitTest_Check_Expression( receiver_acc != NULL );
+	Rocket_UnitTest_Check_Expression( receiver_acc != nullptr );
 
 	// Sender: send UDP packet
 	Rocket::Network::Packet * p = new Rocket::Network::Packet( Rocket::Network::PacketTypes::Test );
@@ -74,7 +77,7 @@ Rocket_UnitTest ( Network_UDP ) {
 	// Receiver: get incoming packet
 	receiver->update();
 	Rocket::Network::Packet * p2 = receiver_acc->receive();
-	Rocket_UnitTest_Check_Expression( p2 != NULL );
+	Rocket_UnitTest_Check_Expression( p2 != nullptr );
 
 	Rocket_UnitTest_Check_CharStringEqual( p2->getString().c_str(), "Hello Receiver!" );
 	Rocket_UnitTest_Check_FloatEqual( p2->getfixedpoint().toValue(), 12345.0f, 0.001f );
@@ -89,13 +92,13 @@ Rocket_UnitTest ( Network_UDP ) {
 Rocket_UnitTest ( Network_HTTP ) {
 	// Connect to a test web server
 	Rocket::Network::Network * web = new Rocket::Network::Network( (int)Rocket::Network::NetworkSettings::TCP_Enabled, 1000 );
-	Rocket::Core::string hostname = "www.jasonbcox.com";
+	rstring hostname = "www.jasonbcox.com";
 	Rocket::Network::PacketAccumulator * acc = web->connect_TCP_IP4( hostname, 80 );
-	Rocket_UnitTest_Check_Expression( acc != NULL );
+	Rocket_UnitTest_Check_Expression( acc != nullptr );
 
 	// Formulate the HTTP request and send it
 	Rocket::Network::Packet * httpRequest = new Rocket::Network::Packet( Rocket::Network::PacketTypes::Typeless );
-	Rocket::Core::string request = "GET /Portfolio/projects/programming/moo/moo.h HTTP/1.0\r\n";
+	rstring request = "GET /Portfolio/projects/programming/moo/moo.h HTTP/1.0\r\n";
 	request << "Host: " << hostname << "\r\n";
 	request << "Connection: close\r\n";
 	request << "\r\n\r\n";

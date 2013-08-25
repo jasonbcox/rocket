@@ -11,7 +11,7 @@ namespace Rocket {
 		unsigned int results_passed = 0;
 		unsigned int results_failed = 0;
 		unsigned int results_total = 0;
-		std::vector <Rocket::Test::UnitTest*> * testList = NULL;
+		std::vector <Rocket::Test::UnitTest*> * testList = nullptr;
 
 		UnitTest::UnitTest( std::string name ) : m_name(name), m_result( Rocket::Test::Test_Pass ) {
 			Rocket::Test::UnitTests_registerUnitTest( this );
@@ -21,7 +21,7 @@ namespace Rocket {
 
 		// Add a unit test to the list of all unit tests
 		void UnitTests_registerUnitTest( Rocket::Test::UnitTest * test ) {
-			if (testList == NULL) {
+			if (testList == nullptr) {
 				testList = new std::vector <Rocket::Test::UnitTest*>();
 			}
 
@@ -31,7 +31,7 @@ namespace Rocket {
 
 		// Run all registered unit tests and output the number that passed
 		void UnitTests_runAll() {
-			if (testList == NULL) return;	// No tests to run
+			if (testList == nullptr) return;	// No tests to run
 
 			std::cerr << "Running " << results_total << " unit tests:\n";
 
@@ -52,7 +52,7 @@ namespace Rocket {
 		}
 
 		void UnitTests_cleanup() {
-			if (testList != NULL) return;
+			if (testList != nullptr) return;
 
 			for (unsigned int i = 0; i < testList->size(); i++) {
 				delete (*testList)[i];

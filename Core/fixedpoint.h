@@ -2,8 +2,10 @@
 #ifndef Rocket_Core_FixedPoint_H
 #define Rocket_Core_FixedPoint_H
 
-#include "string_.h"
+#include <string>
 #include <cmath>
+
+using namespace std;
 
 namespace Rocket {
 	namespace Core {

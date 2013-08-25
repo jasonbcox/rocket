@@ -10,7 +10,7 @@ namespace Rocket {
 	namespace Graphics {
 
 		// Definition for static member
-		Input * Input::Global_Input = NULL;
+		Input * Input::Global_Input = nullptr;
 
 		Input::Input( GLFWwindow * window ) {
 			m_window = window;

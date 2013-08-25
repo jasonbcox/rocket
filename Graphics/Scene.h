@@ -44,7 +44,7 @@ namespace Rocket {
 			void addMesh( Mesh * mesh );
 			// todo: removeMesh() and/or deleteAllMeshes() so that mesh cleanup is automated
 
-			// Note: addObject() decouples the object from the Scene if parent is NULL
+			// Note: addObject() decouples the object from the Scene if parent is nullptr
 			// This means that, from the perspective of any object, "world space" is with respect to its containing Scene node
 			// Any complex scene graphs with Scenes as descendents of other Scenes will not work as expected for retrieving world positions
 			// In order to fix this, consider removing the ability to decouple children from parents, and override Transform::positionWorld() such that,
@@ -99,7 +99,7 @@ namespace Rocket {
 			void enableDepthTest();
 			void disableDepthTest();
 
-			std::list<std::pair< Transform*, int >> * zIndexer();
+			zIndexerType * zIndexer();
 
 #ifdef ENABLE_DEBUG
 			int m_cache_renderedPolygons;
@@ -146,13 +146,13 @@ namespace Rocket {
 
 
 			// A list of all meshes used to render objects in this scene
-			std::vector< Mesh* > m_meshes;
+			std::vector< shared_ptr< Mesh > > m_meshes;
 
 			// Scene children that are rendered directly on top of this Scene
-			std::vector< Scene* > m_composites;
+			std::vector< shared_ptr< Scene > > m_composites;
 
 			// List of Transforms to keep track of z ordered items
-			std::list< std::pair< Transform*, int > > m_zIndexer;
+			zIndexerType m_zIndexer;
 
 		};
 	}

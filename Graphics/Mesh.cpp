@@ -20,14 +20,14 @@ namespace Rocket {
 		}
 
 		Mesh::Mesh( Shader * shader, int numVertices, Core::vec4 * vertices, Core::vec3 * normals, Core::vec2 * uvCoords ) {
-			m_shader = shader;
+			m_shader = shader->shared_from_this();
 
 			m_vertexCount = numVertices;
 			m_vertices = vertices;
 			m_normals = normals;
 			m_uv = uvCoords;
 
-			if (m_uv == NULL) {
+			if ( m_uv == nullptr ) {
 				m_uv = new Core::vec2[m_vertexCount];
 			}
 
@@ -36,7 +36,7 @@ namespace Rocket {
 			passMeshToGPU();
 		}
 		Mesh::Mesh( const char * OBJ_Wavefront_File, Shader * shader ) {
-			m_shader = shader;
+			m_shader = shader->shared_from_this();
 
 			load_OBJ( OBJ_Wavefront_File );
 
@@ -50,18 +50,6 @@ namespace Rocket {
 #endif
 		}
 		Mesh::~Mesh() {
-			std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator mapIter;
-			for ( mapIter = m_objectUsers.begin(); mapIter != m_objectUsers.end(); mapIter++ ) {
-				std::vector<std::vector<Object*>>::iterator passIter;
-				for ( passIter = mapIter->second.begin(); passIter != mapIter->second.end(); passIter++ ) {
-					std::vector<Object*>::iterator objIter;
-					for ( objIter = passIter->begin(); objIter != passIter->end(); objIter++ ) {
-						delete (*objIter);
-					}
-					passIter->clear();
-				}
-			}
-
 			glDeleteVertexArrays( 1, &m_vao );
 			glDeleteBuffers( MESH_VBO_NUM, m_vbo );
 
@@ -74,7 +62,7 @@ namespace Rocket {
 		}
 
 		void Mesh::startPassesForScene( Scene * scene ) {
-			std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator mapIter = m_objectUsers.find( scene );
+			auto mapIter = m_objectUsers.find( scene );
 			if ( mapIter != m_objectUsers.end() ) {
 				m_currentPassIterator = (*mapIter).second.begin();
 			} else {
@@ -98,10 +86,9 @@ namespace Rocket {
 			// Camera projection
 			*m_shader->getCameraPerspective() = cameraProjection;
 
-			std::vector<Object*>::iterator objIter;
-			for (objIter = m_currentPassIterator->begin(); objIter != m_currentPassIterator->end(); objIter++) {
+			for ( auto objIter = m_currentPassIterator->begin(); objIter != m_currentPassIterator->end(); objIter++) {
 				// Draw Object
-				Object * obj = (*objIter);
+				Object * obj = (*objIter).get();
 				if ( obj->isVisible() == true ) {
 					// Orientation of the object
 					*m_shader->getObjecTransform() = &(obj->getFinalOrientation());
@@ -126,7 +113,7 @@ namespace Rocket {
 
 
 		void Mesh::addMeshUser( Object * object ) {
-			std::vector<Scene*> objectOwners = object->getOwners();
+			auto objectOwners = object->getOwners();
 			MeshDrawPasses removeFromPass = MeshDrawPasses::Transparent;
 			MeshDrawPasses addToPass = MeshDrawPasses::Opaque;
 			if ( object->isTransparent() == true ) {
@@ -134,53 +121,50 @@ namespace Rocket {
 				addToPass = MeshDrawPasses::Transparent;
 			}
 
-			std::vector<Scene*>::iterator sceneIter;
-			for ( sceneIter = objectOwners.begin(); sceneIter != objectOwners.end(); sceneIter++ ) {
-				std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator mapIter = m_objectUsers.find( (*sceneIter) );
+			for ( auto owner : objectOwners ) {
+				auto mapIter = m_objectUsers.find( owner.get() );
 				if ( mapIter != m_objectUsers.end() ) {
 					// Remove existing user from the other pass
-					std::vector<Object*>::iterator objectIter;
-					for ( objectIter = mapIter->second[ (unsigned int)removeFromPass ].begin(); objectIter != mapIter->second[ (unsigned int)removeFromPass ].end(); objectIter++ ) {
-						if ( (*objectIter) == object ) {
+					for ( auto objectIter = mapIter->second[ (unsigned int)removeFromPass ].begin(); objectIter != mapIter->second[ (unsigned int)removeFromPass ].end(); objectIter++ ) {
+						if ( objectIter->get() == object ) {
 							mapIter->second[ (unsigned int)removeFromPass ].erase( objectIter );
 							break;
 						}
 					}
 				} else {
 					// Add scene to m_objectUsers and add the correct passes
-					mapIter = addSceneToUserList( (*sceneIter) );
+					mapIter = addSceneToUserList( owner.get() );
 				}
 
 				// If user isn't already there, add user to correct pass
-				bool objectAlreadyInPass = false;
-				std::vector<Object*>::iterator objectIter;
-				for ( objectIter = mapIter->second[ (unsigned int)addToPass ].begin(); objectIter != mapIter->second[ (unsigned int)addToPass ].end(); objectIter++ ) {
-					if ( (*objectIter) == object ) {
-						objectAlreadyInPass = true;
+				bool userAlreadyInPass = false;
+				for ( auto user : mapIter->second[ (unsigned int)addToPass ] ) {
+					if ( user.get() == object ) {
+						userAlreadyInPass = true;
 						break;
 					}
 				}
-				if ( objectAlreadyInPass == false ) mapIter->second[ (unsigned int)addToPass ].push_back( object );
+				if ( userAlreadyInPass == false ) {
+					mapIter->second[ (unsigned int)addToPass ].push_back( static_pointer_cast< Object >( object->shared_from_this() ) );
+				}
 			}
 		}
 
-		std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator Mesh::addSceneToUserList( Scene * scene ) {
-			std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator mapIter;
-			mapIter = m_objectUsers.insert( std::pair<Scene*, std::vector<std::vector<Object*>>>( scene, std::vector<std::vector<Object*>>() ) ).first;
+		std::unordered_map< Scene*, renderPassListType >::iterator Mesh::addSceneToUserList( Scene * scene ) {
+			auto mapIter = m_objectUsers.insert( std::pair< Scene*, renderPassListType >( scene, renderPassListType() ) ).first;
 			for ( unsigned int i = 0; i < (unsigned int)MeshDrawPasses::END_OF_DRAW_PASSES; i++ ) {
-				mapIter->second.push_back( std::vector<Object*>() );
+				mapIter->second.push_back( objectUsersListType() );
 			}
 			return mapIter;
 		}
 
-		void Mesh::removeMeshUserFromScene( Object * object, Scene * scene ) {
-			std::unordered_map<Scene*, std::vector<std::vector<Object*>>>::iterator mapIter = m_objectUsers.find( scene );
+		void Mesh::removeMeshUserFromScene( const Object * meshUser, Scene * scene ) {
+			auto mapIter = m_objectUsers.find( scene );
 			if ( mapIter != m_objectUsers.end() ) {
 				// Remove existing user from all passes
 				for ( unsigned int i = 0; i < (unsigned int)MeshDrawPasses::END_OF_DRAW_PASSES; i++ ) {
-					std::vector<Object*>::iterator objectIter;
-					for ( objectIter = mapIter->second[ i ].begin(); objectIter != mapIter->second[ i ].end(); objectIter++ ) {
-						if ( (*objectIter) == object ) {
+					for ( auto objectIter = mapIter->second[ i ].begin(); objectIter != mapIter->second[ i ].end(); objectIter++ ) {
+						if ( objectIter->get() == meshUser ) {
 							mapIter->second[ i ].erase( objectIter );
 							break;
 						}
@@ -192,7 +176,7 @@ namespace Rocket {
 		}
 
 		void Mesh::passMeshToGPU() {
-			if ( m_shader == NULL ) { Rocket::Core::Debug_AddToLog( "Error: Mesh must be linked to a shader." ); system( "pause" ); exit( 1 ); }
+			if ( m_shader.get() == nullptr ) { Rocket::Core::Debug_AddToLog( "Error: Mesh must be linked to a shader." ); system( "pause" ); exit( 1 ); }
 			if ( m_vertexCount <= 0 ) { Rocket::Core::Debug_AddToLog( "Error: Mesh must contain at least one vertex." ); system( "pause" ); exit( 1 ); }
 			m_shader->useShaderProgram();
 			GLuint shaderNum = m_shader->getShaderNumber();
@@ -266,7 +250,7 @@ namespace Rocket {
 		}
 
 		Shader * Mesh::getShader() {
-			return m_shader;
+			return m_shader.get();
 		}
 
 		int Mesh::getVertexCount() {
@@ -278,12 +262,12 @@ namespace Rocket {
 			for ( int x = startVertex; x <= endVertex; x++ ) {
 				m_vertices[x] = vertices[ x - startVertex ];
 			}
-			if ( normals != NULL ) {
+			if ( normals != nullptr ) {
 				for ( int x = startVertex; x <= endVertex; x++ ) {
 					m_normals[x] = normals[ x - startVertex ];
 				}
 			}
-			if ( uvCoords != NULL ) {
+			if ( uvCoords != nullptr ) {
 				for ( int x = startVertex; x <= endVertex; x++ ) {
 					m_uv[x] = uvCoords[ x - startVertex ];
 				}

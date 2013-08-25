@@ -8,7 +8,7 @@
 #include <string.h>
 
 #include "rocket/Core/system.h"
-#include "rocket/Core/string_.h"
+#include "rocket/Core/rstring.h"
 
 #ifdef OS_WINDOWS
 #include <winsock2.h>
@@ -65,9 +65,9 @@ namespace Rocket {
 			// returns the port number being listened on
 			unsigned int setupTCP_listen( unsigned int listenPort, unsigned int numberOfPortTries );
 
-			Core::string hostLookup( Core::string host, unsigned int port );
-			PacketAccumulator * connect_UDP_IP4( Core::string host, unsigned int port );
-			PacketAccumulator * connect_TCP_IP4( Core::string host, unsigned int port );
+			rstring hostLookup( rstring host, unsigned int port );
+			PacketAccumulator * connect_UDP_IP4( rstring host, unsigned int port );
+			PacketAccumulator * connect_TCP_IP4( rstring host, unsigned int port );
 
 			// todo: add close_UDP() after X time (because UDP connections don't "close")
 			// close_TCP() does not delete PacketAccumulators, so they must be cleaned up by you
@@ -107,7 +107,7 @@ namespace Rocket {
 		// Outbound packets are sent at the next cycle
 		class PacketAccumulator {
 		public:
-			PacketAccumulator( ConnectionTypes protocol, Core::string IP, unsigned int port );
+			PacketAccumulator( ConnectionTypes protocol, rstring IP, unsigned int port );
 			~PacketAccumulator();
 
 			void send( Packet * p );	// queue a packet for sending
@@ -127,7 +127,7 @@ namespace Rocket {
 			unsigned int m_packets_buffer_index;
 
 			ConnectionTypes m_protocol;
-			Core::string m_destination_IP;
+			rstring m_destination_IP;
 			unsigned int m_destination_port;
 
 			// For sending and receiving bytes on the socket directly

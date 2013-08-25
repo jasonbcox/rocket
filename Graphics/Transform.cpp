@@ -6,16 +6,15 @@
 #include "Scene.h"
 #include "rocket/Core/matrix.h"
 #include "rocket/Core/debug.h"
-#include "rocket/Core/string_.h"
 #include <sstream>
 
 namespace Rocket {
 	namespace Graphics {
 
 		Transform::Transform() {
-			m_parent = NULL;
+			m_parent = nullptr;
 
-			m_zIndexer = NULL;
+			m_zIndexer = nullptr;
 
 			scale( Core::vec3(1,1,1) );
 			position( Core::vec3(0,0,0) );
@@ -27,37 +26,26 @@ namespace Rocket {
 			setOrientationCacheAsDirty();
 		}
 		Transform::~Transform() {
-			// Delete all child transforms
-			for ( auto child : m_children ) {
-				child->m_parent = NULL;	// The destructor on this Transform (the parent of the child) is already being destroyed, so do NOT attempt to remove
-											//		the child's self from this Transform (the parent)
-				delete child;
-			}
-			m_children.clear();
-
 			// Remove self from parent
-			if ( m_parent != NULL ) {
-				std::vector< Transform* >::iterator child;
-				for ( child = m_parent->m_children.begin(); child != m_parent->m_children.end(); child++ ) {
-					if ( (*child) == this ) {
-						m_parent->m_children.erase( child );
+			if ( m_parent != nullptr ) {
+				for ( auto child_iter = m_parent->m_children.begin(); child_iter != m_parent->m_children.end(); child_iter++ ) {
+					if ( child_iter->get() == this ) {
+						m_parent->m_children.erase( child_iter );
 						break;
 					}
 				}
 			}
-
-			m_owners.clear();
 		}
 
 		void Transform::addChild( Transform * child, bool coupleChildToParent ) {
-			m_children.push_back( child );
+			m_children.push_back( child->shared_from_this() );
 			for ( auto scene : m_owners ) {
-				child->addOwner( scene );
+				child->addOwner( scene.get() );
 			}
 
 			// todo: since coupleChildToParent is almost always only false with Scene parents, maybe just
 			//			add a member to Transform with a default value for coupleChildToParent (false for Scenes, true for everthing else)
-			if ( coupleChildToParent == true ) child->m_parent = this;
+			if ( coupleChildToParent == true ) child->m_parent = this->shared_from_this();
 		}
 
 		void Transform::scale( const Core::vec3 & scale ) {
@@ -74,7 +62,7 @@ namespace Rocket {
 		}
 
 		bool Transform::cleanParentOrientationCache() {
-			if ( m_parent == NULL ) {
+			if ( m_parent == nullptr ) {
 				if ( m_cache_descendantOrientationIsClean == false ) {
 					calculateTransforms( 0.0f, Core::mat4(), false, false );
 					return false;
@@ -210,11 +198,11 @@ namespace Rocket {
 		}
 
 		// Z-Indexing Functions
-		void Transform::zIndexer_Add( std::list< std::pair< Transform*, int > > * zIndexer, int zIndexTag ) {
+		void Transform::zIndexer_Add( zIndexerType * zIndexer, int zIndexTag ) {
 			m_zIndexer = zIndexer;
 
 			// Find the nearest elements to zIndexTag
-			std::list<std::pair< Transform*, int >>::iterator highTag, lowTag, iter;
+			zIndexerType::iterator highTag, lowTag, iter;
 			highTag = zIndexer->end();
 			lowTag = zIndexer->end();
 			for ( iter = zIndexer->begin(); iter != zIndexer->end(); iter++ ) {
@@ -230,18 +218,18 @@ namespace Rocket {
 			}
 
 			if ( lowTag != zIndexer->end() ) {
-				m_zIndexer_myIterator = zIndexer_AddInFront( lowTag->first, zIndexTag );
+				m_zIndexer_myIterator = zIndexer_AddInFront( lowTag->first.lock().get(), zIndexTag );
 			} else if ( highTag != zIndexer->end() ) {
-				m_zIndexer_myIterator = zIndexer_AddBehind( highTag->first, zIndexTag );
+				m_zIndexer_myIterator = zIndexer_AddBehind( highTag->first.lock().get(), zIndexTag );
 			} else {
 				// No tags exist, so add this to the very front
-				zIndexer->push_front( std::pair< Transform*, int >( this, zIndexTag ) );
+				zIndexer->push_front( std::pair< weak_ptr< Transform >, int >( this->shared_from_this(), zIndexTag ) );
 				m_zIndexer_myIterator = zIndexer->begin();
 
 				iter = m_zIndexer_myIterator;
 				iter++;
 				Core::vec3 pos = position();
-				pos.z = iter->first->position().z + 1.0f;
+				pos.z = iter->first.lock().get()->position().z + 1.0f;
 
 				// Make sure it fits within the viewspace
 				// If this code is ever hit, you're doing something wrong (try z-indexing your transforms better!)
@@ -250,35 +238,35 @@ namespace Rocket {
 				position( pos );
 			}
 		}
-		std::list< std::pair< Transform*, int > >::iterator Transform::zIndexer_AddBehind( Transform * relativeTo, int zIndexTag ) {
+		zIndexerType::iterator Transform::zIndexer_AddBehind( Transform * relativeTo, int zIndexTag ) {
 			m_zIndexer = relativeTo->m_zIndexer;
-			std::list< std::pair< Transform*, int > >::iterator iter = relativeTo->m_zIndexer_myIterator;
-			float highZ = iter->first->position().z;
+			zIndexerType::iterator iter = relativeTo->m_zIndexer_myIterator;
+			float highZ = iter->first.lock().get()->position().z;
 			iter++;
-			float lowZ = iter->first->position().z;
+			float lowZ = iter->first.lock().get()->position().z;
 			Core::vec3 pos = position();
 			pos.z = ( highZ - lowZ ) / 2.0f;
 			position( pos );
-			return m_zIndexer->insert( iter, std::pair< Transform*, int >( this, zIndexTag ) );
+			return m_zIndexer->insert( iter, std::pair< weak_ptr< Transform >, int >( this->shared_from_this(), zIndexTag ) );
 		}
-		std::list< std::pair< Transform*, int > >::iterator Transform::zIndexer_AddInFront( Transform * relativeTo, int zIndexTag ) {
+		zIndexerType::iterator Transform::zIndexer_AddInFront( Transform * relativeTo, int zIndexTag ) {
 			m_zIndexer = relativeTo->m_zIndexer;
-			std::list<std::pair< Transform*, int >>::iterator iter = relativeTo->m_zIndexer_myIterator;
-			float lowZ = iter->first->position().z;
+			zIndexerType::iterator iter = relativeTo->m_zIndexer_myIterator;
+			float lowZ = iter->first.lock().get()->position().z;
 			iter--;
-			float highZ = iter->first->position().z;
+			float highZ = iter->first.lock().get()->position().z;
 			Core::vec3 pos = position();
 			pos.z = ( highZ - lowZ ) / 2.0f;
 			position( pos );
-			return m_zIndexer->insert( relativeTo->m_zIndexer_myIterator, std::pair< Transform*, int >( this, zIndexTag ) );
+			return m_zIndexer->insert( relativeTo->m_zIndexer_myIterator, std::pair< weak_ptr< Transform >, int >( this->shared_from_this(), zIndexTag ) );
 		}
 
 		// Add a scene to the list of owners that contain this object
 		void Transform::addOwner( Scene * scene ) {
 			for ( auto owner : m_owners ) {
-				if ( owner == scene ) return;
+				if ( owner.get() == scene ) return;
 			}
-			m_owners.push_back( scene );
+			m_owners.push_back( static_pointer_cast< Scene >( scene->shared_from_this() ) );
 
 			// Add owner for children too
 			for ( auto child : m_children ) {
@@ -287,16 +275,15 @@ namespace Rocket {
 		}
 		// Remove a scene from the list of owners
 		void Transform::removeOwner( Scene * scene ) {
-			std::vector< Scene* >::iterator iter;
-			for ( iter = m_owners.begin(); iter != m_owners.end(); iter++ ) {
-				if ( (*iter) == scene ) {
-					m_owners.erase( iter );
+			for ( auto owner_iter = m_owners.begin(); owner_iter != m_owners.end(); owner_iter++ ) {
+				if ( owner_iter->get() == scene ) {
+					m_owners.erase( owner_iter );
 					return;
 				}
 			}
 		}
 		// Return a list of all scene owners of this object
-		std::vector< Scene* > Transform::getOwners() {
+		std::vector< shared_ptr< Scene > > Transform::getOwners() {
 			return m_owners;
 		}
 

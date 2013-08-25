@@ -3,7 +3,7 @@
 #define Rocket_Network_Packet_H
 
 #include "rocket/Core/system.h"
-#include "rocket/Core/string_.h"
+#include "rocket/Core/rstring.h"
 #include "rocket/Core/fixedpoint.h"
 
 #ifdef OS_WINDOWS
@@ -16,6 +16,8 @@
 #endif
 
 #define PACKET_INT_SIZE 4
+
+using namespace Rocket::Core;
 
 namespace Rocket {
 	namespace Network {
@@ -89,8 +91,8 @@ namespace Rocket {
 			// Add elements to the packet
 			void add( int i );
 			void add( unsigned int u );
-			void add( Core::fixedpoint f );			// idea: add bool flag for optional compression
-			void add( Core::string s );
+			void add( fixedpoint f );			// idea: add bool flag for optional compression
+			void add( rstring s );
 
 
 			// Read a single byte from the packet
@@ -98,8 +100,8 @@ namespace Rocket {
 			// Read elements from the packet
 			int getInt();
 			unsigned int getUInt();
-			Core::fixedpoint getfixedpoint();
-			Core::string getString();
+			fixedpoint getfixedpoint();
+			rstring getString();
 
 
 			// Returns the packet data blob for sending

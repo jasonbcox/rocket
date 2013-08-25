@@ -111,7 +111,7 @@ namespace Rocket {
 		}
 
 		// Lookup the IP address for a given host
-		Core::string Network::hostLookup( Core::string host, unsigned int port ) {
+		rstring Network::hostLookup( rstring host, unsigned int port ) {
 			struct addrinfo hints;
 			struct addrinfo * servinfo;
 			memset( &hints, 0, sizeof(hints) );
@@ -122,7 +122,7 @@ namespace Rocket {
 			Core::Debug_AddToLog( "Looking up address:" );
 			Core::Debug_AddToLog( host.c_str() );
 
-			Core::string port_s = "";
+			rstring port_s = "";
 			port_s << port;
 			if ( getaddrinfo( host.c_str() , port_s.c_str() ,&hints ,&servinfo ) != 0 ) {
 				Core::Debug_AddToLog( "Address Lookup Failed" );
@@ -134,22 +134,22 @@ namespace Rocket {
 		}
 
 		// Create a new UDP connection to the specified destination
-		Rocket::Network::PacketAccumulator * Network::connect_UDP_IP4( Core::string host, unsigned int port ) {
-			Core::string IP = hostLookup( host, port );
-			if ( IP == "" ) return NULL;
+		Rocket::Network::PacketAccumulator * Network::connect_UDP_IP4( rstring host, unsigned int port ) {
+			rstring IP = hostLookup( host, port );
+			if ( IP == "" ) return nullptr;
 			Core::Debug_AddToLog( "Connecting (UDP) to:" );
 			Core::Debug_AddToLog( IP.c_str() );
 
 			Rocket::Network::PacketAccumulator * conn = new PacketAccumulator( ConnectionTypes::Connection_UDP, IP, port );
-			Core::string IPandPort = (IP << ":" << port);
+			rstring IPandPort = (IP << ":" << port);
 			m_UDP_connections[ IPandPort.std_str() ] = conn;
 			return conn;
 		}
 
 		// Create a new TCP connection to the specified destination
-		Rocket::Network::PacketAccumulator * Network::connect_TCP_IP4( Core::string host, unsigned int port ) {
-			Core::string IP = hostLookup( host, port );
-			if ( IP == "" ) return NULL;
+		Rocket::Network::PacketAccumulator * Network::connect_TCP_IP4( rstring host, unsigned int port ) {
+			rstring IP = hostLookup( host, port );
+			if ( IP == "" ) return nullptr;
 			Core::Debug_AddToLog( "Connecting (TCP) to:" );
 			Core::Debug_AddToLog( IP.c_str() );
 
@@ -166,7 +166,7 @@ namespace Rocket {
 				Core::Debug_AddToLog( "Error: Invalid socket when creating new TCP connection." );
 				delete conn;
 				delete newSocket;
-				return NULL;
+				return nullptr;
 			}
 
 			// Connect to IP:port with the new socket
@@ -175,7 +175,7 @@ namespace Rocket {
 				Core::Debug_AddToLog( "Error: Connect failed when creating new TCP connection." );
 				delete conn;
 				delete newSocket;
-				return NULL;
+				return nullptr;
 			}
 
 			Core::Debug_AddToLog( "TCP Connect Successful." );
@@ -186,9 +186,9 @@ namespace Rocket {
 
 		// receive all data in the network buffers, and append it to the PacketAccumulators
 		// send all packets in the queue of the PacketAccumulators
-		// If this network is a server and a new TCP connection is accepted, update() will return a PacketAccumulator for that connection; otherwise, update() returns NULL
+		// If this network is a server and a new TCP connection is accepted, update() will return a PacketAccumulator for that connection; otherwise, update() returns nullptr
 		PacketAccumulator * Network::update() {
-			PacketAccumulator * newConnection = NULL;
+			PacketAccumulator * newConnection = nullptr;
 
 			// Receive all data
 			timeval timeout;
@@ -235,7 +235,7 @@ namespace Rocket {
 						//ioctlsocket( *acceptSocket, FIONBIO, &unblocked );
 
 						if ( *acceptSocket != SOCKET_ERROR ) {
-							Core::string addr_IP = "";
+							rstring addr_IP = "";
 #ifdef OS_WINDOWS
 							addr_IP << addr.sin_addr.S_un.S_un_b.s_b1 << "." << addr.sin_addr.S_un.S_un_b.s_b2 << "." << addr.sin_addr.S_un.S_un_b.s_b3 << "." << addr.sin_addr.S_un.S_un_b.s_b4;
 #else
@@ -249,27 +249,27 @@ namespace Rocket {
 				}
 			} else if ( r == 0 ) {
 				// timeout
-				Rocket::Core::Debug_AddToLog( "select() timed out" );
+				Core::Debug_AddToLog( "select() timed out" );
 			} else {
 #ifdef OS_WINDOWS
 				int err = WSAGetLastError();
 #else
 				int err = errno;
 #endif
-				Rocket::Core::string err_s = "";
+				rstring err_s = "";
 				err_s << err ;
-				Rocket::Core::Debug_AddToLog( "Error: select() failed" );
-				Rocket::Core::Debug_AddToLog( err_s.c_str() );
+				Core::Debug_AddToLog( "Error: select() failed" );
+				Core::Debug_AddToLog( err_s.c_str() );
 			}
 
 			// Send all packets
 			// Send on the UDP socket
 			std::unordered_map< std::string, PacketAccumulator* >::iterator iter_UDP;
 			for ( iter_UDP = m_UDP_connections.begin(); iter_UDP != m_UDP_connections.end(); iter_UDP++ ) {
-				Packet * p = NULL;
+				Packet * p = nullptr;
 				char * data;
 				unsigned int size;
-				while ( ( p = iter_UDP->second->toSocket() ) != NULL ) {
+				while ( ( p = iter_UDP->second->toSocket() ) != nullptr ) {
 					sockaddr_in destination = iter_UDP->second->getDestination();
 					p->out( data, size );
 					sendto( m_UDP_socket, data, size, 0, (struct sockaddr*)&destination, sizeof(sockaddr_in) );
@@ -280,10 +280,10 @@ namespace Rocket {
 			// Send everything on all TCP sockets
 			std::unordered_map< SOCKET*, PacketAccumulator* >::iterator iter_TCP;
 			for ( iter_TCP = m_TCP_connections.begin(); iter_TCP != m_TCP_connections.end(); iter_TCP++ ) {
-				Packet * p = NULL;
+				Packet * p = nullptr;
 				char * data;
 				unsigned int size;
-				while ( ( p = iter_TCP->second->toSocket() ) != NULL ) {
+				while ( ( p = iter_TCP->second->toSocket() ) != nullptr ) {
 					p->out( data, size );
 					send( *(iter_TCP->first), data, size, 0 );
 					delete p;
@@ -311,7 +311,7 @@ namespace Rocket {
 			}
 
 			// Append port to ip to make search string
-			Core::string fromip = ipstr;
+			rstring fromip = ipstr;
 			if ( fromip == "" ) fromip = "127.0.0.1";
 			if ( addr.ss_family == AF_INET ) {
 				fromip = fromip << ":" << ntohs( ((struct sockaddr_in *)&addr)->sin_port );
@@ -381,7 +381,7 @@ namespace Rocket {
 			unsigned int returnPort = startingPort;
 
 			for ( unsigned int port = returnPort; port < returnPort + numberOfTries; port++ ) {
-				Core::string returnPortStr = Core::string::tostring( port );
+				rstring returnPortStr = rstring::tostring( port );
 
 				// Test both TCP and UDP bindings
 				SOCKET testSocket_TCP = socket( AF_INET, SOCK_STREAM, 0 );

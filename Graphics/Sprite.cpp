@@ -10,24 +10,24 @@ namespace Rocket {
 	namespace Graphics {
 
 		// Definition for static members
-		Mesh * Sprite::g_SpriteMesh = NULL;
+		shared_ptr< Mesh > Sprite::g_SpriteMesh = shared_ptr< Mesh >();
 		int Sprite::g_SpriteCount = 0;
 
-		Sprite::Sprite( Texture * texture, int width, int height ) : Raster( this ), Object( g_SpriteMesh ) {
-			m_texture = texture;
+		Sprite::Sprite( Texture * texture, int width, int height ) : Object( g_SpriteMesh.get() ), Raster( this ) {
+			m_texture = texture->shared_from_this();
 
 			if ( ( width <= 0 ) || ( height <= 0 ) ) {
 				Core::Debug_AddToLog( "Error: Sprites must have positive width and height." );
 				exit( 0 );
 			}
 
-			if ( g_SpriteMesh == NULL ) {
+			if ( g_SpriteMesh.get() == nullptr ) {
 				Core::Debug_AddToLog( "Error: Sprites must be enabled in a scene [ Sprite::enableSpritesInScene( scene ) ] before initializing sprite objects." );
 				exit( 0 );
 			}
 
 			ShaderDefaults::setObjectUniforms_texture( this,
-				Rocket::Graphics::Shader_UniformTexture( 0, m_texture, GL_REPEAT, GL_REPEAT ),
+				Rocket::Graphics::Shader_UniformTexture( 0, texture, GL_REPEAT, GL_REPEAT ),
 				Rocket::Core::vec2( 1.0f, 1.0f ), Rocket::Core::vec2( 0.0f, 0.0f ), Rocket::Core::vec3( 1.0f, 1.0f, 1.0f ), false, 0.0f, 1.0f );
 
 			Core::vec2i size = texture->getSize();
@@ -45,8 +45,8 @@ namespace Rocket {
 		}
 
 		void Sprite::enableSpritesInScene( Universe * world, Scene * scene, Shader * meshShader ) {
-			if ( g_SpriteMesh == NULL ) g_SpriteMesh = generatePrimitive_Quad( world, "SPRITE_MESH", meshShader );
-			scene->addMesh( g_SpriteMesh );
+			if ( g_SpriteMesh.get() == nullptr ) g_SpriteMesh = generatePrimitive_Quad( world, "SPRITE_MESH", meshShader )->shared_from_this();
+			scene->addMesh( g_SpriteMesh.get() );
 		}
 
 		void Sprite::enableTransparency( float alphaTest, float alphaTransparency ) {

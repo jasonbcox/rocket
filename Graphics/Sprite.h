@@ -16,7 +16,7 @@ namespace Rocket {
 		// Sprite - A texture applied to a quad, usually to be drawn in an orthographic space
 		// A sprite sizes and positions based on the assumption that 1.0 units = 1 pixel
 		// A sprite positions based on the assumption that 0,0 is the top left of the orthographic space
-		class Sprite : public Raster, public Object {
+		class Sprite : public Object, public Raster {
 		public:
 			Sprite( Texture * texture, int width, int height );
 			virtual ~Sprite();
@@ -34,10 +34,10 @@ namespace Rocket {
 			Core::vec4i getUV();
 
 		protected:
-			static Mesh * g_SpriteMesh;
+			static shared_ptr< Mesh > g_SpriteMesh;
 			static int g_SpriteCount;
 			
-			Texture * m_texture;
+			shared_ptr< Texture > m_texture;
 
 			Core::vec4i m_uvCoords;
 		};

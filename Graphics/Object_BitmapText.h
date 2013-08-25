@@ -4,6 +4,9 @@
 
 #include <string>
 #include <map>
+#include <memory>
+
+using namespace std;
 
 #include "Scene.h"
 #include "Sprite.h"
@@ -11,7 +14,7 @@
 #include "Object.h"
 #include "Raster.h"
 #include "Mesh.h"
-#include "rocket/Core/string_.h"
+#include "rocket/Core/rstring.h"
 
 namespace Rocket {
 	namespace Graphics {
@@ -30,25 +33,25 @@ namespace Rocket {
 		// Object_BitmapText - A single texture applied to multiple quads (Sprites) where each quad is a glyph/character
 		class Object_BitmapText : public Object, public Raster {
 		public:
-			Object_BitmapText( Texture * bitmap, std::string text = "" );
+			Object_BitmapText( Texture * bitmap );
 			virtual ~Object_BitmapText();
 
-			void setText( const std::string & text );
-			const std::string & getText();
+			void setText( const string & text );
+			const string & getText();
 
 			void enableTransparency( float alphaTest, float alphaTransparency );
 			void disableTransparency();
 
 		protected:
-			Texture * m_bitmap;
-			std::vector<Sprite*> m_quads;
-			std::string m_text;
+			shared_ptr< Texture > m_bitmap;
+			vector< shared_ptr< Sprite > > m_quads;
+			string m_text;
 
 			bool m_transparency;
 			float m_alphaTest;
 			float m_alphaTransparency;
 
-			std::map<char,BitmapFontGlyph> m_fontSet;
+			std::map< char, BitmapFontGlyph > m_fontSet;
 		};
 
 	}

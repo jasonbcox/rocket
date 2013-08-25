@@ -9,8 +9,10 @@
 #include <map>
 #include <utility>
 
+using namespace std;
+
 #include "timer.h"
-#include "string_.h"
+#include "rstring.h"
 
 namespace Rocket {
 	namespace Core {
@@ -23,12 +25,12 @@ namespace Rocket {
 		}
 
 		//std::vector<std::string> Debug_Log;
-		std::vector<std::string> Debug_LogView;
+		vector< string > Debug_LogView;
 		unsigned long Debug_LogViewTimer = 0;
 		char * lastDebugOutput = NULL;
 
 		// name, <timer, elapsed>
-		std::map< std::string, std::pair<unsigned long, long> > Debug_Timers;
+		map< string, pair< unsigned long, long > > Debug_Timers;
 
 		void Debug_AddToLog( const char * entry ) {
 			//std::cout << "  -  " << entry << "\n";
@@ -37,26 +39,26 @@ namespace Rocket {
 		}
 
 		char * Debug_PrintLogView() {
-			std::string output = "";
+			string output = "";
 			unsigned long elapsed = Core::elapsedtime( Debug_LogViewTimer );
 			if ( elapsed > Debug_LogViewRefreshInterval ) {
 				// Add debug timers to logview before displaying
-				std::map< std::string, std::pair<unsigned long, long> >::iterator timerIter;
+				map< string, pair< unsigned long, long > >::iterator timerIter;
 				for ( timerIter = Debug_Timers.begin(); timerIter != Debug_Timers.end(); timerIter++ ) {
-					Core::string timerState = "";
+					rstring timerState = "";
 					timerState << "Timer[" << (*timerIter).first << "]: " << (unsigned int)(*timerIter).second.second;
 					Debug_AddToLog( timerState.c_str() );
 				}
 
 				// clear screen
-				if ( DEBUG_PRINT_TO_CONSOLE ) std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+				if ( DEBUG_PRINT_TO_CONSOLE ) cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 				for ( auto entry : Debug_LogView ) {
 					output += entry;
 					output += "\n";
 				}
 				Debug_LogView.clear();
 
-				if ( DEBUG_PRINT_TO_CONSOLE ) std::cout << output.c_str();
+				if ( DEBUG_PRINT_TO_CONSOLE ) cout << output.c_str();
 
 				Debug_LogViewTimer = Core::timer();
 			} else {
@@ -71,11 +73,11 @@ namespace Rocket {
 		}
 
 		void Debug_StartTimer( const char * timerName ) {
-			Debug_Timers[timerName] = std::pair<unsigned long, long>( Core::timer(), -1 );
+			Debug_Timers[timerName] = pair< unsigned long, long >( Core::timer(), -1 );
 		}
 
 		void Debug_StopTimer( const char * timerName ) {
-			std::map< std::string, std::pair<unsigned long, long> >::iterator iter = Debug_Timers.find( timerName );
+			map< string, pair< unsigned long, long > >::iterator iter = Debug_Timers.find( timerName );
 			if ( iter != Debug_Timers.end() ) {
 				if ( (*iter).second.second == -1 ) {
 					(*iter).second.second = (long)Core::elapsedtime( (*iter).second.first );
@@ -92,7 +94,7 @@ namespace Rocket {
 
 		void Debug_UnPauseTimer( const char * timerName ) {
 			long elapsedTime = -1;
-			std::map< std::string, std::pair<unsigned long, long> >::iterator iter = Debug_Timers.find( timerName );
+			map< string, pair< unsigned long, long > >::iterator iter = Debug_Timers.find( timerName );
 			if ( iter != Debug_Timers.end() ) {
 				elapsedTime = Debug_Timers[timerName].second;
 			}

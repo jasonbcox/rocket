@@ -56,60 +56,60 @@ Rocket_UnitTest ( all_Graphics ) {
 
 	// Create a new Universe and Scenes to go with it
 	Universe * world = new Universe();
-	Scene * mainScene = new Scene( 63.0f, (Graphics::WindowWidth * 1.0f)/(Graphics::WindowHeight * 1.0f), 1.0f, 1000.0f );
-	world->addRenderPass( mainScene );
-	Scene * hudScene = new Scene( Graphics::WindowWidth * 1.0f, Graphics::WindowHeight * 1.0f );
-	world->addRenderPass( hudScene );
+	auto mainScene = make_shared< Scene >( 63.0f, (Graphics::WindowWidth * 1.0f)/(Graphics::WindowHeight * 1.0f), 1.0f, 1000.0f );
+	world->addRenderPass( mainScene.get() );
+	auto hudScene = make_shared< Scene >( Graphics::WindowWidth * 1.0f, Graphics::WindowHeight * 1.0f );
+	world->addRenderPass( hudScene.get() );
 
 	// Load shaders
-	ShaderDefaults::Shader_Texture * shader_texture = new ShaderDefaults::Shader_Texture( "../../Graphics/Shaders/texture_v.glsl", "../../Graphics/Shaders/texture_f.glsl" );
-	world->addShader( "texture", shader_texture );
+	auto shader_texture = make_shared< ShaderDefaults::Shader_Texture >( "../../Graphics/Shaders/texture_v.glsl", "../../Graphics/Shaders/texture_f.glsl" );
+	world->addShader( "texture", shader_texture.get() );
 
 	// Load meshes
-	Mesh * testMesh = generatePrimitive_Quad( world, "testMesh", shader_texture );
+	auto testMesh = generatePrimitive_Quad( world, "testMesh", shader_texture.get() );
 	mainScene->addMesh( testMesh );
 
 	//Mesh * testCubeMesh = generatePrimitive_Cube( shader_texture );
-	Mesh * testCubeMesh = world->loadMesh( "human", "../../Graphics/Shaders/human.obj", shader_texture ); //new Mesh( "../../Graphics/Shaders/human.obj", shader_texture );
+	auto testCubeMesh = world->loadMesh( "human", "../../Graphics/Shaders/human.obj", shader_texture.get() ).get(); //new Mesh( "../../Graphics/Shaders/human.obj", shader_texture );
 	mainScene->addMesh( testCubeMesh );
 
-	Mesh * testCubeMesh2 = generatePrimitive_Cube( world, "testCubeMesh", shader_texture );
+	auto testCubeMesh2 = generatePrimitive_Cube( world, "testCubeMesh", shader_texture.get() );
 	hudScene->addMesh( testCubeMesh2 );
 
-	Mesh * testPlanetMesh = world->loadMesh( "planet", "../../Graphics/Shaders/StaticPlanet1.obj", shader_texture ); //new Mesh ( "../../Graphics/Shaders/StaticPlanet1.obj", shader_texture );
+	auto testPlanetMesh = world->loadMesh( "planet", "../../Graphics/Shaders/StaticPlanet1.obj", shader_texture.get() ).get(); //new Mesh ( "../../Graphics/Shaders/StaticPlanet1.obj", shader_texture );
 	mainScene->addMesh( testPlanetMesh );
 
 	// Load textures and objects
 
 	// Yellow smiley-face glass pane
-	Object_Newton * testObject = new Object_Newton( testMesh );
-	Texture * testTexture = world->loadTexture( "test_happyface", "../../Graphics/Shaders/testTexture1.bmp", true, false );
-	ShaderDefaults::setObjectUniforms_texture( testObject,
-		Shader_UniformTexture( 0, testTexture, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE ),
+	auto testObject = make_shared< Object_Newton >( testMesh );
+	auto testTexture = world->loadTexture( "test_happyface", "../../Graphics/Shaders/testTexture1.bmp", true, false );
+	ShaderDefaults::setObjectUniforms_texture( testObject.get(),
+		Shader_UniformTexture( 0, testTexture.get(), GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE ),
 		vec2( 1.0f, 1.0f ), vec2( 0.0f, 0.0f ), vec3( 0.99f, 0.98f, 0.97f ), true, 0.0f, 0.5f );
-	mainScene->addObject( testObject, NULL );
+	mainScene->addObject( testObject.get(), nullptr );
 	testObject->setVelocity( vec3(0,0.1f,0) );
 	//testObject->setAngularAcceleration( vec3(0,0.00003f,0) );
 
 	// Test Planet
-	Object * testPlanet = new Object( testPlanetMesh );
-	Texture * testPlanetTexture = world->loadTexture( "test_planet", "../../Graphics/Shaders/StaticPlanet1.png", true, true );
-	ShaderDefaults::setObjectUniforms_texture( testPlanet,
-		Shader_UniformTexture( 0, testPlanetTexture, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE ),
+	auto testPlanet = make_shared< Object >( testPlanetMesh );
+	auto testPlanetTexture = world->loadTexture( "test_planet", "../../Graphics/Shaders/StaticPlanet1.png", true, true );
+	ShaderDefaults::setObjectUniforms_texture( testPlanet.get(),
+		Shader_UniformTexture( 0, testPlanetTexture.get(), GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE ),
 		vec2( 1.0f, 1.0f ), vec2( 0.0f, 0.0f ), vec3( 1.0f, 0.8f, 0.5f ), false, 0.0f, 1.0f );
-	mainScene->addObject( testPlanet, NULL );
+	mainScene->addObject( testPlanet.get(), nullptr );
 	testPlanet->scale( vec3( 10.0f, 10.0f, 10.0f ) );
 	testPlanet->position( vec3( -500.0f, 300.0f, -1000.0f ) );
 	testPlanet->rotatePitch( MathConstants::PI / 8.0f );
 	testPlanet->rotateYaw( MathConstants::PI / 6.0f );
 
 	// Blue test cube
-	Object * testCube = new Object( testCubeMesh );
-	Texture * testHumanTexture = world->loadTexture( "test_human", "../../Graphics/Shaders/human1.png", true, true );
-	ShaderDefaults::setObjectUniforms_texture( testCube,
-		Shader_UniformTexture( 0, testHumanTexture, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE ),
+	auto testCube = make_shared< Object >( testCubeMesh );
+	auto testHumanTexture = world->loadTexture( "test_human", "../../Graphics/Shaders/human1.png", true, true );
+	ShaderDefaults::setObjectUniforms_texture( testCube.get(),
+		Shader_UniformTexture( 0, testHumanTexture.get(), GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE ),
 		vec2( 1.0f, 1.0f ), vec2( 0.0f, 0.0f ), vec3( 1.0f, 1.0f, 1.0f ), false, 0.0f, 1.0f );
-	mainScene->addObject( testCube, NULL );
+	mainScene->addObject( testCube.get(), nullptr );
 
 	testObject->position( vec3(0,0,-2) );
 	testObject->scale( vec3(3,3,3) );
@@ -117,10 +117,10 @@ Rocket_UnitTest ( all_Graphics ) {
 	testCube->scale( vec3(2,2,2) );
 
 	// Clone the yellow glass pane and make the clone red
-	Object_Newton * testLimb = testObject->cloneNewton();
+	auto testLimb = testObject->cloneNewton();
 	//*(testLimb->getUniformVec3( "uniform_color" )) = vec3( 1.0f, 0.0f, 0.0f );
 	((ShaderDefaults::ShaderUniforms_Texture*)(testLimb->getShaderUniforms()))->m_color = vec3( 1.0f, 0.0f, 0.0f );
-	mainScene->addObject( testLimb, testObject );
+	mainScene->addObject( testLimb.get(), testObject.get() );
 	testLimb->position( vec3( 0,0.75,0 ) );
 	testLimb->rotateYaw( Rocket::MathConstants::PI / 4.0f );
 	testObject->rotateRoll( Rocket::MathConstants::PI / 4.0f );
@@ -130,43 +130,44 @@ Rocket_UnitTest ( all_Graphics ) {
 	// make test clones
 	for ( int c = 0; c < 1000; c++ ) {
 		//Object_Newton * tempClone = testLimb->cloneNewton();
-		Object * tempClone = testCube->clone();
-		mainScene->addObject( tempClone, testObject );
+		auto tempClone = testCube->clone();
+		mainScene->addObject( tempClone.get(), testObject.get() );
 		tempClone->position( vec3(c*1.0f+1.0f,0,0) );
 		tempClone->scale( vec3(0.1f,0.1f,0.1f) );
 	}
 
 	// Green "selector" test cube
-	Object * pickCube = testCube->clone();
+	auto pickCube = testCube->clone();
 	//*(pickCube->getUniformVec3( "uniform_color" )) = vec3( 0.0f, 1.0f, 0.0f );
 	((ShaderDefaults::ShaderUniforms_Texture*)(pickCube->getShaderUniforms()))->m_color = vec3( 0.0f, 1.0f, 0.0f );
 	pickCube->scale( vec3( 0.03f,0.03f,0.03f ) );
 	pickCube->position( vec3( 0,0,0 ) );
-	mainScene->addObject( pickCube, NULL );
+	mainScene->addObject( pickCube.get(), nullptr );
 	pickCube->hide();
 
 	// Red HUD cube
-	Object * hudCube = new Object( testCubeMesh2 );
-	ShaderDefaults::setObjectUniforms_texture( hudCube,
-		Shader_UniformTexture( 0, testTexture, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE ),
+	auto hudCube = make_shared< Object >( testCubeMesh2 );
+	ShaderDefaults::setObjectUniforms_texture( hudCube.get(),
+		Shader_UniformTexture( 0, testTexture.get(), GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE ),
 		vec2( 1.0f, 1.0f ), vec2( 0.0f, 0.0f ), vec3( 1.0f, 0.0f, 0.0f ), false, 0.0f, 1.0f );
-	hudScene->addObject( hudCube, NULL );
+	hudScene->addObject( hudCube.get(), nullptr );
 	//hudCube->position( vec3(-430,290,0) );
 	hudCube->position( vec3(100,100,0) );
 	hudCube->scale( vec3(100,100,100) );
 	hudCube->rotateYaw( Rocket::MathConstants::PI / 4.0f );
 	hudCube->rotatePitch( Rocket::MathConstants::PI / 4.0f );
 
-	Sprite::enableSpritesInScene( world, hudScene, shader_texture );
-	Texture * testTexture2 = world->loadTexture( "test_happyface2", "../../Graphics/Shaders/testTexture1.bmp", false, true );
-	Sprite * testSprite = new Sprite( testTexture2, 64, 64 );
-	hudScene->addObject( testSprite, NULL );
+	Sprite::enableSpritesInScene( world, hudScene.get(), shader_texture.get() );
+	auto testTexture2 = world->loadTexture( "test_happyface2", "../../Graphics/Shaders/testTexture1.bmp", false, true );
+	auto testSprite = make_shared< Sprite >( testTexture2.get(), 64, 64 );
+	hudScene->addObject( testSprite.get(), nullptr );
 	testSprite->setAngle( Rocket::MathConstants::PI / 4.0f );
 	testSprite->setUV(4,4,40,40);
 
-	Texture * testBitmapTexture = world->loadTexture( "test_font", "../../Graphics/Shaders/testFont1.png", false, true );
-	Object_BitmapText * testBitmap = new Object_BitmapText( testBitmapTexture, "The quick, brown fox jumped over the lazy dog.\nTHE QUICK BROWN FOX JUMPED OVER THE LAZY DOG!\n0123456789?" );
-	hudScene->addObject( testBitmap, NULL );
+	auto testBitmapTexture = world->loadTexture( "test_font", "../../Graphics/Shaders/testFont1.png", false, true );
+	auto testBitmap = make_shared< Object_BitmapText >( testBitmapTexture.get() );
+	testBitmap->setText( "The quick, brown fox jumped over the lazy dog.\nTHE QUICK BROWN FOX JUMPED OVER THE LAZY DOG!\n0123456789?" );
+	hudScene->addObject( testBitmap.get(), nullptr );
 	testBitmap->enableTransparency( 0.0f, 1.0f );
 	testBitmap->setPosition( vec2i( 0, 200 ) );
 
@@ -195,7 +196,7 @@ Rocket_UnitTest ( all_Graphics ) {
 		tick_timer = Core::timer();
 		if ( elapsed == 0 ) elapsed = 1;
 		//std::cout << "FPS: " << (int)(1000.0 / (elapsed*1.0)) << "\n";
-		Core::string showFPS = "FPS: ";
+		rstring showFPS = "FPS: ";
 		showFPS << (int)(1000.0 / (elapsed*1.0));
 		Core::Debug_AddToLog( showFPS.c_str() );
 
@@ -222,7 +223,7 @@ Rocket_UnitTest ( all_Graphics ) {
 		// position pickCube
 		vec2i mousePos = input->getMousePosition();
 		vec4 pickVec = mainScene->pickScreen( mousePos.x, mousePos.y );
-		pickVec.z = abs( pickVec.z );
+		pickVec.z = fabs( pickVec.z );
 		vec4 pickCameraVec = mainScene->getCameraOrientationInverse() * pickVec;
 		vec3 pickPos = -(pickCameraVec.xyz()) + mainScene->getCameraPosition();
 		pickCube->position( pickPos );
@@ -236,10 +237,10 @@ Rocket_UnitTest ( all_Graphics ) {
 		//glClear( GL_COLOR_BUFFER_BIT );
 		world->display( (float)elapsed );
 
-		Core::string polyCount = "Polys(tris): ";
+		rstring polyCount = "Polys(tris): ";
 		polyCount << world->m_cache_renderedPolygons;
 		Core::Debug_AddToLog( polyCount.c_str() );
-		Core::string objectCount = "Objects: ";
+		rstring objectCount = "Objects: ";
 		objectCount << world->m_cache_renderedObjects;
 		Core::Debug_AddToLog( objectCount.c_str() );
 

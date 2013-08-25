@@ -12,8 +12,8 @@ namespace Rocket {
 			ShaderUniforms_Texture::~ShaderUniforms_Texture() {
 			}
 
-			ShaderUniforms_Texture * ShaderUniforms_Texture::clone() {
-				ShaderUniforms_Texture * r = new ShaderUniforms_Texture();
+			shared_ptr< ShaderUniforms > ShaderUniforms_Texture::clone() {
+				auto r = make_shared< ShaderUniforms_Texture >();
 
 				r->m_texture = m_texture;
 				r->m_textureScale = m_textureScale;
@@ -71,14 +71,14 @@ namespace Rocket {
 					glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_texture->m_wrapS );
 					glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_texture->m_wrapT );
 				}
-				if ( m_cache_textureScale.uniformNeedsRefreshing( m_textureScale, sizeof(Core::vec2) ) == true ) {
+				if ( m_cache_textureScale.uniformNeedsRefreshing( m_textureScale, sizeof(vec2) ) == true ) {
 					glUniform2fv( m_cache_textureScale.cachedUniformLocation, 1, *m_textureScale );
 				}
-				if ( m_cache_textureOffset.uniformNeedsRefreshing( m_textureOffset, sizeof(Core::vec2) ) == true ) {
+				if ( m_cache_textureOffset.uniformNeedsRefreshing( m_textureOffset, sizeof(vec2) ) == true ) {
 					glUniform2fv( m_cache_textureOffset.cachedUniformLocation, 1, *m_textureOffset );
 				}
 
-				if ( m_cache_color.uniformNeedsRefreshing( m_color, sizeof(Core::vec3) ) == true ) {
+				if ( m_cache_color.uniformNeedsRefreshing( m_color, sizeof(vec3) ) == true ) {
 					glUniform3fv( m_cache_color.cachedUniformLocation, 1, *m_color );
 				}
 				if ( m_cache_alphaTest.uniformNeedsRefreshing( m_alphaTest, sizeof(float) ) == true ) {
@@ -89,14 +89,14 @@ namespace Rocket {
 				}
 			}
 
-			void setObjectUniforms_texture( Rocket::Graphics::Object * object,
-												Rocket::Graphics::Shader_UniformTexture textureData,
-												Rocket::Core::vec2 textureScale,
-												Rocket::Core::vec2 textureOffset,
-												Rocket::Core::vec3 objectRGBColor,
+			void setObjectUniforms_texture( Object * object,
+												Shader_UniformTexture textureData,
+												vec2 textureScale,
+												vec2 textureOffset,
+												vec3 objectRGBColor,
 												bool transparencyEnabled, float alphaTest, float alphaTransparency )
 			{
-				ShaderUniforms_Texture * uniforms = new ShaderUniforms_Texture();
+				auto uniforms = make_shared< ShaderUniforms_Texture >();
 				uniforms->m_texture = textureData;
 				uniforms->m_textureScale = textureScale;
 				uniforms->m_textureOffset = textureOffset;
@@ -110,7 +110,7 @@ namespace Rocket {
 					object->disableTransparency();
 				}
 
-				object->setShaderUniforms( uniforms );
+				object->setShaderUniforms( uniforms.get() );
 			}
 
 		}

@@ -3,7 +3,7 @@ project( RocketCore )
 
 set( RocketCore_headers
 	system.h
-	string_.h
+	rstring.h
 	timer.h
 	mathconstants.h
 	vector.h
@@ -13,7 +13,7 @@ set( RocketCore_headers
 	debug.h
 )
 set( RocketCore_sources
-	string_.cpp
+	rstring.cpp
 	timer.cpp
 	dsp.cpp
 	fixedpoint.cpp

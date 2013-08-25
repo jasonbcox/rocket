@@ -5,8 +5,8 @@
 namespace Rocket {
 	namespace Graphics {
 		
-		Object_BitmapText::Object_BitmapText( Texture * bitmap, std::string text ) : Object( NULL ), Raster( this ) {
-			m_bitmap = bitmap;
+		Object_BitmapText::Object_BitmapText( Texture * bitmap ) : Object( nullptr ), Raster( this ) {
+			m_bitmap = bitmap->shared_from_this();
 
 			m_transparency = true;
 			m_alphaTest = 0.0f;
@@ -85,16 +85,11 @@ namespace Rocket {
 			m_fontSet[','] = BitmapFontGlyph( fontSize, 4, 3, Core::vec2i(4,22), Core::vec2i(0,2), 7 );
 			m_fontSet['!'] = BitmapFontGlyph( fontSize, 3, 8, Core::vec2i(11,28), Core::vec2i(0,8), 5 );
 			//m_fontSet['.'] = BitmapFontGlyph( fontSize, 378, 48, Core::vec2i(0,48), Core::vec2i(0,48), 378 );
-
-			setText( text );
 		}
 		Object_BitmapText::~Object_BitmapText() {
-			for ( auto quad : m_quads ) {
-				delete quad;
-			}
 		}
 
-		void Object_BitmapText::setText( const std::string & text ) {
+		void Object_BitmapText::setText( const string & text ) {
 			m_text = text;
 
 			// Cleanup old quads
@@ -105,8 +100,7 @@ namespace Rocket {
 			// Generate new quads
 			Core::vec2i nextPos = Core::vec2i();
 			for ( unsigned int i = 0; i < text.length(); i++ ) {
-				std::map<char,BitmapFontGlyph>::iterator iter;
-				iter = m_fontSet.find(text[i]);
+				auto iter = m_fontSet.find( text[i] );
 				BitmapFontGlyph glyph;
 				if ( iter == m_fontSet.end() ) {
 					glyph = m_fontSet['?'];
@@ -119,15 +113,15 @@ namespace Rocket {
 					nextPos.x = 0;
 					nextPos.y += glyph.fontSize*testScale;
 				} else {
-					Sprite * quad = NULL;
+					shared_ptr< Sprite > quad;
 					Core::vec2i spriteSize( glyph.advance*testScale, glyph.height*testScale );
 					if ( i < m_quads.size() ) {
 						quad = m_quads[i];
 						quad->Raster::show();
 						quad->setSize( spriteSize );
 					} else {
-						quad = new Sprite( m_bitmap, spriteSize.x, spriteSize.y );
-						this->addChild( quad, true );
+						quad = make_shared< Sprite >( m_bitmap.get(), spriteSize.x, spriteSize.y );
+						this->addChild( quad.get(), true );
 
 						if ( m_transparency == true ) {
 							quad->enableTransparency( m_alphaTest, m_alphaTransparency );

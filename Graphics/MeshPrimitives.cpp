@@ -47,9 +47,9 @@ namespace Rocket {
 			uv[4] = uv[2];
 			uv[5] = Core::vec2( 0.0, 1.0 );
 
-			Mesh * newMesh = new Mesh( shader, 6, vertices, normals, uv );
-			world->addMesh( meshName, newMesh );
-			return newMesh;
+			auto newMesh = make_shared< Mesh >( shader, 6, vertices, normals, uv );
+			world->addMesh( meshName, newMesh.get() );
+			return newMesh.get();
 		}
 
 
@@ -104,9 +104,9 @@ namespace Rocket {
 			delete numVertices;
 
 			// todo: add UV coords
-			Mesh * newMesh = new Mesh( shader, numverts, vertices, normals, NULL );
-			world->addMesh( meshName, newMesh );
-			return newMesh;
+			auto newMesh = make_shared< Mesh >( shader, numverts, vertices, normals, nullptr );
+			world->addMesh( meshName, newMesh.get() );
+			return newMesh.get();
 		}
 
 
@@ -175,9 +175,9 @@ namespace Rocket {
 			int numverts = *numVertices;
 			delete numVertices;
 
-			Mesh * newMesh = new Mesh( shader, numverts, vertices, normals, uvs );
-			world->addMesh( meshName, newMesh );
-			return newMesh;
+			auto newMesh = make_shared< Mesh >( shader, numverts, vertices, normals, uvs );
+			world->addMesh( meshName, newMesh.get() );
+			return newMesh.get();
 		}
 
 		// Generate blended normals based on the center of a sphere

@@ -31,7 +31,7 @@ namespace Rocket {
 			m_cache_renderedObjects = 0;
 #endif
 
-			setCameraInput( NULL );
+			setCameraInput( nullptr );
 		}
 
 		Scene::Scene( float orthoWidth, float orthoHeight ) {
@@ -51,26 +51,18 @@ namespace Rocket {
 			enableDepthTest();
 		}
 		Scene::~Scene() {
-			// Delete all child composites (Transform's deconstructor takes care of children of the composites)
-			for ( auto childComposite : m_composites ) {
-				delete childComposite;
-			}
-			m_composites.clear();
-
-			// Meshes are cleaned up by Universe
-			m_meshes.clear();
 		}
 
 		void Scene::addMesh( Mesh * mesh ) {
-			m_meshes.push_back( mesh );
+			m_meshes.push_back( mesh->shared_from_this() );
 			mesh->addSceneToUserList( this );
 		}
 
 		void Scene::addObject( Object * object, Transform * parent ) {
 			object->addOwner( this );
 			Mesh * mesh = object->getMesh();
-			if ( mesh != NULL ) mesh->addMeshUser( object );
-			if (parent == NULL) {
+			if ( mesh != nullptr ) mesh->addMeshUser( object );
+			if ( parent == nullptr ) {
 				addChild( object, false );
 			} else {
 				// todo: check to make sure parent object is infact already added to this Scene
@@ -377,7 +369,7 @@ namespace Rocket {
 			m_glDepthTest = false;
 		}
 
-		std::list< std::pair< Transform*, int > > * Scene::zIndexer() {
+		zIndexerType * Scene::zIndexer() {
 			return &m_zIndexer;
 		}
 

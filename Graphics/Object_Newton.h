@@ -14,7 +14,7 @@ namespace Rocket {
 		class Scene;
 		class Object_Newton : public Object {
 		public:
-			Object_Newton( Mesh * mesh = NULL );
+			Object_Newton( Mesh * mesh = nullptr );
 			Object_Newton( const Object & base );
 			virtual ~Object_Newton();
 
@@ -35,8 +35,8 @@ namespace Rocket {
 
 			void update( bool recursive, float elapsedMilliseconds ) override;
 
-			Object_Newton * cloneNewton();
-			Object_Newton * cloneNewtonInScene( Scene * scene, Transform * parent, const Core::vec3 & scale, const Core::vec4 & rotation, const Core::vec3 & position );
+			shared_ptr< Object_Newton > cloneNewton();
+			shared_ptr< Object_Newton > cloneNewtonInScene( Scene * scene, Transform * parent, const Core::vec3 & scale, const Core::vec4 & rotation, const Core::vec3 & position );
 
 		private:
 			float m_mass;

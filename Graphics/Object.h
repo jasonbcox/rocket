@@ -3,6 +3,9 @@
 #define Rocket_Graphics_Object_H
 
 #include <vector>
+#include <memory>
+
+using namespace std;
 
 #include "rocket/Core/matrix.h"
 #include "Mesh.h"
@@ -14,15 +17,15 @@ namespace Rocket {
 	namespace Graphics {
 
 		class Scene;
-		class Object : public Transform {
+		class Object : public Transform { //, public enable_shared_from_this< Object > {
 		public:
-			Object( Mesh * mesh = NULL );
+			Object( Mesh * mesh = nullptr );
 			virtual ~Object();
 
 			// Creates a copy of this object, sharing the mesh, and copying all object properties (transforms not included)
-			Object * clone();
+			shared_ptr< Object > clone();
 			// Clones the object into the specified Scene (transforms included)
-			Object * cloneInScene( Scene * scene, Transform * parent, Core::vec3 scale, Core::vec4 rotation, Core::vec3 position );
+			shared_ptr< Object > cloneInScene( Scene * scene, Transform * parent, Core::vec3 scale, Core::vec4 rotation, Core::vec3 position );
 
 			// Calculate the object's world matrices before drawing
 			void calculateTransforms( float elapsedMilliseconds, const Core::mat4 & parent_orientation, bool parentCacheIsClean, bool applyUpdates ) override;
@@ -39,8 +42,8 @@ namespace Rocket {
 			void removeOwner( Scene * scene );
 
 		protected:
-			Mesh * m_mesh;
-			ShaderUniforms * m_shaderUniforms;
+			shared_ptr< Mesh > m_mesh;
+			shared_ptr< ShaderUniforms > m_shaderUniforms;
 
 			bool m_transparencyEnabled;
 

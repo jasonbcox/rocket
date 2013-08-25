@@ -84,10 +84,10 @@ namespace Rocket {
 			m_frame_alpha = Core::vec3( 0, 0, 0 );
 		}
 
-		Object_Newton * Object_Newton::cloneNewton() {
-			Object_Newton * r = new Object_Newton( m_mesh );
+		shared_ptr< Object_Newton > Object_Newton::cloneNewton() {
+			shared_ptr< Object_Newton > r = make_shared< Object_Newton >( m_mesh.get() );
 
-			clonePropertiesOnto( r );
+			clonePropertiesOnto( r.get() );
 
 			//r->setVelocity( m_v );
 			//r->setAngularVelocity( m_omega );
@@ -95,14 +95,14 @@ namespace Rocket {
 			return r;
 		}
 
-		Object_Newton * Object_Newton::cloneNewtonInScene( Scene * scene, Transform * parent, const Core::vec3 & scale, const Core::vec4 & rotation, const Core::vec3 & position ) {
-			Object_Newton * r = cloneNewton();
+		shared_ptr< Object_Newton > Object_Newton::cloneNewtonInScene( Scene * scene, Transform * parent, const Core::vec3 & scale, const Core::vec4 & rotation, const Core::vec3 & position ) {
+			shared_ptr< Object_Newton > r = cloneNewton();
 
 			r->scale( scale );
 			r->rotate( rotation.w, Core::vec3( rotation.x, rotation.y, rotation.z ) );
 			r->position( position );
 
-			scene->addObject( r, parent );
+			scene->addObject( r.get(), parent );
 
 			return r;
 		}

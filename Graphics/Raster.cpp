@@ -56,7 +56,7 @@ namespace Rocket {
 			return m_rasterTransform->isVisible();
 		}
 
-		void Raster::zIndexer_Add( std::list<std::pair< Transform*, int >> * zIndexer, int zIndexTag ) {
+		void Raster::zIndexer_Add( zIndexerType * zIndexer, int zIndexTag ) {
 			m_rasterTransform->zIndexer_Add( zIndexer, zIndexTag );
 		}
 		void Raster::zIndexer_AddBehind( Transform * relativeTo ) {

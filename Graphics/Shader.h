@@ -6,6 +6,9 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <memory>
+
+using namespace std;
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -16,20 +19,20 @@
 namespace Rocket {
 	namespace Graphics {
 
-		class Shader_UniformTexture {
+		class Shader_UniformTexture : public enable_shared_from_this< Shader_UniformTexture > {
 		public:
-			Shader_UniformTexture( unsigned int textureSlot = 0, Texture * texture = NULL, unsigned int wrapS = GL_CLAMP_TO_EDGE, unsigned int wrapT = GL_CLAMP_TO_EDGE );
+			Shader_UniformTexture( unsigned int textureSlot = 0, Texture * texture = nullptr, unsigned int wrapS = GL_CLAMP_TO_EDGE, unsigned int wrapT = GL_CLAMP_TO_EDGE );
 			virtual ~Shader_UniformTexture();
 
 			unsigned int m_textureSlot;		// 0, etc...
-			Texture * m_texture;
+			shared_ptr< Texture > m_texture;
 			unsigned int m_wrapS;
 			unsigned int m_wrapT;
 		};
 
 		static const long InvalidShaderUniformLocation = -1;
 
-		class ShaderUniformCache {
+		class ShaderUniformCache : public enable_shared_from_this< ShaderUniformCache > {
 		public:
 			ShaderUniformCache();
 			virtual ~ShaderUniformCache();
@@ -44,15 +47,15 @@ namespace Rocket {
 			std::string uniformName;
 		};
 
-		class ShaderUniforms {
+		class ShaderUniforms : public enable_shared_from_this< ShaderUniforms > {
 		public:
 			ShaderUniforms();
 			virtual ~ShaderUniforms();
 
-			virtual ShaderUniforms * clone();
+			virtual shared_ptr< ShaderUniforms > clone();
 		};
 
-		class Shader {
+		class Shader : public enable_shared_from_this< Shader > {
 		public:
 			Shader( const char * file_vertexShader, const char * file_fragmentShader );
 			virtual ~Shader();

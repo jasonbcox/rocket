@@ -5,6 +5,9 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <memory>
+
+using namespace std;
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -38,15 +41,15 @@ namespace Rocket {
 
 			void addRenderPass( Scene * renderPass );
 
-			Shader * addShader( const char * shaderName, Shader * shader );
-			Shader * getShader( const char * shaderName );
+			void addShader( const char * shaderName, Shader * shader );
+			shared_ptr< Shader > getShader( const char * shaderName );
 
-			Mesh * loadMesh( const char * meshName, const char * file, Shader * shader );
+			shared_ptr< Mesh > loadMesh( const char * meshName, const char * file, Shader * shader );
 			void addMesh( const char * meshName, Mesh * mesh );
-			Mesh * getMesh( const char * meshName );
+			shared_ptr< Mesh > getMesh( const char * meshName );
 
-			Texture * loadTexture( const char * textureName, const char * file, bool mipmap, bool invertY );
-			Texture * getTexture( const char * textureName );
+			shared_ptr< Texture > loadTexture( const char * textureName, const char * file, bool mipmap, bool invertY );
+			shared_ptr< Texture > getTexture( const char * textureName );
 
 			void display( float elapsedMilliseconds );
 			// elapsedMilliseconds since the last call to display(). This value is used to correctly sync interpolating within all render passes.
@@ -57,11 +60,11 @@ namespace Rocket {
 #endif
 
 		private:
-			std::vector<Scene*> m_renderPasses;
+			vector< shared_ptr< Scene > > m_renderPasses;
 
-			std::unordered_map< std::string, Shader* > m_shaders;
-			std::unordered_map< std::string, Mesh* > m_meshes;
-			std::unordered_map< std::string, Texture* > m_textures;
+			unordered_map< string, shared_ptr< Shader > > m_shaders;
+			unordered_map< string, shared_ptr< Mesh > > m_meshes;
+			unordered_map< string, shared_ptr< Texture > > m_textures;
 		};
 
 	}

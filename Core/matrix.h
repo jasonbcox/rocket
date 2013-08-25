@@ -332,13 +332,12 @@ namespace Rocket {
 			}
 			// M * M
 			void multiplyMatrix ( const T_matNxM<T> & R, T_matNxM<T> * outmatrix ) const {
-				if ( ( m_N != R.m_M ) || ( m_M != R.m_N ) ) return NULL;
+				if ( ( m_N != R.m_M ) || ( m_M != R.m_N ) ) return;
 				for (unsigned int i = 0; i < m_N; i++) {
 					for (unsigned int j = 0; j < R.m_M; j++) {
 						for (unsigned int k = 0; k < m_M; k++) {
 							outmatrix[i][j] += m_rows[i][k] * R.m_rows[k][j];
 						}	}	}
-				return outmatrix;
 			}
 
 			// Matrix Operations

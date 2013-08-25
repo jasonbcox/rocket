@@ -5,15 +5,21 @@
 #include <vector>
 #include <list>
 #include <utility>
+#include <memory>
+
+using namespace std;
 
 #include "rocket/Core/matrix.h"
 
 namespace Rocket {
 	namespace Graphics {
-
+		
 		class Transform;
+		
+		typedef list< pair< weak_ptr< Transform >, int > > zIndexerType;
+
 		class Scene;
-		class Transform {
+		class Transform : public enable_shared_from_this< Transform > {
 		public:
 			Transform();
 			virtual ~Transform();
@@ -62,22 +68,22 @@ namespace Rocket {
 			virtual void calculateTransforms( float elapsedMilliseconds, const Core::mat4 & parent_orientation, bool parentCacheIsClean, bool applyUpdates );
 
 			// Optional z-indexing functions
-			void zIndexer_Add( std::list< std::pair< Transform*, int > > * zIndexer, int zIndexTag );
-			std::list<std::pair< Transform*, int >>::iterator zIndexer_AddBehind( Transform * relativeTo, int zIndexTag );
-			std::list<std::pair< Transform*, int >>::iterator zIndexer_AddInFront( Transform * relativeTo, int zIndexTag );
+			void zIndexer_Add( zIndexerType * zIndexer, int zIndexTag );
+			zIndexerType::iterator zIndexer_AddBehind( Transform * relativeTo, int zIndexTag );
+			zIndexerType::iterator zIndexer_AddInFront( Transform * relativeTo, int zIndexTag );
 
 			virtual void addOwner( Scene * scene );
 			virtual void removeOwner( Scene * scene );
-			std::vector< Scene* > getOwners();
+			vector< shared_ptr< Scene > > getOwners();
 
 		protected:
-			Transform * m_parent;
-			std::vector< Scene* > m_owners;
+			shared_ptr< Transform > m_parent;
+			vector< shared_ptr< Scene > > m_owners;
 
 			bool m_hidden;
 			bool m_updated;
 
-			std::vector< Transform* > m_children;
+			vector< shared_ptr< Transform > > m_children;
 
 			bool m_cache_orientationIsClean;		// true if this Transform's own orientation cache is up-to-date
 			Core::mat4 m_cache_orientation;
@@ -97,8 +103,8 @@ namespace Rocket {
 			Core::vec4 m_rotation;		// quaternion
 
 			// Optional z-indexing members
-			std::list< std::pair< Transform*, int > > * m_zIndexer;						// The zIndexer that this Transform belongs to (optional; NULL if it does not belong to any)
-			std::list< std::pair< Transform*, int > >::iterator m_zIndexer_myIterator;	// The iterator that points to this Transform in m_zIndexer
+			zIndexerType * m_zIndexer;						// The zIndexer that this Transform belongs to (optional; nullptr if it does not belong to any)
+			zIndexerType::iterator m_zIndexer_myIterator;		// The iterator that points to this Transform in m_zIndexer
 		};
 
 	}
