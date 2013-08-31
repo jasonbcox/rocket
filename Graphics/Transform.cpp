@@ -164,14 +164,16 @@ namespace Rocket {
 			bool nextParentCacheIsClean = true;
 			if ( parentCacheIsClean == false ) {
 				m_cache_parentOrientation = parent_orientation;
-			}
-			if ( m_cache_descendantOrientationIsClean == false ) {
-				m_cache_descendantOrientationIsClean = true;
-				nextParentCacheIsClean = false;
+				m_cache_finalOrientationIsClean = false;
 			}
 
 			if ( applyUpdates == true ) {
 				if ( m_updated == false ) update( false, elapsedMilliseconds );
+			}
+
+			if ( m_cache_descendantOrientationIsClean == false ) {
+				m_cache_descendantOrientationIsClean = true;
+				nextParentCacheIsClean = false;
 			}
 
 			for ( auto child : m_children ) {
@@ -289,3 +291,4 @@ namespace Rocket {
 
 	}
 }
+

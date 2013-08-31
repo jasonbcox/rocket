@@ -131,7 +131,7 @@ Rocket_UnitTest ( all_Graphics ) {
 
 	// make test clones
 	for ( int c = 0; c < 1000; c++ ) {
-		//Object_Newton * tempClone = testLimb->cloneNewton();
+		//auto tempClone = testLimb->cloneNewton();
 		auto tempClone = testCube->clone();
 		mainScene->addObject( tempClone.get(), testObject.get() );
 		tempClone->position( vec3(c*1.0f+1.0f,0,0) );
