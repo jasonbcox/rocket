@@ -59,14 +59,26 @@ namespace Rocket {
 		}
 
 		void Scene::addObject( Object * object, Transform * parent ) {
-			object->addOwner( this );
-			Mesh * mesh = object->getMesh();
-			if ( mesh != nullptr ) mesh->addMeshUser( object );
+			bool added = false;
 			if ( parent == nullptr ) {
 				addChild( object, false );
+				added = true;
 			} else {
-				// todo: check to make sure parent object is infact already added to this Scene
-				parent->addChild( object, true );
+				for ( auto owner : parent->getOwners() ) {
+					if ( owner.get() == this ) {
+						parent->addChild( object, true );
+						added = true;
+						break;
+					}
+				}
+				if ( added != true ) {
+					// Todo: Throw an error because the parent isn't currently owned by this Scene
+				}
+			}
+			if ( added == true ) {
+				object->addOwner( this );
+				Mesh * mesh = object->getMesh();
+				if ( mesh != nullptr ) mesh->addMeshUser( object );
 			}
 		}
 		
