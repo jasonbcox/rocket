@@ -2,6 +2,11 @@
 #ifndef Rocket_Graphics_Sprite_H
 #define Rocket_Graphics_Sprite_H
 
+#include <vector>
+#include <unordered_map>
+
+using namespace std;
+
 #include "Raster.h"
 #include "Texture.h"
 #include "Object.h"
@@ -9,6 +14,8 @@
 #include "Shader.h"
 #include "Scene.h"
 #include "rocket/Core/vector.h"
+
+using namespace Rocket::Core;
 
 namespace Rocket {
 	namespace Graphics {
@@ -33,11 +40,28 @@ namespace Rocket {
 			// Get UV coords in pixel-space
 			Core::vec4i getUV();
 
+			// setFrames() sets the sections of the sprite sheet to animate through when an animation is activated
+			void setFrames( string animationName, vector< vec2i > frames );
+			void playAnimation( string animationName, float timeMilliseconds, bool repeat, int startFrame );
+			void pauseAnimation();
+			int currentFrame();
+
+			virtual void update( bool recursive, float elapsedMilliseconds );
+
 		protected:
 			static shared_ptr< Mesh > g_SpriteMesh;
 			static int g_SpriteCount;
 			
 			shared_ptr< Texture > m_texture;
+			unordered_map< string, vector< vec2i > > m_frames;
+
+			bool m_animationPlaying;
+			vector< vec2i > m_animationFrames;
+			int m_animationTotalFrames;
+			int m_animationCurrentFrame;
+			float m_animationTotalTime;
+			float m_animationTime;
+			bool m_animationRepeat;
 
 			Core::vec4i m_uvCoords;
 		};

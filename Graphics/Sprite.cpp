@@ -36,6 +36,8 @@ namespace Rocket {
 			setPosition( Core::vec2i( 0, 0 ) );
 			m_angle = 0.0f;	// do not use setAngle() to init because it relies on m_angle
 
+			m_animationPlaying = false;
+
 			g_SpriteCount++;
 		}
 		Sprite::~Sprite() {
@@ -104,6 +106,50 @@ namespace Rocket {
 
 		Core::vec4i Sprite::getUV() {
 			return m_uvCoords;
+		}
+
+		void Sprite::setFrames( string animationName, vector< vec2i > frames ) {
+			m_frames[ animationName ] = frames;
+		}
+		void Sprite::playAnimation( string animationName, float timeMilliseconds, bool repeat, int startFrame ) {
+			auto frames = m_frames.find( animationName );
+			if ( frames != m_frames.end() ) {
+				m_animationPlaying = true;
+				m_animationFrames = frames->second;
+				m_animationTotalFrames = m_animationFrames.size();
+				m_animationCurrentFrame = startFrame;
+				m_animationTotalTime = timeMilliseconds;
+				m_animationTime = startFrame * 1.0f / ( m_animationTotalFrames * 1.0f ) * timeMilliseconds;
+				m_animationRepeat = repeat;
+			}
+		}
+		void Sprite::pauseAnimation() {
+			m_animationPlaying = false;
+		}
+		int Sprite::currentFrame() {
+			return m_animationCurrentFrame;
+		}
+
+		void Sprite::update( bool recursive, float elapsedMilliseconds ) {
+			if ( m_animationPlaying == true ) {
+				m_animationTime += elapsedMilliseconds;
+				int nextFrame = m_animationTime / m_animationTotalTime * m_animationTotalFrames;
+				if ( nextFrame >= m_animationTotalFrames ) {
+					if ( m_animationRepeat == true ) {
+					m_animationCurrentFrame = nextFrame - m_animationTotalFrames;
+					} else {
+						m_animationCurrentFrame = m_animationTotalFrames - 1;
+					}
+				} else {
+					m_animationCurrentFrame = nextFrame;
+				}
+
+				vec2i currentFrameUV = m_animationFrames[ m_animationCurrentFrame ];
+				vec2i size = getSize();
+				setUV( currentFrameUV.x, currentFrameUV.y, currentFrameUV.x + size.x, currentFrameUV.y + size.y );
+			}
+
+			Object::update( recursive, elapsedMilliseconds );
 		}
 
 	}
