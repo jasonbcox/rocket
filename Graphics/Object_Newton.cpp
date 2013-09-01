@@ -77,7 +77,7 @@ namespace Rocket {
 			move( m_v );
 			rotate( Core::MatrixToQuaternion( Core::Rotate( m_omega.z, Core::vec3(0,0,1) ) * Core::Rotate( m_omega.y, Core::vec3(0,1,0) ) * Core::Rotate( m_omega.x, Core::vec3(1,0,0) ) ) );
 
-			updateBase( recursive, elapsedMilliseconds );
+			Object::update( recursive, elapsedMilliseconds );
 
 			// reset acceleration data
 			m_frame_a = Core::vec3( 0, 0, 0 );
@@ -109,3 +109,4 @@ namespace Rocket {
 
 	}
 }
+

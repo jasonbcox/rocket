@@ -58,7 +58,6 @@ namespace Rocket {
 			void show();
 			bool isVisible();
 
-			virtual void updateBase( bool recursive, float elapsedMilliseconds ) final;		// recursively update all children (do NOT overload)
 			virtual void update( bool recursive, float elapsedMilliseconds );				// update function for this object type (overloading OK)
 
 			// the transparencyCollector must be a pointer to the scene's transparency list for a normal draw pass
@@ -105,6 +104,9 @@ namespace Rocket {
 			// Optional z-indexing members
 			zIndexerType * m_zIndexer;						// The zIndexer that this Transform belongs to (optional; nullptr if it does not belong to any)
 			zIndexerType::iterator m_zIndexer_myIterator;		// The iterator that points to this Transform in m_zIndexer
+
+		private:
+			virtual void updateBase( bool recursive, float elapsedMilliseconds ) final;		// recursively update all children (do NOT overload)
 		};
 
 	}
