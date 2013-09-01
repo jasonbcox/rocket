@@ -164,7 +164,10 @@ Rocket_UnitTest ( all_Graphics ) {
 	auto testSprite = make_shared< Sprite >( testTexture2.get(), 64, 64 );
 	hudScene->addObject( testSprite.get(), nullptr );
 	testSprite->setAngle( Rocket::MathConstants::PI / 4.0f );
-	testSprite->setUV(4,4,40,40);
+	testSprite->setUVPixels(4,4,40,40);
+
+	testSprite->addAnimation( "testAnimation", {vec4i(0,0,24,24), vec4i(4,0,28,24), vec4i(8,0,32,24), vec4i(12,0,36,24)} );
+	testSprite->playAnimation( "testAnimation", 2000 );
 
 	auto testBitmapTexture = world->loadTexture( "test_font", "../../Graphics/Shaders/testFont1.png", false, true );
 	auto testBitmap = make_shared< Object_BitmapText >( testBitmapTexture.get() );

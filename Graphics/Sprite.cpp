@@ -67,7 +67,7 @@ namespace Rocket {
 			uniforms->m_alphaTransparency = 1.0f;
 		}
 
-		void Sprite::setUV( int left, int top, int right, int bottom ) {
+		void Sprite::setUVPixels( int left, int top, int right, int bottom ) {
 			Core::vec2i size = m_texture->getSize();
 			setUV( left/(size.x*1.0f), (top+1)/(size.y*1.0f), right/(size.x*1.0f), (bottom+1)/(size.y*1.0f) );
 		}
@@ -108,7 +108,7 @@ namespace Rocket {
 			return m_uvCoords;
 		}
 
-		void Sprite::setFrames( string animationName, vector< vec2i > frames ) {
+		void Sprite::addAnimation( string animationName, vector< vec4i > frames ) {
 			m_frames[ animationName ] = frames;
 		}
 		void Sprite::playAnimation( string animationName, float timeMilliseconds, bool repeat, int startFrame ) {
@@ -136,17 +136,18 @@ namespace Rocket {
 				int nextFrame = m_animationTime / m_animationTotalTime * m_animationTotalFrames;
 				if ( nextFrame >= m_animationTotalFrames ) {
 					if ( m_animationRepeat == true ) {
-					m_animationCurrentFrame = nextFrame - m_animationTotalFrames;
+						m_animationCurrentFrame = nextFrame - m_animationTotalFrames;
+						m_animationTime -= m_animationTotalTime;
 					} else {
 						m_animationCurrentFrame = m_animationTotalFrames - 1;
+						m_animationTime = m_animationTotalTime;
 					}
 				} else {
 					m_animationCurrentFrame = nextFrame;
 				}
 
-				vec2i currentFrameUV = m_animationFrames[ m_animationCurrentFrame ];
-				vec2i size = getSize();
-				setUV( currentFrameUV.x, currentFrameUV.y, currentFrameUV.x + size.x, currentFrameUV.y + size.y );
+				vec4i frameUV = m_animationFrames[ m_animationCurrentFrame ];
+				setUVPixels( frameUV.x, frameUV.y, frameUV.z, frameUV.w );
 			}
 
 			Object::update( recursive, elapsedMilliseconds );

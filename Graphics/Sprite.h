@@ -34,15 +34,15 @@ namespace Rocket {
 			void disableTransparency();
 
 			// Set UV coords in pixel-space (0 - size)
-			void setUV( int left, int top, int right, int bottom );
+			void setUVPixels( int left, int top, int right, int bottom );
 			// Set UV coords in texel-space (0.0 - 1.0)
 			void setUV( float left, float top, float right, float bottom );
 			// Get UV coords in pixel-space
 			Core::vec4i getUV();
 
-			// setFrames() sets the sections of the sprite sheet to animate through when an animation is activated
-			void setFrames( string animationName, vector< vec2i > frames );
-			void playAnimation( string animationName, float timeMilliseconds, bool repeat, int startFrame );
+			// addAnimation() sets the sections of the sprite sheet to animate through when an animation is activated
+			void addAnimation( string animationName, vector< vec4i > frames );
+			void playAnimation( string animationName, float timeMilliseconds, bool repeat = true, int startFrame = 0 );
 			void pauseAnimation();
 			int currentFrame();
 
@@ -53,10 +53,10 @@ namespace Rocket {
 			static int g_SpriteCount;
 			
 			shared_ptr< Texture > m_texture;
-			unordered_map< string, vector< vec2i > > m_frames;
+			unordered_map< string, vector< vec4i > > m_frames;
 
 			bool m_animationPlaying;
-			vector< vec2i > m_animationFrames;
+			vector< vec4i > m_animationFrames;
 			int m_animationTotalFrames;
 			int m_animationCurrentFrame;
 			float m_animationTotalTime;

@@ -131,7 +131,7 @@ namespace Rocket {
 						m_quads.push_back( quad );
 					}
 
-					quad->setUV( glyph.origin.x, glyph.origin.y - glyph.bearing.y, glyph.origin.x + glyph.advance, glyph.origin.y - glyph.bearing.y + glyph.height );
+					quad->setUVPixels( glyph.origin.x, glyph.origin.y - glyph.bearing.y, glyph.origin.x + glyph.advance, glyph.origin.y - glyph.bearing.y + glyph.height );
 
 					if ( nextPos.x + glyph.advance*testScale > WindowWidth ) {
 						nextPos.x = 0;
@@ -169,3 +169,4 @@ namespace Rocket {
 
 	}
 }
+
