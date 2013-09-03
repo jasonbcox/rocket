@@ -92,6 +92,17 @@ namespace Rocket {
 		void Input::addKeyboardBinding( int key, Input_Keyboard * binding ) {
 			m_keyboardBindings[ key ].push_back( binding );
 		}
+		void Input::removeKeyboardBinding( int key, Input_Keyboard * binding ) {
+			auto searchList = m_keyboardBindings.find( button );
+			if ( searchList != m_keyboardBindings.end() ) {
+				for ( auto iter = searchList->second.begin(); iter != searchList->second.end(); iter++ ) {
+					if ( iter->second == binding ) {
+						searchList.erase( iter );
+						break;
+					}
+				}
+			}
+		}
 
 
 		Core::vec2i Input::getMousePosition() {
@@ -142,6 +153,17 @@ namespace Rocket {
 
 		void Input::addMouseBinding( int button, Input_Mouse * binding ) {
 			m_mouseBindings[ button ].push_back( binding );
+		}
+		void Input::removeMouseBinding( int button, Input_Mouse * binding ) {
+			auto searchList = m_mouseBindings.find( button );
+			if ( searchList != m_mouseBindings.end() ) {
+				for ( auto iter = searchList->second.begin(); iter != searchList->second.end(); iter++ ) {
+					if ( iter->second == binding ) {
+						searchList.erase( iter );
+						break;
+					}
+				}
+			}
 		}
 
 
@@ -196,3 +218,4 @@ namespace Rocket {
 
 	}
 }
+

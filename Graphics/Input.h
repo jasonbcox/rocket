@@ -39,6 +39,7 @@ namespace Rocket {
 
 			// Add an input binding (button, device, etc.) to react to keyboard events
 			void addKeyboardBinding( int key, Input_Keyboard * binding );
+			void removeKeyboardBinding( int key, Input_Keyboard * binding );
 
 			// Returns the screen coord of the mouse
 			Core::vec2i getMousePosition();
@@ -56,6 +57,7 @@ namespace Rocket {
 
 			// Add an input binding (button, device, etc.) to react to mouse events
 			void addMouseBinding( int button, Input_Mouse * binding );
+			void removeMouseBinding( int button, Input_Mouse * binding );
 
 			static void callback_keyboard( GLFWwindow * window, int key, int scancode, int state, int modifierKeys );
 
@@ -86,3 +88,4 @@ namespace Rocket {
 
 
 #endif
+
