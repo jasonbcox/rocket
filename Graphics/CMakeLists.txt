@@ -32,6 +32,7 @@ set( RocketGraphics_headers
 	Shader.h
 	ShaderDefaults.h
 	Sprite.h
+	Button.h
 	Texture.h
 	Transform.h
 	Universe.h
@@ -52,6 +53,7 @@ set( RocketGraphics_sources
 	Shader.cpp
 	ShaderDefaults.cpp
 	Sprite.cpp
+	Button.cpp
 	Texture.cpp
 	Transform.cpp
 	Universe.cpp

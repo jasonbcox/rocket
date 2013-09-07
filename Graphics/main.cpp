@@ -19,6 +19,7 @@
 #include "Sprite.h"
 #include "Object_BitmapText.h"
 #include "Scissor.h"
+#include "Button.h"
 
 using namespace Rocket;
 using namespace Rocket::Core;
@@ -176,9 +177,20 @@ Rocket_UnitTest ( all_Graphics ) {
 	testBitmap->enableTransparency( 0.0f, 1.0f );
 	testBitmap->setPosition( vec2i( 0, 200 ) );
 
+	auto testButton = make_shared< Button >( testTexture2.get(), 100, 18, input );
+	testButton->setPosition( vec2i( 60, 30 ) );
+	testButton->setUVPixels( 0, 0, 64, 64 );
+	testButton->addAnimation( "none", {vec4i(0,0,64,16)} );
+	testButton->addAnimation( "hover", {vec4i(0,16,64,32)} );
+	testButton->addAnimation( "pressed", {vec4i(0,32,64,48), vec4i(0,36,64,52), vec4i(0,40,64,56), vec4i(0,44,64,56), vec4i(0,48,64,60), vec4i(0,52,64,64)} );
+	testButton->setStateAnimation( Button_ButtonState::NotPressed, "none" );
+	testButton->setStateAnimation( Button_ButtonState::Hover, "hover" );
+	testButton->setStateAnimation( Button_ButtonState::Pressed, "pressed" );
+	hudScene->addObject( testButton.get(), nullptr );
+
 	// Main Loop
-	input->hideMouse();
-	input->lockMouse( Graphics::WindowWidth/2, Graphics::WindowHeight/2 );
+	//input->hideMouse();
+	//input->lockMouse( Graphics::WindowWidth/2, Graphics::WindowHeight/2 );
 
 	mainScene->setCameraInput( input );
 	mainScene->setCameraControl_Move( 'W', 'S' );

@@ -93,11 +93,11 @@ namespace Rocket {
 			m_keyboardBindings[ key ].push_back( binding );
 		}
 		void Input::removeKeyboardBinding( int key, Input_Keyboard * binding ) {
-			auto searchList = m_keyboardBindings.find( button );
+			auto searchList = m_keyboardBindings.find( key );
 			if ( searchList != m_keyboardBindings.end() ) {
 				for ( auto iter = searchList->second.begin(); iter != searchList->second.end(); iter++ ) {
-					if ( iter->second == binding ) {
-						searchList.erase( iter );
+					if ( (*iter) == binding ) {
+						searchList->second.erase( iter );
 						break;
 					}
 				}
@@ -158,8 +158,8 @@ namespace Rocket {
 			auto searchList = m_mouseBindings.find( button );
 			if ( searchList != m_mouseBindings.end() ) {
 				for ( auto iter = searchList->second.begin(); iter != searchList->second.end(); iter++ ) {
-					if ( iter->second == binding ) {
-						searchList.erase( iter );
+					if ( (*iter) == binding ) {
+						searchList->second.erase( iter );
 						break;
 					}
 				}
