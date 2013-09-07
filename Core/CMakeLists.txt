@@ -34,6 +34,7 @@ set( RocketCore_UnitTests_Sources
 	UnitTest_vector.cpp
 	UnitTest_matrix.cpp
 	UnitTest_vector.cpp
+	UnitTest_rstring.cpp
 )
 
 add_test ( RocketCore_UnitTests ${RocketCore_UnitTests_Sources} )
