@@ -24,53 +24,8 @@ namespace Rocket {
 			Debug_ScrambleID++;
 		}
 
-		//std::vector<std::string> Debug_Log;
-		vector< string > Debug_LogView;
-		unsigned long Debug_LogViewTimer = 0;
-		char * lastDebugOutput = NULL;
-
 		// name, <timer, elapsed>
 		map< string, pair< unsigned long, long > > Debug_Timers;
-
-		void Debug_AddToLog( const char * entry ) {
-			//std::cout << "  -  " << entry << "\n";
-			//Debug_Log.push_back( entry );
-			Debug_LogView.push_back( entry );
-		}
-
-		char * Debug_PrintLogView() {
-			string output = "";
-			unsigned long elapsed = Core::elapsedtime( Debug_LogViewTimer );
-			if ( elapsed > Debug_LogViewRefreshInterval ) {
-				// Add debug timers to logview before displaying
-				map< string, pair< unsigned long, long > >::iterator timerIter;
-				for ( timerIter = Debug_Timers.begin(); timerIter != Debug_Timers.end(); timerIter++ ) {
-					rstring timerState = "";
-					timerState << "Timer[" << (*timerIter).first << "]: " << (unsigned int)(*timerIter).second.second;
-					Debug_AddToLog( timerState.c_str() );
-				}
-
-				// clear screen
-				if ( DEBUG_PRINT_TO_CONSOLE ) cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-				for ( auto entry : Debug_LogView ) {
-					output += entry;
-					output += "\n";
-				}
-				Debug_LogView.clear();
-
-				if ( DEBUG_PRINT_TO_CONSOLE ) cout << output.c_str();
-
-				Debug_LogViewTimer = Core::timer();
-			} else {
-				Debug_LogView.clear();
-			}
-
-			if ( lastDebugOutput == NULL ) lastDebugOutput = new char[4096];
-			memset( lastDebugOutput, '\0', 4096 );
-			memcpy( lastDebugOutput, output.c_str(), output.size() < 4096 ? output.size() : 4096 );
-
-			return lastDebugOutput;
-		}
 
 		void Debug_StartTimer( const char * timerName ) {
 			Debug_Timers[timerName] = pair< unsigned long, long >( Core::timer(), -1 );

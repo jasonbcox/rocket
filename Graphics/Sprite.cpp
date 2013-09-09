@@ -6,6 +6,9 @@
 #include "Sprite.h"
 #include "ShaderDefaults.h"
 
+using namespace Rocket::Core;
+using namespace Rocket::Graphics;
+
 namespace Rocket {
 	namespace Graphics {
 
@@ -17,23 +20,21 @@ namespace Rocket {
 			m_texture = texture->shared_from_this();
 
 			if ( ( width <= 0 ) || ( height <= 0 ) ) {
-				Core::Debug_AddToLog( "Error: Sprites must have positive width and height." );
-				exit( 0 );
+				Debug_ThrowError( "Error: Sprites must have positive width and height.", width, height );
 			}
 
 			if ( g_SpriteMesh.get() == nullptr ) {
-				Core::Debug_AddToLog( "Error: Sprites must be enabled in a scene [ Sprite::enableSpritesInScene( scene ) ] before initializing sprite objects." );
-				exit( 0 );
+				Debug_ThrowError( "Error: Sprites must be enabled in a scene [ Sprite::enableSpritesInScene( scene ) ] before initializing sprite objects.", g_SpriteMesh.get() );
 			}
 
 			ShaderDefaults::setObjectUniforms_texture( this,
-				Rocket::Graphics::Shader_UniformTexture( 0, texture, GL_REPEAT, GL_REPEAT ),
-				Rocket::Core::vec2( 1.0f, 1.0f ), Rocket::Core::vec2( 0.0f, 0.0f ), Rocket::Core::vec3( 1.0f, 1.0f, 1.0f ), false, 0.0f, 1.0f );
+				Shader_UniformTexture( 0, texture, GL_REPEAT, GL_REPEAT ),
+				vec2( 1.0f, 1.0f ), vec2( 0.0f, 0.0f ), vec3( 1.0f, 1.0f, 1.0f ), false, 0.0f, 1.0f );
 
-			Core::vec2i size = texture->getSize();
-			m_uvCoords = Core::vec4i( 0, 0, size.x, size.y );
-			setSize( Core::vec2i( width, height ) );
-			setPosition( Core::vec2i( 0, 0 ) );
+			vec2i size = texture->getSize();
+			m_uvCoords = vec4i( 0, 0, size.x, size.y );
+			setSize( vec2i( width, height ) );
+			setPosition( vec2i( 0, 0 ) );
 			m_angle = 0.0f;	// do not use setAngle() to init because it relies on m_angle
 
 			m_animationPlaying = false;
@@ -68,13 +69,13 @@ namespace Rocket {
 		}
 
 		void Sprite::setUVPixels( int left, int top, int right, int bottom ) {
-			Core::vec2i size = m_texture->getSize();
+			vec2i size = m_texture->getSize();
 			setUV( left/(size.x*1.0f), (top+1)/(size.y*1.0f), right/(size.x*1.0f), (bottom+1)/(size.y*1.0f) );
 		}
 
 		void Sprite::setUV( float left, float top, float right, float bottom ) {
-			Core::vec2i size = m_texture->getSize();
-			Core::vec4i newCoords( (int)(left*size.x), (int)(top*size.y), (int)(right*size.x), (int)(bottom*size.y) );
+			vec2i size = m_texture->getSize();
+			vec4i newCoords( (int)(left*size.x), (int)(top*size.y), (int)(right*size.x), (int)(bottom*size.y) );
 
 			if ( m_uvCoords != newCoords ) {
 				m_uvCoords = newCoords;
@@ -99,12 +100,12 @@ namespace Rocket {
 
 				// Set texture scale and offset to simulate a change in uv coords
 				ShaderDefaults::ShaderUniforms_Texture * uniforms = (ShaderDefaults::ShaderUniforms_Texture*)getShaderUniforms();
-				uniforms->m_textureScale = Core::vec2( x_scale, y_scale );
-				uniforms->m_textureOffset = Core::vec2( x_offset, y_offset );
+				uniforms->m_textureScale = vec2( x_scale, y_scale );
+				uniforms->m_textureOffset = vec2( x_offset, y_offset );
 			}
 		}
 
-		Core::vec4i Sprite::getUV() {
+		vec4i Sprite::getUV() {
 			return m_uvCoords;
 		}
 

@@ -212,14 +212,13 @@ Rocket_UnitTest ( all_Graphics ) {
 		unsigned long elapsed = Core::elapsedtime( tick_timer );
 		tick_timer = Core::timer();
 		if ( elapsed == 0 ) elapsed = 1;
-		//std::cout << "FPS: " << (int)(1000.0 / (elapsed*1.0)) << "\n";
-		rstring showFPS = "FPS: ";
-		showFPS << (int)(1000.0 / (elapsed*1.0));
-		Core::Debug_AddToLog( showFPS.c_str() );
 
+		rstring debug;
+		debug << "FPS: ";
+		debug << (int)(1000.0 / (elapsed*1.0));
+		debug << "\n";
 
 		mainScene->ControlCamera( (float)elapsed );
-
 
 		// orbit glass panes around blue cube
 		vec3 orbitForce = Rocket::Core::normalize( testCube->positionWorld() - testObject->positionWorld() );
@@ -251,23 +250,17 @@ Rocket_UnitTest ( all_Graphics ) {
 		//Core::Debug_StopTimer( "MAIN" );
 
 		// OpenGL rendering goes here...
-		//glClear( GL_COLOR_BUFFER_BIT );
 		world->display( (float)elapsed );
 
-		rstring polyCount = "Polys(tris): ";
-		polyCount << world->m_cache_renderedPolygons;
-		Core::Debug_AddToLog( polyCount.c_str() );
-		rstring objectCount = "Objects: ";
-		objectCount << world->m_cache_renderedObjects;
-		Core::Debug_AddToLog( objectCount.c_str() );
+		debug << "Polys(tris): " << world->m_cache_renderedPolygons << "\n";
+		debug << "Objects: ";
+		debug << world->m_cache_renderedObjects;
+		debug << "\n";
 
-		
 		glfwSwapBuffers( window );
 		glfwPollEvents();
-		
-		
-		std::string debug = Core::Debug_PrintLogView();
-		if ( debug.size() > 0 ) testBitmap->setText( debug + "\nThe quick, brown fox jumped over the lazy dog.\nTHE QUICK BROWN FOX JUMPED OVER THE LAZY DOG!\n0123456789?\n" );
+
+		if ( debug.length() > 0 ) testBitmap->setText( debug.std_str() + "\nThe quick, brown fox jumped over the lazy dog.\nTHE QUICK BROWN FOX JUMPED OVER THE LAZY DOG!\n0123456789?\n" );
 	
 		//Core::Debug_ResetTimer( "Object::draw" );
 
@@ -280,6 +273,5 @@ Rocket_UnitTest ( all_Graphics ) {
 
 	glfwTerminate();
 
-	//return 0;
 	return;
 }

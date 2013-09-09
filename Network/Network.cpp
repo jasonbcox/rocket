@@ -7,6 +7,8 @@
 #include <fcntl.h>
 #include <errno.h>
 
+using namespace Rocket::Core;
+
 namespace Rocket {
 	namespace Network {
 
@@ -16,7 +18,7 @@ namespace Rocket {
 			WSADATA wsaData;
 			//if (WSAStartup( MAKEWORD(2,0), &wsaData ) != 0) {
 			if (WSAStartup( MAKEWORD(2,2), &wsaData ) != 0) {
-				Core::Debug_AddToLog( "Error: WSAStartup failed." );
+				Debug_ThrowError( "Error: WSAStartup failed.", nullptr );
 			}
 #endif
 
@@ -50,10 +52,10 @@ namespace Rocket {
 			if ( m_settings & (int)NetworkSettings::UDP_Enabled ) {
 				//bind to the first open port from port to port+numberofPortTries
 				m_UDP_port = findOpenPort( port, numberOfPortTries );
-				if ( m_UDP_port == 0 ) Core::Debug_AddToLog( "Error: Failed to find an open port." );
+				if ( m_UDP_port == 0 ) Debug_ThrowError( "Error: Failed to find an open port.", m_UDP_port );
 
 				m_UDP_socket = socket( AF_INET, SOCK_DGRAM, 0 );
-				if ( m_UDP_socket == INVALID_SOCKET ) Core::Debug_AddToLog( "Error: Failed to create UDP socket." );
+				if ( m_UDP_socket == INVALID_SOCKET ) Debug_ThrowError( "Error: Failed to create UDP socket.", m_UDP_socket );
 
 				SOCKADDR_IN serverInfo;
 				serverInfo.sin_family = AF_INET;
@@ -62,7 +64,7 @@ namespace Rocket {
 				memset( &(serverInfo.sin_zero), '\0', 8 );
 
 				if ( bind( m_UDP_socket, (LPSOCKADDR)&serverInfo, sizeof( sockaddr_in ) ) == SOCKET_ERROR ) {
-					Core::Debug_AddToLog( "Error: Failed to bind UDP socket." );
+					Debug_ThrowError( "Error: Failed to bind UDP socket.", m_UDP_socket );
 					m_UDP_socket = 0;
 				}
 			}
@@ -75,10 +77,10 @@ namespace Rocket {
 			if ( m_settings & (int)NetworkSettings::TCP_ListeningEnabled ) {
 				//bind to the first open port from listenPort to listenPort+numberofPortTries
 				m_TCP_listenPort = findOpenPort( listenPort, numberOfPortTries );
-				if ( m_TCP_listenPort == 0 ) Core::Debug_AddToLog( "Error: Failed to find an open port." );
+				if ( m_TCP_listenPort == 0 ) Debug_ThrowError( "Error: Failed to find an open port.", m_TCP_listenPort );
 
 				m_TCP_listenSocket = socket( AF_INET, SOCK_STREAM, 0 );
-				if ( m_TCP_listenSocket == INVALID_SOCKET ) Core::Debug_AddToLog( "Error: Failed to create listenSocket." );
+				if ( m_TCP_listenSocket == INVALID_SOCKET ) Debug_ThrowError( "Error: Failed to create listenSocket.", m_TCP_listenSocket );
 
 				SOCKADDR_IN serverInfo;
 				serverInfo.sin_family = AF_INET;
@@ -87,12 +89,12 @@ namespace Rocket {
 				memset( &(serverInfo.sin_zero), '\0', 8 );
 
 				if ( bind( m_TCP_listenSocket, (LPSOCKADDR)&serverInfo, sizeof(sockaddr_in) ) == SOCKET_ERROR ) {
-					Core::Debug_AddToLog( "Error: Failed to bind listenSocket." );
+					Debug_ThrowError( "Error: Failed to bind listenSocket.", m_TCP_listenSocket );
 					m_TCP_listenSocket = 0;
 				}
 	
 				if ( listen( m_TCP_listenSocket, SOMAXCONN ) == SOCKET_ERROR ) {
-					Core::Debug_AddToLog( "Error: Listen error." );
+					Debug_ThrowError( "Error: Listen error.", m_TCP_listenSocket );
 					m_TCP_listenSocket = 0;
 				}
 
@@ -119,14 +121,13 @@ namespace Rocket {
 			hints.ai_socktype = SOCK_STREAM;
 			hints.ai_protocol = IPPROTO_TCP;
 
-			Core::Debug_AddToLog( "Looking up address:" );
-			Core::Debug_AddToLog( host.c_str() );
+			//Debug_AddToLog( "Looking up address:" );
+			//Debug_AddToLog( host.c_str() );
 
 			rstring port_s = "";
 			port_s << port;
 			if ( getaddrinfo( host.c_str() , port_s.c_str() ,&hints ,&servinfo ) != 0 ) {
-				Core::Debug_AddToLog( "Address Lookup Failed" );
-				return "";
+				Debug_ThrowError( "Address Lookup Failed", host.std_str(), port );
 			}
 
 			//if ( servinfo->ai_addrlen == 0 ) return "127.0.0.1";
@@ -137,8 +138,8 @@ namespace Rocket {
 		Rocket::Network::PacketAccumulator * Network::connect_UDP_IP4( rstring host, unsigned int port ) {
 			rstring IP = hostLookup( host, port );
 			if ( IP == "" ) return nullptr;
-			Core::Debug_AddToLog( "Connecting (UDP) to:" );
-			Core::Debug_AddToLog( IP.c_str() );
+			//Debug_AddToLog( "Connecting (UDP) to:" );
+			//Debug_AddToLog( IP.c_str() );
 
 			Rocket::Network::PacketAccumulator * conn = new PacketAccumulator( ConnectionTypes::Connection_UDP, IP, port );
 			rstring IPandPort = (IP << ":" << port);
@@ -150,8 +151,8 @@ namespace Rocket {
 		Rocket::Network::PacketAccumulator * Network::connect_TCP_IP4( rstring host, unsigned int port ) {
 			rstring IP = hostLookup( host, port );
 			if ( IP == "" ) return nullptr;
-			Core::Debug_AddToLog( "Connecting (TCP) to:" );
-			Core::Debug_AddToLog( IP.c_str() );
+			//Debug_AddToLog( "Connecting (TCP) to:" );
+			//Debug_AddToLog( IP.c_str() );
 
 			Rocket::Network::PacketAccumulator * conn = new PacketAccumulator( ConnectionTypes::Connection_TCP, IP, port );
 			// Create new socket
@@ -163,7 +164,7 @@ namespace Rocket {
 
 			*newSocket = socket( AF_INET, SOCK_STREAM, 0 );
 			if ( *newSocket == INVALID_SOCKET ) {
-				Core::Debug_AddToLog( "Error: Invalid socket when creating new TCP connection." );
+				Debug_ThrowError( "Error: Invalid socket when creating new TCP connection.", *newSocket );
 				delete conn;
 				delete newSocket;
 				return nullptr;
@@ -172,13 +173,11 @@ namespace Rocket {
 			// Connect to IP:port with the new socket
 			int result = connect( *newSocket, (const sockaddr *)&target, sizeof(sockaddr_in) );
 			if ( result == SOCKET_ERROR ) {
-				Core::Debug_AddToLog( "Error: Connect failed when creating new TCP connection." );
+				Debug_ThrowError( "Error: Connect failed when creating new TCP connection.", result );
 				delete conn;
 				delete newSocket;
 				return nullptr;
 			}
-
-			Core::Debug_AddToLog( "TCP Connect Successful." );
 
 			m_TCP_connections[ newSocket ] = conn;
 			return conn;
@@ -243,13 +242,12 @@ namespace Rocket {
 #endif
 							newConnection = new PacketAccumulator( ConnectionTypes::Connection_TCP, addr_IP, ntohs( addr.sin_port ) );
 							m_TCP_connections[ acceptSocket ] = newConnection;
-							Core::Debug_AddToLog( "TCP Peer Connected." );
 						}
 					}
 				}
 			} else if ( r == 0 ) {
 				// timeout
-				Core::Debug_AddToLog( "select() timed out" );
+				//Debug_AddToLog( "select() timed out", r );
 			} else {
 #ifdef OS_WINDOWS
 				int err = WSAGetLastError();
@@ -258,8 +256,7 @@ namespace Rocket {
 #endif
 				rstring err_s = "";
 				err_s << err ;
-				Core::Debug_AddToLog( "Error: select() failed" );
-				Core::Debug_AddToLog( err_s.c_str() );
+				Debug_ThrowError( "Error: select() failed", err_s.std_str() );
 			}
 
 			// Send all packets
@@ -324,9 +321,8 @@ namespace Rocket {
 				from->second->fromSocket( buffer, r );
 			} else {
 				// The packet is from an unknown source, so discard it
-				Core::Debug_AddToLog( "Received packet from unknown UDP source: " );
-				Core::Debug_AddToLog( fromip.c_str() );
-				Core::Debug_AddToLog( "Discarding." );
+				//Debug_AddToLog( "Received packet from unknown UDP source: " );
+				//Debug_AddToLog( fromip.c_str() );
 			}
 		}
 		
@@ -342,14 +338,14 @@ namespace Rocket {
 					iter->second->fromSocket( buffer, r );
 				} else {
 					// The packet is from an unregistered socket, so discard it
-					Core::Debug_AddToLog( "Received packet on unregistered TCP socket. Discarding." );
+					//Debug_AddToLog( "Received packet on unregistered TCP socket. Discarding." );
 				}
 			} else {
 				if ( r == 0 ) {
 					// Connection closed, so remove it from the list of TCP connections
 					close_TCP( s );
 				} else {
-					Core::Debug_AddToLog( "Error: TCP recv() failed." );
+					Debug_ThrowError( "Error: TCP recv() failed.", r );
 				}
 			}
 		}
@@ -363,7 +359,7 @@ namespace Rocket {
 				m_TCP_connections.erase( iter );
 			} else {
 				// socket is unregistered
-				Core::Debug_AddToLog( "Error: Could not close unregistered TCP socket." );
+				Debug_ThrowError( "Error: Could not close unregistered TCP socket.", 0 );
 			}
 		}
 
@@ -385,9 +381,9 @@ namespace Rocket {
 
 				// Test both TCP and UDP bindings
 				SOCKET testSocket_TCP = socket( AF_INET, SOCK_STREAM, 0 );
-				if(testSocket_TCP == INVALID_SOCKET) Core::Debug_AddToLog( "Error: Invalid testSocket_TCP on creation." );
+				if ( testSocket_TCP == INVALID_SOCKET ) Debug_ThrowError( "Error: Invalid testSocket_TCP on creation.", testSocket_TCP );
 				SOCKET testSocket_UDP = socket( AF_INET, SOCK_DGRAM, 0 );
-				if(testSocket_UDP == INVALID_SOCKET) Core::Debug_AddToLog( "Error: Invalid testSocket_UDP on creation." );
+				if ( testSocket_UDP == INVALID_SOCKET ) Debug_ThrowError( "Error: Invalid testSocket_UDP on creation.", testSocket_UDP );
 
 				SOCKADDR_IN serverInfo;
 				serverInfo.sin_family = AF_INET;

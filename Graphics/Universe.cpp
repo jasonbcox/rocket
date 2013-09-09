@@ -61,7 +61,7 @@ namespace Rocket {
 			if (iter == m_meshes.end()) {
 				m_meshes[ meshName ] = mesh->shared_from_this();
 			} else {
-				// todo: Warning/Error: Mesh already added to universe!
+				Debug_ThrowError( "Warning/Error: Mesh already added to universe!", 0 );
 			}
 		}
 		// Retrieve an already loaded mesh

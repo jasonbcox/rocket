@@ -66,8 +66,8 @@ namespace Rocket {
 			if ( mapIter != m_objectUsers.end() ) {
 				m_currentPassIterator = (*mapIter).second.begin();
 			} else {
-				// Report a warning/error: Mesh not attached to this scene
-				// todo: Set a flag to skip this Mesh's draw passes until a new Scene is selected
+				Debug_ThrowError( "Warning/error: Mesh not attached to this scene!", 0 );
+				// Todo: Set a flag to skip this Mesh's draw passes until a new Scene is selected
 			}
 
 #ifdef ENABLE_DEBUG
@@ -171,13 +171,13 @@ namespace Rocket {
 					}
 				}
 			} else {
-				// todo: Warning/Error: Mesh is not attached to this scene!
+				Debug_ThrowError( "Warning/Error: Mesh is not attached to this scene!", 0 );
 			}
 		}
 
 		void Mesh::passMeshToGPU() {
-			if ( m_shader.get() == nullptr ) { Rocket::Core::Debug_AddToLog( "Error: Mesh must be linked to a shader." ); system( "pause" ); exit( 1 ); }
-			if ( m_vertexCount <= 0 ) { Rocket::Core::Debug_AddToLog( "Error: Mesh must contain at least one vertex." ); system( "pause" ); exit( 1 ); }
+			if ( m_shader.get() == nullptr ) Debug_ThrowError( "Error: Mesh must be linked to a shader.", 0 );
+			if ( m_vertexCount <= 0 ) Debug_ThrowError( "Error: Mesh must contain at least one vertex.", m_vertexCount );
 			m_shader->useShaderProgram();
 			GLuint shaderNum = m_shader->getShaderNumber();
 			glBindVertexArray( m_vao );

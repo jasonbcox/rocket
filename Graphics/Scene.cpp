@@ -72,7 +72,7 @@ namespace Rocket {
 					}
 				}
 				if ( added != true ) {
-					// Todo: Throw an error because the parent isn't currently owned by this Scene
+					Debug_ThrowError( "Error: Parent isn't owned by this Scene.", 0 );
 				}
 			}
 			if ( added == true ) {
