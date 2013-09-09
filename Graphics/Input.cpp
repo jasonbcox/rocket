@@ -169,7 +169,8 @@ namespace Rocket {
 
 		void Input::callback_keyboard( GLFWwindow * window, int key, int scancode, int state, int modifierKeys ) {
 			Input_ButtonState newstate = Input_ButtonState::Released;
-			if (state == GLFW_PRESS) newstate = Input_ButtonState::Hit;
+			if ( state == GLFW_PRESS ) newstate = Input_ButtonState::Hit;
+			if ( state == GLFW_REPEAT ) newstate = Input_ButtonState::Pressed;
 			Global_Input->m_keyboard[ key ] = newstate;
 
 			// Update keyboard bindings
