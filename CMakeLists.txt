@@ -26,12 +26,14 @@ set( Rocket_sources
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/.. )
 
-set( CMAKE_CXX_FLAGS "-g -Wall -std=c++11" )
+
+set( CMAKE_CXX_FLAGS "-Wall -std=c++11" )
 
 add_executable( Rocket ${Rocket_sources} ${Rocket_headers} )
 
 add_subdirectory( Core )
 add_subdirectory( Graphics )
 add_subdirectory( Network )
+add_subdirectory( Audio )
 
 install( TARGETS Rocket RUNTIME DESTINATION bin )

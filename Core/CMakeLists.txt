@@ -11,6 +11,7 @@ set( RocketCore_headers
 	dsp.h
 	fixedpoint.h
 	debug.h
+	utility.h
 )
 set( RocketCore_sources
 	rstring.cpp
@@ -18,6 +19,7 @@ set( RocketCore_sources
 	dsp.cpp
 	fixedpoint.cpp
 	debug.cpp
+	utility.cpp
 )
 
 add_library ( RocketCore
