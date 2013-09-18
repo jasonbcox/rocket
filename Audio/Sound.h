@@ -29,6 +29,7 @@ namespace Rocket {
 			// addToBuffer() - Adds sound data to the audio stream buffer
 			void addToBuffer( double * buffer, unsigned int numBufferFrames );
 
+			// clone() - Returns a copy of this Sound, sharing the data pointer
 			shared_ptr< Sound > clone();
 
 		private:

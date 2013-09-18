@@ -9,6 +9,8 @@ namespace Rocket {
 		Sound::Sound( const char * file ) {
 			SF_INFO sndinfo;
 			memset( &sndinfo, 0, sizeof( SF_INFO ) );
+			// Load a sound file using libsndfile (see libsndfile documentation for
+			// a full list of supported formats)
 			SNDFILE * sndfile = sf_open( file, SFM_READ, &sndinfo );
 			if ( !sndfile ) {
 				Debug_ThrowError( "Error: Couldn't open sound file.", file );
@@ -17,7 +19,6 @@ namespace Rocket {
 			m_numChannels = sndinfo.channels;
 			m_sampleRate = sndinfo.samplerate;
 			m_numFrames = sf_seek( sndfile, -1, SEEK_END );
-			// m_data = new double[ m_numFrames * m_numChannels ];
 			m_data = shared_ptr< double >( new double[ m_numFrames * m_numChannels ], array_deleter< double >() );
 			sf_seek( sndfile, 0, SEEK_SET );
 			int numFramesRead = sf_readf_double( sndfile, m_data.get(), m_numFrames );
@@ -41,7 +42,6 @@ namespace Rocket {
 			m_repeat = false;
 		}
 		Sound::~Sound() {
-			//delete [] m_data;
 		}
 
 		unsigned int Sound::getNumChannels() {
@@ -69,7 +69,8 @@ namespace Rocket {
 
 		// addToBuffer() adds values for numBufferFrames in buffer.
 		// The values that are added begin at m_framePosition where the sound left off
-		// at for the last addToBuffer() call.
+		// at for the last addToBuffer() call.  If the end of the sound data is
+		// reached and m_repeat is false, the sound stops playing.
 		void Sound::addToBuffer( double * buffer, unsigned int numBufferFrames ) {
 			if ( m_playing == true ) {
 				unsigned int frames = numBufferFrames;

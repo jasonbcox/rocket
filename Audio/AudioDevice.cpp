@@ -49,6 +49,8 @@ namespace Rocket {
 			m_sounds.push_back( sound->shared_from_this() );
 		}
 
+		// m_callback() - Callback that fills the sound buffer as needed to produce
+		// a continuous stream.
 		int AudioDevice::m_callback( void * outputBuffer,
 										void * inputBuffer,
 										unsigned int numBufferFrames,
