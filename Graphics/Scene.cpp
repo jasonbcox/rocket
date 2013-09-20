@@ -399,5 +399,16 @@ namespace Rocket {
 			return &m_zIndexer;
 		}
 
+		// Override Transform::getOwners() because this Scene's Transform doesn't
+		// know that it owns itself (and can't know because the list of owners is
+		// a vector of shared_ptr, and we don't want a shared_ptr pointing to its
+		// own container).
+		vector< shared_ptr< Scene > > Scene::getOwners() {
+			vector< shared_ptr< Scene > > r = Transform::getOwners();
+			r.push_back( static_pointer_cast< Scene >( this->shared_from_this() ) );
+			return r;
+		}
+
 	}
 }
+

@@ -73,7 +73,7 @@ namespace Rocket {
 
 			virtual void addOwner( Scene * scene );
 			virtual void removeOwner( Scene * scene );
-			vector< shared_ptr< Scene > > getOwners();
+			virtual vector< shared_ptr< Scene > > getOwners();
 
 		protected:
 			shared_ptr< Transform > m_parent;
@@ -114,3 +114,4 @@ namespace Rocket {
 
 
 #endif
+

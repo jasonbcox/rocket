@@ -103,6 +103,8 @@ namespace Rocket {
 
 			zIndexerType * zIndexer();
 
+			virtual vector< shared_ptr< Scene > > getOwners();
+
 #ifdef ENABLE_DEBUG
 			int m_cache_renderedPolygons;
 			int m_cache_renderedObjects;
@@ -162,3 +164,4 @@ namespace Rocket {
 
 
 #endif
+

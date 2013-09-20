@@ -39,7 +39,7 @@ namespace Rocket {
 
 		void Transform::addChild( Transform * child, bool coupleChildToParent ) {
 			m_children.push_back( child->shared_from_this() );
-			for ( auto scene : m_owners ) {
+			for ( auto scene : getOwners() ) {
 				child->addOwner( scene.get() );
 			}
 
@@ -265,7 +265,7 @@ namespace Rocket {
 
 		// Add a scene to the list of owners that contain this object
 		void Transform::addOwner( Scene * scene ) {
-			for ( auto owner : m_owners ) {
+			for ( auto owner : getOwners() ) {
 				if ( owner.get() == scene ) return;
 			}
 			m_owners.push_back( static_pointer_cast< Scene >( scene->shared_from_this() ) );
