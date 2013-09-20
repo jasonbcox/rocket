@@ -54,10 +54,12 @@ namespace Rocket {
 			return m_framePosition;
 		}
 
-		void Sound::play( bool repeat, unsigned int startFrame ) {
-			m_playing = true;
-			m_repeat = repeat;
-			m_framePosition = startFrame;
+		void Sound::play( bool replace, bool repeat, unsigned int startFrame ) {
+			if ( ( replace == true ) || ( ( replace == false ) && ( m_playing == false ) ) ) {
+				m_playing = true;
+				m_repeat = repeat;
+				m_framePosition = startFrame;
+			}
 		}
 		void Sound::pause() {
 			m_playing = false;

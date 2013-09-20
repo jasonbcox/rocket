@@ -22,7 +22,13 @@ namespace Rocket {
 			unsigned int getSampleRate();
 			unsigned int getCurrentFrame();
 
-			void play( bool repeat = false, unsigned int startFrame = 0 );
+			// play() - Play the sound
+			// replace - If the sound is already playing, replace the current frame
+			// position with startFrame
+			// repeat - If true, the sound will repeat until stopped.
+			// startFrame - The frame to begin playing at.
+			void play( bool replace = true, bool repeat = false,
+						unsigned int startFrame = 0 );
 			void pause();
 			void stop();
 
