@@ -1883,7 +1883,7 @@ int query_NPOT_capability( void )
 	{
 		/*	we haven't yet checked for the capability, do so	*/
 		if(
-			(NULL == strstr( (char const*)glGetString( GL_EXTENSIONS ),
+			(NULL == strstr( (char const*)glGetStringi( GL_EXTENSIONS ),
 				"GL_ARB_texture_non_power_of_two" ) )
 			)
 		{

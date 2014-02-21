@@ -16,7 +16,32 @@ set(SOIL_sources
 	./SOIL/stb_image_aug.c
 )
 
-add_library ( SOIL ${SOIL_headers} ${SOIL_sources} )
+set( SOIL2_headers
+	./SOIL2/image_DXT.h
+	./SOIL2/image_helper.h
+	./SOIL2/SOIL2.h
+	./SOIL2/stb_image.h
+	./SOIL2/stb_image_write.h
+	./SOIL2/stbi_DDS.h
+	./SOIL2/stbi_DDS_c.h
+	./SOIL2/stbi_ext_c.h
+	./SOIL2/etc1_utils.h
+	./SOIL2/pkm_helper.h
+	./SOIL2/pvr_helper.h
+	./SOIL2/stbi_pkm_c.h
+	./SOIL2/stbi_pvr_c.h
+	./SOIL2/stbi_pvr.h
+)
+set(SOIL2_sources
+	./SOIL2/image_DXT.c
+	./SOIL2/image_helper.c
+	./SOIL2/SOIL2.c
+	./SOIL2/etc1_utils.c
+	./SOIL2/stb_image.c
+	./SOIL2/stb_image_write.c
+)
+
+add_library ( SOIL2 ${SOIL2_headers} ${SOIL2_sources} )
 
 set( RocketGraphics_headers
 	Clickable.h
@@ -80,6 +105,6 @@ target_link_libraries( RocketGraphics
 	GLU
 	GL
 	${GLFW_STATIC_LIBRARIES}
-	SOIL
+	SOIL2
 )
 

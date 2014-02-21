@@ -31,9 +31,10 @@ Rocket_UnitTest ( all_Graphics ) {
 	// Setup GLFW Window
 	GLFWwindow * window;
 	if( !glfwInit() ) exit( EXIT_FAILURE );
-	// Require OpenGL 3.0 or higher
-	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 0);
+	// Require OpenGL 3.2 or higher
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 3 );
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 2 );
+	glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
 
 	window = glfwCreateWindow( Graphics::WindowWidth,Graphics::WindowHeight, "ROCKET Engine - Graphics Module", NULL, NULL );
 	//if( !glfwOpenWindow( Graphics::WindowWidth,Graphics::WindowHeight, 0,0,0, 0,0,0, GLFW_WINDOW ) ) { //GLFW_WINDOW, GLFW_FULLSCREEN
@@ -44,7 +45,10 @@ Rocket_UnitTest ( all_Graphics ) {
 	GL_GET_ERROR();
 	glfwMakeContextCurrent( window );
 
-	glewExperimental = true;
+	cout << "Using OpenGL version: " << glGetString( GL_VERSION ) << "\n";
+	cout << "Using GLEW version: " << glewGetString( GLEW_VERSION ) << "\n";
+
+	glewExperimental = true; // Only for OpenGL < 3.2
 	if (glewInit() != GLEW_OK) {
 		glfwTerminate();
 		//return 1;
