@@ -32,8 +32,8 @@ Rocket_UnitTest ( all_Graphics ) {
 	GLFWwindow * window;
 	if( !glfwInit() ) exit( EXIT_FAILURE );
 	// Require OpenGL 3.2 or higher
-	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 3 );
-	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 2 );
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 0 );
 	glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
 
 	window = glfwCreateWindow( Graphics::WindowWidth,Graphics::WindowHeight, "ROCKET Engine - Graphics Module", NULL, NULL );
@@ -48,7 +48,7 @@ Rocket_UnitTest ( all_Graphics ) {
 	cout << "Using OpenGL version: " << glGetString( GL_VERSION ) << "\n";
 	cout << "Using GLEW version: " << glewGetString( GLEW_VERSION ) << "\n";
 
-	glewExperimental = true; // Only for OpenGL < 3.2
+	glewExperimental = true; // If this throws a GLError 500 ( GL_INVALID_ENUM ), ignore it. GLEW needs to patch this.
 	if (glewInit() != GLEW_OK) {
 		glfwTerminate();
 		//return 1;

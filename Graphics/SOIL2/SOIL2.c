@@ -361,7 +361,9 @@ unsigned int
 		const char *filename,
 		int force_channels,
 		unsigned int reuse_texture_ID,
-		unsigned int flags
+		unsigned int flags,
+		unsigned int * pWidth,
+		unsigned int * pHeight
 	)
 {
 	/*	variables	*/
@@ -422,6 +424,10 @@ unsigned int
 			reuse_texture_ID, flags,
 			GL_TEXTURE_2D, GL_TEXTURE_2D,
 			GL_MAX_TEXTURE_SIZE );
+
+	if ( pWidth != NULL ) *pWidth = width;
+	if ( pHeight != NULL ) *pHeight = height;
+
 	/*	and nuke the image data	*/
 	SOIL_free_image_data( img );
 	/*	and return the handle, such as it is	*/
