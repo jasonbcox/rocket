@@ -13,3 +13,22 @@ For commercial use, you must negotiate a separate license.  See the LICENSE file
 
 If you are interested in contributing to the ROCKET Engine Project, please read the LICENSE_CONTRIBUTORS file.
 Then, just shoot an email to Jason Cox at contact@jasonbcox.com.
+
+## Setup
+
+sudo apt-get install xorg-dev
+sudo apt-get install libglu1-mesa-dev
+
+git clone https://github.com/glfw/glfw.git
+cd glfw
+mkdir build
+cd build
+cmake ..
+make install
+
+git clone https://github.com/jasonbcox/rocket.git
+cd rocket
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Debug
+make
