@@ -16,6 +16,9 @@ Then, just shoot an email to Jason Cox at contact@jasonbcox.com.
 
 ## Setup
 
+### Setup GLFW
+
+```
 sudo apt-get install xorg-dev
 sudo apt-get install libglu1-mesa-dev
 
@@ -25,10 +28,16 @@ mkdir build
 cd build
 cmake ..
 make install
+```
 
+### Setup ROCKET Engine
+
+```
 git clone https://github.com/jasonbcox/rocket.git
 cd rocket
 mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Debug
 make
+```
+
