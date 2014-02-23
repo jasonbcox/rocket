@@ -75,7 +75,7 @@ namespace Rocket {
 			m_omega += m_frame_alpha * elapsedMilliseconds;
 
 			move( m_v );
-			rotate( Core::MatrixToQuaternion( Core::Rotate( m_omega.z, Core::vec3(0,0,1) ) * Core::Rotate( m_omega.y, Core::vec3(0,1,0) ) * Core::Rotate( m_omega.x, Core::vec3(1,0,0) ) ) );
+			rotate( Core::MatrixToQuaternion( Core::Rotate( m_omega.z(), Core::vec3(0,0,1) ) * Core::Rotate( m_omega.y(), Core::vec3(0,1,0) ) * Core::Rotate( m_omega.x(), Core::vec3(1,0,0) ) ) );
 
 			Object::update( recursive, elapsedMilliseconds );
 
@@ -99,7 +99,7 @@ namespace Rocket {
 			shared_ptr< Object_Newton > r = cloneNewton();
 
 			r->scale( scale );
-			r->rotate( rotation.w, Core::vec3( rotation.x, rotation.y, rotation.z ) );
+			r->rotate( rotation.w(), rotation.xyz() );
 			r->position( position );
 
 			scene->addObject( r.get(), parent );

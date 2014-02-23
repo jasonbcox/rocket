@@ -110,8 +110,8 @@ namespace Rocket {
 
 				int testScale = 1;
 				if ( text[i] == '\n' ) {
-					nextPos.x = 0;
-					nextPos.y += glyph.fontSize*testScale;
+					nextPos.x( 0 );
+					nextPos.y( nextPos.y() + glyph.fontSize*testScale );
 				} else {
 					shared_ptr< Sprite > quad;
 					Core::vec2i spriteSize( glyph.advance*testScale, glyph.height*testScale );
@@ -120,7 +120,7 @@ namespace Rocket {
 						quad->Raster::show();
 						quad->setSize( spriteSize );
 					} else {
-						quad = make_shared< Sprite >( m_bitmap.get(), spriteSize.x, spriteSize.y );
+						quad = make_shared< Sprite >( m_bitmap.get(), spriteSize.x(), spriteSize.y() );
 						this->addChild( quad.get(), true );
 
 						if ( m_transparency == true ) {
@@ -131,14 +131,14 @@ namespace Rocket {
 						m_quads.push_back( quad );
 					}
 
-					quad->setUVPixels( glyph.origin.x, glyph.origin.y - glyph.bearing.y, glyph.origin.x + glyph.advance, glyph.origin.y - glyph.bearing.y + glyph.height );
+					quad->setUVPixels( glyph.origin.x(), glyph.origin.y() - glyph.bearing.y(), glyph.origin.x() + glyph.advance, glyph.origin.y() - glyph.bearing.y() + glyph.height );
 
-					if ( nextPos.x + glyph.advance*testScale > WindowWidth ) {
-						nextPos.x = 0;
-						nextPos.y += glyph.fontSize*testScale;
+					if ( nextPos.x() + glyph.advance*testScale > WindowWidth ) {
+						nextPos.x( 0 );
+						nextPos.y( nextPos.y() + glyph.fontSize*testScale );
 					}
-					quad->setPosition( nextPos - Core::vec2i(0,glyph.bearing.y) );
-					nextPos.x += glyph.advance*testScale;
+					quad->setPosition( nextPos - Core::vec2i( 0, glyph.bearing.y() ) );
+					nextPos.x( nextPos.x() + glyph.advance*testScale );
 				}
 			}
 

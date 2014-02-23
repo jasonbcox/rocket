@@ -53,7 +53,7 @@ namespace Rocket {
 			shared_ptr< Object > r = clone();
 
 			r->scale( scale );
-			r->rotate( rotation.w, Core::vec3( rotation.x, rotation.y, rotation.z ) );
+			r->rotate( rotation.w(), rotation.xyz() );
 			r->position( position );
 
 			scene->addObject( r.get(), parent );

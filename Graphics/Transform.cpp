@@ -96,8 +96,8 @@ namespace Rocket {
 			setOrientationCacheAsDirty();
 		}
 		void Transform::rotate( float angle, Core::vec3 axisOfRotation ) {
-			if ( (axisOfRotation.x == 0.0f) && (axisOfRotation.y == 0.0f) && (axisOfRotation.z == 0.0f) ) {
-				axisOfRotation.y = 1.0f;
+			if ( (axisOfRotation.x() == 0.0f) && (axisOfRotation.y() == 0.0f) && (axisOfRotation.z() == 0.0f) ) {
+				axisOfRotation.y( 1.0f );
 			}
 			m_rotation = Core::MatrixToQuaternion( Rotate( angle, axisOfRotation ) * Core::QuaternionRotate( m_rotation ) );
 			setOrientationCacheAsDirty();
@@ -231,11 +231,11 @@ namespace Rocket {
 				iter = m_zIndexer_myIterator;
 				iter++;
 				Core::vec3 pos = position();
-				pos.z = iter->first.lock().get()->position().z + 1.0f;
+				pos.z( iter->first.lock().get()->position().z() + 1.0f );
 
 				// Make sure it fits within the viewspace
 				// If this code is ever hit, you're doing something wrong (try z-indexing your transforms better!)
-				if ( pos.z > OrthographicDrawDistance ) pos.z = OrthographicDrawDistance;
+				if ( pos.z() > OrthographicDrawDistance ) pos.z( OrthographicDrawDistance );
 
 				position( pos );
 			}
@@ -243,22 +243,22 @@ namespace Rocket {
 		zIndexerType::iterator Transform::zIndexer_AddBehind( Transform * relativeTo, int zIndexTag ) {
 			m_zIndexer = relativeTo->m_zIndexer;
 			zIndexerType::iterator iter = relativeTo->m_zIndexer_myIterator;
-			float highZ = iter->first.lock().get()->position().z;
+			float highZ = iter->first.lock().get()->position().z();
 			iter++;
-			float lowZ = iter->first.lock().get()->position().z;
+			float lowZ = iter->first.lock().get()->position().z();
 			Core::vec3 pos = position();
-			pos.z = ( highZ - lowZ ) / 2.0f;
+			pos.z( ( highZ - lowZ ) / 2.0f );
 			position( pos );
 			return m_zIndexer->insert( iter, std::pair< weak_ptr< Transform >, int >( this->shared_from_this(), zIndexTag ) );
 		}
 		zIndexerType::iterator Transform::zIndexer_AddInFront( Transform * relativeTo, int zIndexTag ) {
 			m_zIndexer = relativeTo->m_zIndexer;
 			zIndexerType::iterator iter = relativeTo->m_zIndexer_myIterator;
-			float lowZ = iter->first.lock().get()->position().z;
+			float lowZ = iter->first.lock().get()->position().z();
 			iter--;
-			float highZ = iter->first.lock().get()->position().z;
+			float highZ = iter->first.lock().get()->position().z();
 			Core::vec3 pos = position();
-			pos.z = ( highZ - lowZ ) / 2.0f;
+			pos.z( ( highZ - lowZ ) / 2.0f );
 			position( pos );
 			return m_zIndexer->insert( relativeTo->m_zIndexer_myIterator, std::pair< weak_ptr< Transform >, int >( this->shared_from_this(), zIndexTag ) );
 		}

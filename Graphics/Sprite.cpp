@@ -32,7 +32,7 @@ namespace Rocket {
 				vec2( 1.0f, 1.0f ), vec2( 0.0f, 0.0f ), vec3( 1.0f, 1.0f, 1.0f ), false, 0.0f, 1.0f );
 
 			vec2i size = texture->getSize();
-			m_uvCoords = vec4i( 0, 0, size.x, size.y );
+			m_uvCoords = vec4i( 0, 0, size.x(), size.y() );
 			setSize( vec2i( width, height ) );
 			setPosition( vec2i( 0, 0 ) );
 			m_angle = 0.0f;	// do not use setAngle() to init because it relies on m_angle
@@ -70,12 +70,12 @@ namespace Rocket {
 
 		void Sprite::setUVPixels( int left, int top, int right, int bottom ) {
 			vec2i size = m_texture->getSize();
-			setUV( left/(size.x*1.0f), (top+1)/(size.y*1.0f), right/(size.x*1.0f), (bottom+1)/(size.y*1.0f) );
+			setUV( left/(size.x()*1.0f), (top+1)/(size.y()*1.0f), right/(size.x()*1.0f), (bottom+1)/(size.y()*1.0f) );
 		}
 
 		void Sprite::setUV( float left, float top, float right, float bottom ) {
 			vec2i size = m_texture->getSize();
-			vec4i newCoords( (int)(left*size.x), (int)(top*size.y), (int)(right*size.x), (int)(bottom*size.y) );
+			vec4i newCoords( (int)(left*size.x()), (int)(top*size.y()), (int)(right*size.x()), (int)(bottom*size.y()) );
 
 			if ( m_uvCoords != newCoords ) {
 				m_uvCoords = newCoords;
@@ -148,7 +148,7 @@ namespace Rocket {
 				}
 
 				vec4i frameUV = m_animationFrames[ m_animationCurrentFrame ];
-				setUVPixels( frameUV.x, frameUV.y, frameUV.z, frameUV.w );
+				setUVPixels( frameUV.x(), frameUV.y(), frameUV.z(), frameUV.w() );
 			}
 
 			Object::update( recursive, elapsedMilliseconds );

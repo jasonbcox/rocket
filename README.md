@@ -16,7 +16,18 @@ Then, just shoot an email to Jason Cox at contact@jasonbcox.com.
 
 ## Setup
 
-### Setup GLFW
+### Install Eigen
+
+```
+Download and Unpack Eigen from http://eigen.tuxfamily.org
+cd eigen-*
+mkdir build
+cd build
+cmake ..
+make install
+```
+
+### Install GLFW
 
 ```
 sudo apt-get install xorg-dev

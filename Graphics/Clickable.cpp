@@ -14,7 +14,7 @@ namespace Rocket {
 		}
 
 		void Clickable::update( Input_ButtonState state, int x, int y ) {
-			if ( ( x >= m_clickableArea.x ) && ( y >= m_clickableArea.y ) && ( x <= m_clickableArea.z ) && ( y <= m_clickableArea.z ) ) {
+			if ( ( x >= m_clickableArea.x() ) && ( y >= m_clickableArea.y() ) && ( x <= m_clickableArea.z() ) && ( y <= m_clickableArea.z() ) ) {
 				m_state = state;
 			} else {
 				m_state = Input_ButtonState::Released;

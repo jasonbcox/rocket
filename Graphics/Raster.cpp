@@ -19,7 +19,7 @@ namespace Rocket {
 
 		void Raster::setSize( Core::vec2i size ) {
 			m_size = size;
-			m_rasterTransform->scale( Core::vec3( (float)size.x, (float)size.y, 1.0f ) );
+			m_rasterTransform->scale( Core::vec3( (float)size.x(), (float)size.y(), 1.0f ) );
 		}
 		Core::vec2i Raster::getSize() {
 			return m_size;
@@ -27,7 +27,7 @@ namespace Rocket {
 
 		void Raster::setPosition( Core::vec2i pos ) {
 			// Preserve z-axis for z-indexing
-			m_rasterTransform->position( Core::vec3( pos.x + m_size.x/2.0f, pos.y + m_size.y/2.0f, m_rasterTransform->position().z ) );
+			m_rasterTransform->position( Core::vec3( pos.x() + m_size.x()/2.0f, pos.y() + m_size.y()/2.0f, m_rasterTransform->position().z() ) );
 			m_position = pos;
 		}
 		Core::vec2i Raster::getPosition() {

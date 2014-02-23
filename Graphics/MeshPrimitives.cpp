@@ -13,7 +13,7 @@ namespace Rocket {
 		// Create a triangle (3 vertices and perpendicular normals for each vertex)
 		void triangle( const Core::vec4 & a, const Core::vec4 & b, const Core::vec4 & c, int * vertexCount, std::vector<Core::vec4> * verticesList, std::vector<Core::vec3> * normalsList ) {
 			Core::vec3 normal = Core::normalize( Core::cross( (b-a).xyz(), (c-b).xyz() ) );
-    
+
 			normalsList->push_back( normal );	verticesList->push_back( a );
 			normalsList->push_back( normal );	verticesList->push_back( b );
 			normalsList->push_back( normal );	verticesList->push_back( c );
@@ -111,15 +111,14 @@ namespace Rocket {
 
 
 		Core::vec4 unit( const Core::vec4 & p ) {
-			float len = p.x*p.x + p.y*p.y + p.z*p.z;
-    
+			float len = p.xyz().lengthSquared();
 			Core::vec4 t;
 			if ( len > MathConstants::ZeroTolerance ) {
 				len = sqrt( len );
-				t.x = p.x / len;
-				t.y = p.y / len;
-				t.z = p.z / len;
-				t.w = 1.0;
+				t.x( p.x() / len );
+				t.y( p.y() / len );
+				t.z( p.z() / len );
+				t.w( 1.0 );
 			}
 			return t;
 		}
@@ -167,7 +166,7 @@ namespace Rocket {
 			for (int i = 0; i < *numVertices; i++) {
 				vertices[i] = (*verticesList)[i];
 				normals[i] = (*normalsList)[i];
-				uvs[i] = Core::vec2( vertices[i].x, vertices[i].y );
+				uvs[i] = Core::vec2( vertices[i].x(), vertices[i].y() );
 			}
 
 			delete verticesList;
@@ -184,9 +183,10 @@ namespace Rocket {
 		void Mesh::generateSphericalNormals( Mesh * mesh ) {
 			for (int i = 0; i < mesh->m_vertexCount; i++) {
 				Core::vec4 normal = normalize( mesh->m_vertices[i] );
-				mesh->m_normals[i] = Core::vec3( normal.x, normal.y, normal.z );
+				mesh->m_normals[i] = Core::vec3( normal.x(), normal.y(), normal.z() );
 			}
 		}
 
 	}
 }
+

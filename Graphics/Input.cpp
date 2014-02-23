@@ -186,7 +186,7 @@ namespace Rocket {
 			if ( Global_Input->m_mouseLocked == true ) {
 				Global_Input->m_mousePosition = Global_Input->m_mouseLockTo;
 				//if ( Global_Input->m_mouseEnabled == true ) {
-				glfwSetCursorPos( window, Global_Input->m_mouseLockTo.x, Global_Input->m_mouseLockTo.y );
+				glfwSetCursorPos( window, Global_Input->m_mouseLockTo.x(), Global_Input->m_mouseLockTo.y() );
 				//}
 			} else {
 				Global_Input->m_mousePosition = newPos;
@@ -210,7 +210,7 @@ namespace Rocket {
 			Core::vec2i mousePos = Global_Input->getMousePosition();
 			std::vector< Input_Mouse* > bindingsToButton = Global_Input->m_mouseBindings[ button ];
 			for ( auto binding : bindingsToButton ) {
-				binding->update( newstate, mousePos.x, mousePos.y );
+				binding->update( newstate, mousePos.x(), mousePos.y() );
 			}
 		}
 		void Input::callback_mouseScroll( GLFWwindow * window, double xoffset, double yoffset ) {

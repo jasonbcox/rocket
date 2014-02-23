@@ -242,8 +242,8 @@ Rocket_UnitTest ( all_Graphics ) {
 
 		// position pickCube
 		vec2i mousePos = input->getMousePosition();
-		vec4 pickVec = mainScene->pickScreen( mousePos.x, mousePos.y );
-		pickVec.z = fabs( pickVec.z );
+		vec4 pickVec = mainScene->pickScreen( mousePos.x(), mousePos.y() );
+		pickVec.z( fabs( pickVec.z() ) );
 		vec4 pickCameraVec = mainScene->getCameraOrientationInverse() * pickVec;
 		vec3 pickPos = -(pickCameraVec.xyz()) + mainScene->getCameraPosition();
 		pickCube->position( pickPos );

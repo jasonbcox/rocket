@@ -125,7 +125,7 @@ namespace Rocket {
 		void Button::update( Input_ButtonState state, int x, int y ) {
 			bool inBounds = false;
 			auto position = getPosition();
-			if ( ( x >= position.x ) && ( y >= position.y ) && ( x <= position.x + m_size.x ) && ( y <= position.y + m_size.y ) ) {
+			if ( ( x >= position.x() ) && ( y >= position.y() ) && ( x <= position.x() + m_size.x() ) && ( y <= position.y() + m_size.y() ) ) {
 				inBounds = true;
 			}
 
@@ -161,7 +161,7 @@ namespace Rocket {
 		void ToggleButton::update( Input_ButtonState state, int x, int y ) {
 			bool inBounds = false;
 			auto position = getPosition();
-			if ( ( x >= position.x ) && ( y >= position.y ) && ( x <= position.x + m_size.x ) && ( y <= position.y + m_size.y ) ) {
+			if ( ( x >= position.x() ) && ( y >= position.y() ) && ( x <= position.x() + m_size.x() ) && ( y <= position.y() + m_size.y() ) ) {
 				inBounds = true;
 			}
 

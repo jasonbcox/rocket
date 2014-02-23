@@ -17,24 +17,22 @@ namespace Rocket {
 		// 20 21 22 23
 		// 30 31 32 33
 
-		// Matrix 2x2
-		// --------------------------------------------------------------------------------------------------------------------
-		template <class T> class T_mat2 {
+		template< class T > class T_mat2 {
 		public:
-			T_vec2<T> m_rows[2];
+			T_vec< T, 2 > m_rows[2];
 
 			// Constructors
-			T_mat2() { m_rows[0] = T_vec2<T>(1,0); m_rows[1] = T_vec2<T>(0,1); }
-			T_mat2( T m00, T m01, T m10, T m11 ) { m_rows[0] = T_vec2<T>(m00,m01); m_rows[1] = T_vec2<T>(m10,m11); }
-			T_mat2( T_vec2<T> r0, T_vec2<T> r1 ) { m_rows[0] = r0; m_rows[1] = r1; }
+			T_mat2() { m_rows[0] = T_vec< T, 2 >(1,0); m_rows[1] = T_vec< T, 2 >(0,1); }
+			T_mat2( T m00, T m01, T m10, T m11 ) { m_rows[0] = T_vec< T, 2 >(m00,m01); m_rows[1] = T_vec< T, 2 >(m10,m11); }
+			T_mat2( T_vec< T, 2 > r0, T_vec< T, 2 > r1 ) { m_rows[0] = r0; m_rows[1] = r1; }
 
 			// Array Subscript
-			T_vec2<T> & operator [] ( int index ) { return m_rows[index]; }
+			T_vec< T, 2 > & operator [] ( int index ) { return m_rows[index]; }
 
 			// Arithmetic
 			// M * V
-			T_vec2<T> operator * ( const T_vec2<T> & vector ) const {
-				T_vec2<T> r( 0, 0 );
+			T_vec< T, 2 > operator * ( const T_vec< T, 2 > & vector ) const {
+				T_vec< T, 2 > r( 0, 0 );
 				for (unsigned int i = 0; i < 2; i++) {
 					for (unsigned int j = 0; j < 2; j++) {
 						r.m_elements[i] += m_rows[i][j] * vector.m_elements[j];
@@ -71,7 +69,7 @@ namespace Rocket {
 			
 			
 			// Conversion Operators
-			template <class U> operator T_mat2<U>() const { return T_mat2<U>( T_vec2<U>((U)m_rows[0]), T_vec2<U>((U)m_rows[1]) ); }	// Cast to different typed T_mat2
+			template <class U> operator T_mat2<U>() const { return T_mat2<U>( T_vec< U, 2 >((U)m_rows[0]), T_vec< U, 2 >((U)m_rows[1]) ); }	// Cast to different typed T_mat2
 			operator T * () const { return (T*)m_rows; }
 
 			friend std::ostream & operator << ( std::ostream& stream, const T_mat2<T> & m ) {
@@ -84,20 +82,20 @@ namespace Rocket {
 		// --------------------------------------------------------------------------------------------------------------------
 		template <class T> class T_mat3 {
 		public:
-			T_vec3<T> m_rows[3];
+			T_vec< T, 3 > m_rows[3];
 
 			// Constructors
-			T_mat3() { m_rows[0] = T_vec3<T>( 1, 0, 0 ); m_rows[1] = T_vec3<T>( 0, 1, 0 ); m_rows[2] = T_vec3<T>( 0, 0, 1 ); }
-			T_mat3( T m00, T m01, T m02, T m10, T m11, T m12, T m20, T m21, T m22 ) { m_rows[0] = T_vec3<T>(m00,m01,m02); m_rows[1] = T_vec3<T>(m10,m11,m12); m_rows[2] = T_vec3<T>(m20,m21,m22); }
-			T_mat3( T_vec3<T> r0, T_vec3<T> r1, T_vec3<T> r2 ) { m_rows[0] = r0; m_rows[1] = r1; m_rows[2] = r2; }
+			T_mat3() { m_rows[0] = T_vec< T, 3 >( 1, 0, 0 ); m_rows[1] = T_vec< T, 3 >( 0, 1, 0 ); m_rows[2] = T_vec< T, 3 >( 0, 0, 1 ); }
+			T_mat3( T m00, T m01, T m02, T m10, T m11, T m12, T m20, T m21, T m22 ) { m_rows[0] = T_vec< T, 3 >(m00,m01,m02); m_rows[1] = T_vec< T, 3 >(m10,m11,m12); m_rows[2] = T_vec< T, 3 >(m20,m21,m22); }
+			T_mat3( T_vec< T, 3 > r0, T_vec< T, 3 > r1, T_vec< T, 3 > r2 ) { m_rows[0] = r0; m_rows[1] = r1; m_rows[2] = r2; }
 
 			// Array Subscript
-			T_vec3<T> & operator [] ( int index ) { return m_rows[index]; }
+			T_vec< T, 3 > & operator [] ( int index ) { return m_rows[index]; }
 
 			// Arithmetic
 			// M * V
-			T_vec3<T> operator * ( const T_vec3<T> & vector ) const {
-				T_vec3<T> r( 0, 0, 0 );
+			T_vec< T, 3 > operator * ( const T_vec< T, 3 > & vector ) const {
+				T_vec< T, 3 > r( 0, 0, 0 );
 				for (unsigned int i = 0; i < 3; i++) {
 					for (unsigned int j = 0; j < 3; j++) {
 						r.m_elements[i] += m_rows[i][j] * vector.m_elements[j];
@@ -174,7 +172,7 @@ namespace Rocket {
 			
 			
 			// Conversion Operators
-			template <class U> operator T_mat3<U>() const { return T_mat3<U>( T_vec3<U>((U)m_rows[0]), T_vec3<U>((U)m_rows[1]), T_vec3<U>((U)m_rows[2]) ); }	// Cast to different typed T_mat3
+			template <class U> operator T_mat3<U>() const { return T_mat3<U>( T_vec< U, 3 >((U)m_rows[0]), T_vec< U, 3 >((U)m_rows[1]), T_vec< U, 3 >((U)m_rows[2]) ); }	// Cast to different typed T_mat3
 			operator T * () const { return (T*)m_rows; }
 
 			friend std::ostream & operator << ( std::ostream& stream, const T_mat3<T> & m ) {
@@ -187,25 +185,25 @@ namespace Rocket {
 		// --------------------------------------------------------------------------------------------------------------------
 		template <class T> class T_mat4 {
 		public:
-			T_vec4<T> m_rows[4];
+			T_vec< T, 4 > m_rows[4];
 
 			// Constructors
-			T_mat4() { m_rows[0] = T_vec4<T>( 1, 0, 0, 0 ); m_rows[1] = T_vec4<T>( 0, 1, 0, 0 ); m_rows[2] = T_vec4<T>( 0, 0, 1, 0 ); m_rows[3] = T_vec4<T>( 0, 0, 0, 1 ); }
+			T_mat4() { m_rows[0] = T_vec< T, 4 >( 1, 0, 0, 0 ); m_rows[1] = T_vec< T, 4 >( 0, 1, 0, 0 ); m_rows[2] = T_vec< T, 4 >( 0, 0, 1, 0 ); m_rows[3] = T_vec< T, 4 >( 0, 0, 0, 1 ); }
 			T_mat4( T m00, T m01, T m02, T m03, T m10, T m11, T m12, T m13, T m20, T m21, T m22, T m23, T m30, T m31, T m32, T m33 ) {
-				m_rows[0] = T_vec4<T>(m00,m01,m02,m03);
-				m_rows[1] = T_vec4<T>(m10,m11,m12,m13);
-				m_rows[2] = T_vec4<T>(m20,m21,m22,m23);
-				m_rows[3] = T_vec4<T>(m30,m31,m32,m33);
+				m_rows[0] = T_vec< T, 4 >(m00,m01,m02,m03);
+				m_rows[1] = T_vec< T, 4 >(m10,m11,m12,m13);
+				m_rows[2] = T_vec< T, 4 >(m20,m21,m22,m23);
+				m_rows[3] = T_vec< T, 4 >(m30,m31,m32,m33);
 			}
-			T_mat4( T_vec4<T> r0, T_vec4<T> r1, T_vec4<T> r2, T_vec4<T> r3 ) { m_rows[0] = r0; m_rows[1] = r1; m_rows[2] = r2; m_rows[3] = r3; }
+			T_mat4( T_vec< T, 4 > r0, T_vec< T, 4 > r1, T_vec< T, 4 > r2, T_vec< T, 4 > r3 ) { m_rows[0] = r0; m_rows[1] = r1; m_rows[2] = r2; m_rows[3] = r3; }
 
 			// Array Subscript
-			T_vec4<T> & operator [] ( int index ) { return m_rows[index]; }
+			T_vec< T, 4 > & operator [] ( int index ) { return m_rows[index]; }
 
 			// Arithmetic
 			// M * V
-			T_vec4<T> operator * ( const T_vec4<T> & vector ) const {
-				T_vec4<T> r( 0, 0, 0, 0 );
+			T_vec< T, 4 > operator * ( const T_vec< T, 4 > & vector ) const {
+				T_vec< T, 4 > r( 0, 0, 0, 0 );
 				for (unsigned int i = 0; i < 4; i++) {
 					for (unsigned int j = 0; j < 4; j++) {
 						r.m_elements[i] += m_rows[i][j] * vector.m_elements[j];
@@ -285,7 +283,7 @@ namespace Rocket {
 			
 			
 			// Conversion Operators
-			template <class U> operator T_mat4<U>() const { return T_mat4<U>( T_vec4<U>((U)m_rows[0]), T_vec4<U>((U)m_rows[1]), T_vec4<U>((U)m_rows[2]), T_vec4<U>((U)m_rows[3]) ); }	// Cast to different typed T_mat4
+			template <class U> operator T_mat4<U>() const { return T_mat4<U>( T_vec< U, 4 >((U)m_rows[0]), T_vec< U, 4 >((U)m_rows[1]), T_vec< U, 4 >((U)m_rows[2]), T_vec< U, 4 >((U)m_rows[3]) ); }	// Cast to different typed T_mat4
 			operator T * () const { return (T*)m_rows; }
 
 			friend std::ostream & operator << ( std::ostream& stream, const T_mat4<T> & m ) {
@@ -443,27 +441,27 @@ namespace Rocket {
 
 		// External Matrix Operations
 		// --------------------------------------------------------------------------------------------------------------------
-		template <class T> T_mat4<T> Scale( const T_vec3<T> & v ) {
+		template <class T> T_mat4<T> Scale( const T_vec< T, 3 > & v ) {
 			mat4 r;
-			r[0][0] = v.x;
-			r[1][1] = v.y;
-			r[2][2] = v.z;
+			r[0][0] = v.x();
+			r[1][1] = v.y();
+			r[2][2] = v.z();
 			return r;
 		}
 
-		template <class T> T_mat4<T> Translate( const T_vec3<T> & v ) {
+		template <class T> T_mat4<T> Translate( const T_vec< T, 3 > & v ) {
 			mat4 r;
-			r[0][3] = v.x;
-			r[1][3] = v.y;
-			r[2][3] = v.z;
+			r[0][3] = v.x();
+			r[1][3] = v.y();
+			r[2][3] = v.z();
 			return r;
 		}
 
-		template <class T> T_mat4<T> QuaternionRotate( T_vec4<T> quat ) {
-			T x = quat.x;
-			T y = quat.y;
-			T z = quat.z;
-			T w = quat.w;
+		template <class T> T_mat4<T> QuaternionRotate( T_vec< T, 4 > quat ) {
+			T x = quat.x();
+			T y = quat.y();
+			T z = quat.z();
+			T w = quat.w();
 
 			T_mat4<T> r;
 			r[0][0] = 1 - 2*(y*y + z*z);	r[0][1] = 2*(x*y - w*z);		r[0][2] = 2*(x*z + w*y);
@@ -473,41 +471,41 @@ namespace Rocket {
 			return r;
 		}
 
-		template <class T> T_mat4<T> Rotate( const T angle, const T_vec3<T> & axis ) {
+		template <class T> T_mat4<T> Rotate( const T angle, const T_vec< T, 3 > & axis ) {
 			return QuaternionRotate( Quaternion( angle, axis ) );
 		}
 
-		template <class T> T_vec4<T> MatrixToQuaternion( T_mat4<T> m ) {
+		template <class T> T_vec< T, 4 > MatrixToQuaternion( T_mat4<T> m ) {
 			float trace = m[0][0] + m[1][1] + m[2][2] + 1.0f;
 
 			if (trace > MathConstants::ZeroTolerance) {
 				float s = sqrt( trace ) * 2.0f;
-				return normalize( T_vec4<T>( (m[2][1] - m[1][2]) / s, (m[0][2] - m[2][0]) / s, (m[1][0] - m[0][1]) / s, s / 4.0f ) );
+				return normalize( T_vec< T, 4 >( (m[2][1] - m[1][2]) / s, (m[0][2] - m[2][0]) / s, (m[1][0] - m[0][1]) / s, s / 4.0f ) );
 			} else if ( (m[0][0] > m[1][1]) && (m[0][0] > m[2][2]) ) {
 				float s = sqrt( m[0][0] - m[1][1] - m[2][2] + 1.0f ) * 2.0f;
-				return normalize( T_vec4<T>( s / 4.0f, (m[1][0] + m[0][1]) / s, (m[0][2] + m[2][0]) / s, (m[2][1] - m[1][2]) / s ) );
+				return normalize( T_vec< T, 4 >( s / 4.0f, (m[1][0] + m[0][1]) / s, (m[0][2] + m[2][0]) / s, (m[2][1] - m[1][2]) / s ) );
 			} else if (m[1][1] > m[2][2]) {
 				float s = sqrt( m[1][1] - m[0][0] - m[2][2] + 1.0f ) * 2.0f;
-				return normalize( T_vec4<T>( (m[1][0] + m[0][1]) / s, s / 4.0f, (m[2][1] + m[1][2]) / s, (m[0][2] - m[2][0]) / s ) );
+				return normalize( T_vec< T, 4 >( (m[1][0] + m[0][1]) / s, s / 4.0f, (m[2][1] + m[1][2]) / s, (m[0][2] - m[2][0]) / s ) );
 			} else {
 				float s = sqrt( m[2][2] - m[0][0] - m[1][1] + 1.0f ) * 2.0f;
-				return normalize( T_vec4<T>( (m[0][2] + m[2][0]) / s, (m[2][1] + m[1][2]) / s, s / 4.0f, (m[1][0] - m[0][1]) / s ) );
+				return normalize( T_vec< T, 4 >( (m[0][2] + m[2][0]) / s, (m[2][1] + m[1][2]) / s, s / 4.0f, (m[1][0] - m[0][1]) / s ) );
 			}
 		}
 
-		template <class T> T_vec3<T> QuaternionToUnitVector( const T_vec4<T> & quat ) {
-			T_vec4<T> r = QuaternionRotate( quat ) * T_vec4<T>( 0.0f, 0.0f, -1.0f, 0.0f );
-			return T_vec3<T>( -r.x, -r.y, r.z );
+		template <class T> T_vec< T, 3 > QuaternionToUnitVector( const T_vec< T, 4 > & quat ) {
+			T_vec< T, 4 > r = QuaternionRotate( quat ) * T_vec< T, 4 >( 0.0f, 0.0f, -1.0f, 0.0f );
+			return T_vec< T, 3 >( -r.x(), -r.y(), r.z() );
 		}
 
 
 		// Camera Matrix Operations
 		// --------------------------------------------------------------------------------------------------------------------
-		/*template <class T> T_mat4<T> LookAt( const T_vec4<T> & look, const T_vec4<T> & up, const T_vec4<T> & position ) {
-			T_vec4<T> n = normalize( look - position );
-			T_vec4<T> u = T_vec4<T>( normalize( cross(up,n) ), 0.0 );
-			T_vec4<T> v = T_vec4<T>( normalize( cross(n,u) ), 0.0 );
-			T_mat4<T> r = T_mat4<T>( u, v, n, T_vec4<T>( 0.0, 0.0, 0.0, 1.0 ) );
+		/*template <class T> T_mat4<T> LookAt( const T_vec< T, 4 > & look, const T_vec< T, 4 > & up, const T_vec< T, 4 > & position ) {
+			T_vec< T, 4 > n = normalize( look - position );
+			T_vec< T, 4 > u = T_vec< T, 4 >( normalize( cross(up,n) ), 0.0 );
+			T_vec< T, 4 > v = T_vec< T, 4 >( normalize( cross(n,u) ), 0.0 );
+			T_mat4<T> r = T_mat4<T>( u, v, n, T_vec< T, 4 >( 0.0, 0.0, 0.0, 1.0 ) );
 			return r * Translate( -look );
 		}*/
 
