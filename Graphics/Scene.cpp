@@ -189,7 +189,7 @@ namespace Rocket {
 		}
 
 		void Scene::calculateNewPosition( Core::mat4 orientation ) {
-			Core::vec4 pos = orientation.inverse() * Core::vec4( -orientation[0][3], -orientation[1][3], -orientation[2][3], 0.0f );
+			Core::vec4 pos = orientation.inverse() * Core::vec4( -orientation(0,3), -orientation(1,3), -orientation(2,3), 0.0f );
 			m_camera_position = pos.xyz();
 		}
 		void Scene::calculateNewRotation( Core::mat4 orientation ) {
@@ -350,7 +350,7 @@ namespace Rocket {
 
 			// rotate around global Y-axis
 			Core::mat4 cameraOrientationInverse = getCameraOrientationInverse();
-			Core::vec3 rotationAxis = ( cameraOrientationInverse.transpose() * Core::vec4( 0, 1, 0, 0 ) ).xyz();
+			Core::vec3 rotationAxis = ( cameraOrientationInverse.transposed() * Core::vec4( 0, 1, 0, 0 ) ).xyz();
 			Camera_Rotate( lookSpeed.y() * elapsedTime, rotationAxis );
 
 			if ( ( m_camera_controls[ (unsigned int)CameraControls::ElevateUp ] != 0 )

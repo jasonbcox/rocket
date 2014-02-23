@@ -88,7 +88,7 @@ namespace Rocket {
 		}*/
 		Core::vec3 Transform::positionWorld() {
 			Core::mat4 orient = getParentOrientation() * orientation();
-			return Core::vec3( orient[0][3], orient[1][3], orient[2][3] );
+			return Core::vec3( orient(0,3), orient(1,3), orient(2,3) );
 		}
 
 		void Transform::rotate( const Core::vec4 & quaternion ) {

@@ -23,6 +23,14 @@ namespace Rocket {
 			T_vec() { m_elements.setZero(); }
 			T_vec( Matrix< T, N, 1 > elements ) { m_elements = elements; }
 
+			// Constructor that takes N number of elements
+			template< typename... Args >
+			T_vec( T first, Args &&... args ) {
+				static_assert( sizeof...( Args ) == N - 1, "Invalid number of arguments" );
+				m_elements = Matrix< T, N, 1 >( first, args... );
+			}
+
+			// Constructor that appends right vector to left vector
 			template< unsigned int Nleft, unsigned int Nright >
 			T_vec( const T_vec< T, Nleft > & left, const T_vec< T, Nright > & right ) {
 				static_assert( Nleft + Nright == N, "Left and Right vectors do not contain the right number of elements" );
@@ -35,6 +43,7 @@ namespace Rocket {
 				}
 			}
 
+			// Constructor that appends N - N2 number of elements to the initial vector
 			template< unsigned int N2, typename... Args >
 			T_vec( const T_vec< T, N2 > & v, Args &&... args ) {
 				static_assert( sizeof...( Args ) == N - N2, "Invalid number of arguments" );
@@ -46,12 +55,6 @@ namespace Rocket {
 				for ( unsigned int i = N2; i < N; i++ ) {
 					m_elements[i] = argsVector[ i - N2 ];
 				}
-			}
-
-			template< typename... Args >
-			T_vec( T first, Args &&... args ) {
-				static_assert( sizeof...( Args ) == N - 1, "Invalid number of arguments" );
-				m_elements = Matrix< T, N, 1 >( first, args... );
 			}
 
 			// Access Operators and Functions
@@ -125,6 +128,8 @@ namespace Rocket {
 			T_vec< T, 4 > wzyx() const { return T_vec< T, 4 >( w(), z(), y(), x() ); }
 
 			// Conversion Operators
+			operator Matrix< T, N, 1 >() const { return m_elements; }
+
 			template< class U >
 			operator T_vec< U, N >() const {
 				return T_vec< U, N >( m_elements.template cast< U >() );

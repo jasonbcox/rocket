@@ -40,7 +40,7 @@ Rocket_UnitTest ( VectorMath_vec3 ) {
 	Rocket_UnitTest_Check_FloatEqual( v1.length(), 2.0f, 0.0001f );
 
 	Rocket::Core::vec3 v2(1,0,0);
-	Rocket::Core::vec3 v3( Rocket::Core::vec2(0,1), 0);
+	Rocket::Core::vec3 v3( Rocket::Core::vec2(0,1), 0.0f );
 	Rocket_UnitTest_Check_FloatEqual( dot(v2,v3), 0.0f, 0.0001f );
 	Rocket_UnitTest_Check_Expression( !(v2 == v3) );
 	Rocket::Core::vec3 v4 = cross( v2, v3 );
