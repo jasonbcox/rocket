@@ -76,3 +76,14 @@ Rocket_UnitTest ( VectorMath_vec4 ) {
 	Rocket_UnitTest_Check_FloatEqual( v4.z(), 1.0f, 0.0001f );
 	Rocket_UnitTest_Check_FloatEqual( v4.w(), 0.0f, 0.0001f );
 }
+
+Rocket_UnitTest( VectorMath_Quaternions ) {
+	Rocket::Core::vec4 quat1( 1, 0, 1, 0 );
+	Rocket::Core::vec4 quat2( 1, 0.5, 0.5, 0.75 );
+	Rocket::Core::vec4 quat3 = Rocket::Core::QuaternionMult( quat1, quat2 );
+	Rocket_UnitTest_Check_FloatEqual( quat3.x(), 0.25f, 0.0001f );
+	Rocket_UnitTest_Check_FloatEqual( quat3.y(), 0.5f, 0.0001f );
+	Rocket_UnitTest_Check_FloatEqual( quat3.z(), 1.25f, 0.0001f );
+	Rocket_UnitTest_Check_FloatEqual( quat3.w(), -1.5f, 0.0001f );
+}
+

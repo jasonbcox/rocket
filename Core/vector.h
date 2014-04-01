@@ -10,6 +10,8 @@
 #include <eigen3/Eigen/Dense>
 using namespace Eigen;
 
+#include "mathconstants.h"
+
 namespace Rocket {
 	namespace Core {
 
@@ -176,6 +178,15 @@ namespace Rocket {
 			return quat;
 		}
 
+		template< class T > T_vec< T, 4 >
+		QuaternionMult( const T_vec< T, 4 > Quat1, const T_vec< T, 4 > Quat2 ) {
+			T x = Quat1.x()*Quat2.w() + Quat1.y()*Quat2.x() - Quat1.z()*Quat2.y() + Quat1.w()*Quat2.x();
+			T y = -Quat1.x()*Quat2.z() + Quat1.y()*Quat2.w() + Quat1.z()*Quat2.x() + Quat1.w()*Quat2.y();
+			T z = Quat1.x()*Quat2.y() + Quat1.y()*Quat2.x() + Quat1.z()*Quat2.w() + Quat1.w()*Quat2.z();
+			T w = -Quat1.x()*Quat2.x() + Quat1.y()*Quat2.y() - Quat1.z()*Quat2.z() + Quat1.w()*Quat2.w();
+			return T_vec< T, 4 >( x, y, z, w );
+		}
+
 		template< class T > T_vec< T, 3 > QuaternionToEuler( const T_vec< T, 4 > & quat2 ) {
 			T_vec< T, 4 > quat = quat2;
 			quat.normalize();
@@ -184,11 +195,26 @@ namespace Rocket {
 			T z = quat.z();
 			T w = quat.w();
 
-			float pitch = asin( 2.0f * ( x*y + z*w ) );
-			float yaw = atan2( 2.0f * ( y*w - x*z ), 1.0f - 2.0f * ( y*y - z*z ) );
-			float roll = atan2( 2.0f * ( x*w - y*z ) , 1.0f - 2.0f * ( x*x - z*z ) );
-			// Todo: fix; this function doesnt really work...
-			// yaw is correct, but pitch and roll are not in the correct XYZ-axis order
+			float pitch, yaw, roll;
+
+			// Euler Singularity test (accuracy of +/-3.7 degrees to 90/-90)
+			T test = x * y + z * w;
+			if ( test > 0.4999 ) {
+				// Pitch is around 90 degrees
+				yaw = 2 * atan2( x, w );
+				pitch = -MathConstants::PI / 2.0;
+				roll = 0;
+			} else if(test < -0.499) {
+				// Pitch is around -90 degrees
+				yaw = -2 * atan2( x, w );
+				pitch = -MathConstants::PI / 2.0;
+				roll = 0;
+			} else {
+				pitch = asin( 2.0f * test );
+				yaw = atan2( 2.0f * ( y*w - x*z ), 1.0f - 2.0f * ( y*y - z*z ) );
+				roll = atan2( 2.0f * ( x*w - y*z ) , 1.0f - 2.0f * ( x*x - z*z ) );
+			}
+
 			return T_vec< T, 3 >( pitch, yaw, roll );
 		}
 		
