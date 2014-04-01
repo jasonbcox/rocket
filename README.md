@@ -27,6 +27,15 @@ cmake ..
 make install
 ```
 
+### Install GLEW
+
+```
+Download and Unpack GLEW from glew.sourceforge.net
+cd glew-*
+make install
+Note: If libGLEW is unable to link, try copying the libGLEW* files from /usr/lib64/ to /usr/lib/x86_64-linux-gnu/
+```
+
 ### Install GLFW
 
 ```
@@ -39,6 +48,12 @@ mkdir build
 cd build
 cmake ..
 make install
+```
+
+### Install FLAC
+
+```
+sudo apt-get install libflac-dev
 ```
 
 ### Setup ROCKET Engine

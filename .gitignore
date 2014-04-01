@@ -34,3 +34,6 @@ _ReSharper*/
 *.obj
 *.png
 *.bmp
+
+build/
+build/*
