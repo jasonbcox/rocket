@@ -1,0 +1,6 @@
+/*! \class Rocket::Graphics::Input_Interactable ./Graphics/Input_Interactable.h
+
+\brief
+Input_Interactable is a simple state container for anything that can be pressed and released, such as mouse buttons, keyboard keys, or virtual buttons.
+
+*/

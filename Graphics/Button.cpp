@@ -11,24 +11,30 @@ namespace Rocket {
 		}
 		Button::~Button() { }
 
+		//! Add this Button's binding to an Input
 		void Button::bind( Input * input, int button ) {
 			input->addMouseBinding( button, this );
 		}
+		//! Remove this Button's binding from an Input
 		void Button::unbind( Input * input, int button ) {
 			input->removeMouseBinding( button, this );
 		}
 
+		//! Set an animation for one of this Button's states
 		void Button::setStateAnimation( Button_ButtonState state, string animationName ) {
 			m_stateAnimations[ (int)state ] = animationName;
 		}
+		//! Remove the animation from the given Button's state
 		void Button::unsetStateAnimation( Button_ButtonState state ) {
 			m_stateAnimations.erase( (int)state );
 		}
 
+		//! Set this Button's state
 		void Button::setState( Button_ButtonState state ) {
 			if ( m_buttonState != state ) m_animationChange = true;
 			m_buttonState = state;
 		}
+		//! Set the isPressed state of this Button
 		void Button::setPressed( bool isPressed ) {
 			switch ( m_buttonState ) {
 				case Button_ButtonState::Pressed:
@@ -63,6 +69,7 @@ namespace Rocket {
 					}
 			}
 		}
+		//! Set the isHovering state of this Button
 		void Button::setHover( bool isHovering ) {
 			switch ( m_buttonState ) {
 				case Button_ButtonState::Pressed:
@@ -97,24 +104,29 @@ namespace Rocket {
 					}
 			}
 		}
+		//! Set the disabled state of this Button
 		void Button::setDisabled( bool isDisabled ) {
 		}
 
+		//! Get the current state of this Button
 		Button_ButtonState Button::getState() {
 			return m_buttonState;
 		}
+		//! Returns true if this Button is being pressed
 		bool Button::isPressed() {
 			return ( m_buttonState == Button_ButtonState::Pressed ) ||
 					( m_buttonState == Button_ButtonState::HoverPressed ) ||
 					( m_buttonState == Button_ButtonState::DisabledPressed ) ||
 					( m_buttonState == Button_ButtonState::HoverDisabledPressed );
 		}
+		//! Returns true if this Button is being hovered over
 		bool Button::isHover() {
 			return ( m_buttonState == Button_ButtonState::Hover ) ||
 					( m_buttonState == Button_ButtonState::HoverPressed ) ||
 					( m_buttonState == Button_ButtonState::HoverDisabled ) ||
 					( m_buttonState == Button_ButtonState::HoverDisabledPressed );
 		}
+		//! Returns true if this Button is currently disabled
 		bool Button::isDisabled() {
 			return ( m_buttonState == Button_ButtonState::Disabled ) ||
 					( m_buttonState == Button_ButtonState::DisabledPressed ) ||
@@ -122,6 +134,7 @@ namespace Rocket {
 					( m_buttonState == Button_ButtonState::HoverDisabledPressed );
 		}
 
+		//! Updates this Button's state when an event occurs
 		void Button::update( Input_ButtonState state, int x, int y ) {
 			bool inBounds = false;
 			auto position = getPosition();
@@ -137,6 +150,7 @@ namespace Rocket {
 			}
 		}
 
+		//! Updates this Button's rendering state
 		void Button::update( bool recursive, float elapsedMilliseconds ) {
 			if ( m_animationChange == true ) {
 				auto animationToPlay = m_stateAnimations.find( (int)m_buttonState );
@@ -154,10 +168,12 @@ namespace Rocket {
 		ToggleButton::~ToggleButton() {
 		}
 
+		//! Toggles this ToggleButton's isPressed state
 		void ToggleButton::toggle() {
 			setPressed( !isPressed() );
 		}
 
+		//! Updates this ToggleButton's state when an event occurs
 		void ToggleButton::update( Input_ButtonState state, int x, int y ) {
 			bool inBounds = false;
 			auto position = getPosition();

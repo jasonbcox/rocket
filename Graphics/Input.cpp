@@ -32,34 +32,38 @@ namespace Rocket {
 			glfwSetScrollCallback( m_window, callback_mouseScroll );
 		}
 
+		//! Set this Input object as the active input object.  All input callbacks will update this Input object ONLY.
 		void Input::setAsActiveInput() {
 			Input::Global_Input = this;
 		}
 
+		//! Shows the mouse cursor and unlocks its positioning
 		void Input::showMouse() {
-			// Shows the mouse cursor, completely unlocked
 			m_mouseEnabled = true;
 			glfwSetInputMode( m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL );
 		}
+		//! Hides the mouse cursor and locks it to the middle of the screen
 		void Input::hideMouse() {
-			// Hides the mouse cursor, as well as locking it to the middle of the screen
 			m_mouseEnabled = false;
 			glfwSetInputMode( m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED );
 		}
 
+		//! Lock the mouse to the given screen coordinates
 		void Input::lockMouse( int x, int y ) {
 			m_mouseLocked = true;
 			m_mouseLockTo = Core::vec2i( x, y );
 			m_mousePosition = m_mouseLockTo;
 		}
+		//! Unlock the mouse
 		void Input::unlockMouse() {
 			m_mouseLocked = false;
 		}
 
-		// Return the state of a key
-		// If the state is Hit, change it to Pressed and return Hit (this way, the hit was known to have been processed)
-		// If the state is Released, change it to NotPressed and return Released
-		// Otherwise, just return the state
+		/*! Returns the state of the given key.
+			If the state is Hit, the state transitions to Pressed before returning (but still returns Hit, so any subsequent calls to getKey() will return Pressed).
+			If the state is Released, the state transitions to NotPressed before returning Released.
+			Otherwise, the current state is returned normally.
+		*/
 		Input_ButtonState Input::getKey( int key ) {
 			std::unordered_map< int, Input_ButtonState >::iterator iter = m_keyboard.find( key );
 			if (iter == m_keyboard.end()) {
@@ -75,7 +79,8 @@ namespace Rocket {
 				return (*iter).second;
 			}
 		}
-		// Return true if the key is Hit or Pressed
+
+		//! Returns true if the key is Hit or Pressed
 		bool Input::getKeySimple( int key ) {
 			std::unordered_map< int, Input_ButtonState >::iterator iter = m_keyboard.find( key );
 			if (iter == m_keyboard.end()) {
@@ -89,9 +94,11 @@ namespace Rocket {
 			}
 		}
 
+		//! Add an input binding to be fired when an event fires in relation to the specified key
 		void Input::addKeyboardBinding( int key, Input_Keyboard * binding ) {
 			m_keyboardBindings[ key ].push_back( binding );
 		}
+		//! Remove an input binding from a key
 		void Input::removeKeyboardBinding( int key, Input_Keyboard * binding ) {
 			auto searchList = m_keyboardBindings.find( key );
 			if ( searchList != m_keyboardBindings.end() ) {
@@ -104,20 +111,22 @@ namespace Rocket {
 			}
 		}
 
-
+		//! Returns the screen coordinates of the mouse cursor
 		Core::vec2i Input::getMousePosition() {
 			return m_mousePosition;
 		}
+		//! Returns the total movement of the mouse relative to its last position since getMouseMove() was last called
 		Core::vec2i Input::getMouseMove() {
 			Core::vec2i r = m_mouseMove;
 			m_mouseMove = Core::vec2i( 0, 0 );
 			return r;
 		}
 
-		// Return the state of a mouse button
-		// If the state is Hit, change it to Pressed and return Hit (this way, the hit was known to have been processed)
-		// If the state is Released, change it to NotPressed and return Released
-		// Otherwise, just return the state
+		/*! Returns the state of the given mouse button.
+			If the state is Hit, the state transitions to Pressed before returning (but still returns Hit, so any subsequent calls to getKey() will return Pressed).
+			If the state is Released, the state transitions to NotPressed before returning Released.
+			Otherwise, the current state is returned normally.
+		*/
 		Input_ButtonState Input::getMouseButton( int button ) {
 			std::unordered_map< int, Input_ButtonState >::iterator iter = m_mouse.find( button );
 			if (iter == m_mouse.end()) {
@@ -133,7 +142,7 @@ namespace Rocket {
 				return (*iter).second;
 			}
 		}
-		// Return true if the mouse button is Hit or Pressed
+		//! Returns true if the mouse button is Hit or Pressed
 		bool Input::getMouseButtonSimple( int button ) {
 			std::unordered_map< int, Input_ButtonState >::iterator iter = m_mouse.find( button );
 			if (iter == m_mouse.end()) {
@@ -147,13 +156,16 @@ namespace Rocket {
 			}
 		}
 
+		//! Returns the position of the mouse scroll wheel (relative to 0, the position it started at when the window context was created)
 		int Input::getMouseScroll() {
 			return m_mouseScroll;
 		}
 
+		//! Add an input binding to be fired when an event fires in relation to the specified mouse button
 		void Input::addMouseBinding( int button, Input_Mouse * binding ) {
 			m_mouseBindings[ button ].push_back( binding );
 		}
+		//! Remove an input binding from a mouse button
 		void Input::removeMouseBinding( int button, Input_Mouse * binding ) {
 			auto searchList = m_mouseBindings.find( button );
 			if ( searchList != m_mouseBindings.end() ) {
@@ -167,6 +179,7 @@ namespace Rocket {
 		}
 
 
+		//! The callback for keyboard events from GLFW
 		void Input::callback_keyboard( GLFWwindow * window, int key, int scancode, int state, int modifierKeys ) {
 			Input_ButtonState newstate = Input_ButtonState::Released;
 			if ( state == GLFW_PRESS ) newstate = Input_ButtonState::Hit;
@@ -180,6 +193,7 @@ namespace Rocket {
 			}
 		}
 
+		//! The callback for mouse move events from GLFW
 		void Input::callback_mouseMove( GLFWwindow * window, double x, double y ) {
 			Core::vec2i newPos = Core::vec2i( (int)x, (int)y );
 			Global_Input->m_mouseMove += Global_Input->m_mousePosition - newPos;
@@ -201,6 +215,8 @@ namespace Rocket {
 				}
 			}
 		}
+
+		//! The callback for mouse button events from GLFW
 		void Input::callback_mouseButton( GLFWwindow * window, int button, int state, int modifierKeys ) {
 			Input_ButtonState newstate = Input_ButtonState::Released;
 			if (state == GLFW_PRESS) newstate = Input_ButtonState::Hit;
@@ -213,6 +229,8 @@ namespace Rocket {
 				binding->update( newstate, mousePos.x(), mousePos.y() );
 			}
 		}
+
+		//! The callback for mouse scroll events from GLFW
 		void Input::callback_mouseScroll( GLFWwindow * window, double xoffset, double yoffset ) {
 			Global_Input->m_mouseScroll += (int)yoffset;
 		}

@@ -5,22 +5,18 @@
 namespace Rocket {
 	namespace Graphics {
 
-		// Hit - the button was pressed recently (the press event has not been handled yet)
-		// Pressed - the button is currently being pressed
-		// Released - the button was released recently (the release event has not been handled yet)
-		// NotPressed - the button is currently not being pressed
+		//! Simple button state types
 		enum class Input_ButtonState : int {
-			Hit = 1,
-			Pressed,
-			Released,
-			NotPressed
+			Hit = 1,	//!< The button was pressed recently (the press event has not been handled yet)
+			Pressed,	//!< The button is currently being pressed
+			Released,	//!< The button was released recently (the release event has not been handled yet)
+			NotPressed	//!< The button is currently not being pressed
 		};
 
 		class Input_Interactable {
 		public:
 			Input_Interactable( Input_ButtonState defaultState = Input_ButtonState::NotPressed );
 
-			// Returns true if the key is Hit or Pressed
 			bool isHit();
 
 		protected:
@@ -32,9 +28,6 @@ namespace Rocket {
 		public:
 			Input_Button( Input_ButtonState defaultState = Input_ButtonState::NotPressed );
 
-			// Returns the current state
-			// If the state is Hit, it transitions to Pressed upon calling getState()
-			// If the state is Released, it transitions to NotPressed upon calling getState()
 			Input_ButtonState getState();
 
 		protected:

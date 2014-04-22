@@ -30,7 +30,7 @@ namespace Rocket {
 
 			void bind( Input * input, int button );
 			void unbind( Input * input, int button );
-			
+
 			void setStateAnimation( Button_ButtonState state, string animationName );
 			void unsetStateAnimation( Button_ButtonState state );
 

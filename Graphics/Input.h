@@ -14,13 +14,10 @@
 namespace Rocket {
 	namespace Graphics {
 
-		// Input - monitors and records all input events
 		class Input {
 		public:
 			Input( GLFWwindow * window );
 
-			// Set this Input object as the active input object.
-			// All input callbacks will update this object ONLY.
 			void setAsActiveInput();
 
 			void showMouse();
@@ -29,33 +26,18 @@ namespace Rocket {
 			void lockMouse( int x, int y );
 			void unlockMouse();
 
-			// Returns the state of the given key
-			// If the state is Hit, it transitions to Pressed upon calling getKey()
-			// If the state is Released, it transitions to NotPressed upon calling getKey()
 			Input_ButtonState getKey( int key );
-			// Returns true if the key is Hit or Pressed
-			// Hit and Released do not transistion upon calling getKeySimple()
 			bool getKeySimple( int key );
 
-			// Add an input binding (button, device, etc.) to react to keyboard events
 			void addKeyboardBinding( int key, Input_Keyboard * binding );
 			void removeKeyboardBinding( int key, Input_Keyboard * binding );
 
-			// Returns the screen coord of the mouse
 			Core::vec2i getMousePosition();
-			// Returns the total movement of the mouse relative to its last position since getMouseMove() was last called
 			Core::vec2i getMouseMove();
-			// Returns the state of the given mouse button
-			// If the state is Hit, it transitions to Pressed upon calling getMouseButton()
-			// If the state is Released, it transitions to NotPressed upon calling getMouseButton()
 			Input_ButtonState getMouseButton( int button );
-			// Returns true if the mouse button is Hit or Pressed
-			// Hit and Released do not transistion upon calling getMouseButtonSimple()
 			bool getMouseButtonSimple( int button );
-			// Returns the position of the mouse scroll wheel (relative to 0, the position it started at when the window context was created)
 			int getMouseScroll();
 
-			// Add an input binding (button, device, etc.) to react to mouse events
 			void addMouseBinding( int button, Input_Mouse * binding );
 			void removeMouseBinding( int button, Input_Mouse * binding );
 

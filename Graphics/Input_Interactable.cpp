@@ -8,7 +8,7 @@ namespace Rocket {
 			m_state = defaultState;
 		}
 
-		// Return true if the key is Hit or Pressed
+		//! Returns true if the key is Hit or Pressed
 		bool Input_Interactable::isHit() {
 			if ( ( m_state == Input_ButtonState::Hit ) || ( m_state == Input_ButtonState::Pressed ) ) {
 				return true;
@@ -20,10 +20,11 @@ namespace Rocket {
 		Input_Button::Input_Button( Input_ButtonState defaultState ) : Input_Interactable( defaultState ) {
 		}
 
-		// Return the state
-		// If the state is Hit, change it to Pressed and return Hit (this way, the hit was known to have been processed)
-		// If the state is Released, change it to NotPressed and return Released
-		// Otherwise, just return the state
+		/*! Returns the state
+			If the state is Hit, change it to Pressed and return Hit (this way, the hit was known to have been processed)
+			If the state is Released, change it to NotPressed and return Released
+			Otherwise, just return the current state
+		*/
 		Input_ButtonState Input_Button::getState() {
 			if ( m_state == Input_ButtonState::Hit ) {
 				m_state = Input_ButtonState::Pressed;

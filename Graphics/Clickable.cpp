@@ -1,7 +1,4 @@
 
-//#include "glew.h"
-//#include "glfw.h"
-
 #include "Clickable.h"
 
 namespace Rocket {
@@ -13,6 +10,7 @@ namespace Rocket {
 		Clickable::~Clickable() {
 		}
 
+		//! Updates this Clickable's state when an event occurs
 		void Clickable::update( Input_ButtonState state, int x, int y ) {
 			if ( ( x >= m_clickableArea.x() ) && ( y >= m_clickableArea.y() ) && ( x <= m_clickableArea.z() ) && ( y <= m_clickableArea.z() ) ) {
 				m_state = state;

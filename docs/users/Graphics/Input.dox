@@ -1,0 +1,6 @@
+/*! \class Rocket::Graphics::Input ./Graphics/Input.h
+
+\brief
+The Input class monitors and records all input events.  It can then fire additional events when these inputs occur and/or store them for polling.
+
+*/
