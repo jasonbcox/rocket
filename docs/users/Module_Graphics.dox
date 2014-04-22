@@ -1,0 +1,32 @@
+/*! \page Module_Graphics Graphics Module
+
+This module handles everything rendered to the screen other than terminal output.
+
+\code{.cpp}
+Universe * world = new Universe();
+
+// Create scenes
+auto mainScene = make_shared< Scene >( 63.0f, (Graphics::WindowWidth * 1.0f)/(Graphics::WindowHeight * 1.0f), 1.0f, 1000.0f );
+world->addRenderPass( mainScene.get() );
+auto hudScene = make_shared< Scissor >( Graphics::WindowWidth * 1.0f, Graphics::WindowHeight * 1.0f, 0, 20, 400, 400 );
+world->addRenderPass( hudScene.get() );
+
+// Load shaders
+auto shader_texture = make_shared< ShaderDefaults::Shader_Texture >(
+     "../../Graphics/Shaders/texture_v.glsl",
+     "../../Graphics/Shaders/texture_f.glsl"
+);
+world->addShader( "texture", shader_texture.get() );
+
+// Load meshes
+auto testMesh = world->loadMesh( "meshName", "testMesh.obj", shader_texture.get() ).get();
+mainScene->addMesh( testMesh );
+
+auto testCubeMesh = generatePrimitive_Cube( world, "testCubeMesh", shader_texture.get() );
+hudScene->addMesh( testCubeMesh );
+
+// Load textures
+auto testTexture = world->loadTexture( "testTexture", "testTexture.bmp", true, false );
+\endcode
+
+*/

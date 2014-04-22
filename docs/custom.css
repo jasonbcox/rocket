@@ -1,0 +1,48 @@
+
+.badge {
+	border: 1px solid lightgray;
+	border-radius: 5px;
+	padding: 1px 3px;
+	background: #eee;
+}
+
+.badge-yellow {
+	background: yellow;
+	border-color: gold;
+}
+
+.badge-green {
+	color: white;
+	background: green;
+	border-color: darkgreen;
+}
+
+.badge-red {
+	color: white;
+	background: red;
+	border-color: darkred;
+}
+
+.badge-purple {
+	color: white;
+	background: purple;
+	border-color: darkviolet;
+}
+
+.badge-blue {
+	color: white;
+	background: blue;
+	border-color: darkblue;
+}
+
+.badge-black {
+	color: white;
+	background: #333;
+	border-color: black;
+}
+
+.badge-orange {
+	background: orange;
+	border-color: darkorange;
+}
+

@@ -1,0 +1,6 @@
+/*! \class Rocket::Graphics::Universe ./Graphics/Universe.h
+
+\brief
+The Universe class is used as a central asset management container.  It is used to cache meshes and textures as well as keep track of shaders and render cycles.
+
+*/

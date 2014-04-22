@@ -1,0 +1,38 @@
+/*! \page goals Characteristic Goals of ROCKET Engine
+
+The focus of the engine is to provide tools for rapid development.  If a particular feature is difficult to understand or use, it must be refactored.
+
+List of priorities for each module:
+- Audio
+	- **Usability**
+	- Reliability
+	- CPU Efficiency
+	- Memory Efficiency
+	- Maintainability
+- Core
+	- **CPU Efficiency**
+	- Maintainability
+	- Reliability
+	- Memory Efficiency
+	- Usability
+- Graphics
+	- **Usability**
+	- CPU Efficiency
+	- Memory Efficiency
+	- Maintainability
+	- Reliability
+- Network
+	- **Usability**
+	- CPU Efficiency
+	- Reliability
+	- Maintainability
+	- Memory Efficiency
+- All Unit Tests
+	- **Reliability**
+	- Usability
+	- Maintainability
+	- CPU Efficiency
+	- Memory Efficiency
+
+
+*/

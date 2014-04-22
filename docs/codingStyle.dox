@@ -1,0 +1,120 @@
+/*! \page codingStyle Coding Style
+
+These style rules are intended to improve readability.  They are unlikely to change, but if you have a well structured argument for why you believe that they do not assist in readability and they degrade your ability to work, then by all means, discuss possible changes with Jason Cox.
+
+\tableofcontents
+
+## Spacing Rules
+* Indent with tabs at 4-space spacing.  Indentation must ALWAYS be done with tabs.  Adjustments for alignment purposes may be used, but only at the end of a string of tabs, and the number of spaces used must be less than 4 (otherwise, the spaces would be replaced with a tab).
+* Apply spaces between parentheses/brackets and all other commands/variables.  Example:
+\code{.cpp}
+if ( var == 0 ) { stuff(); }
+\endcode
+* Always place a space after comments.  Example:
+\code{.cpp}
+// This is a good comment.
+//This is a bad comment.
+\endcode
+* Place spaces between square brackets and whatever they contain if the contained text is more than one character.  Example:
+code{.cpp}
+// Bad:
+someArray[var][0] = 0;
+// Good:
+someArray[ var ][0] = 0;
+\endcode
+* Place spaces on either side of '*' when denoted a pointer, except when inside another declaration or when used as a dereference.  Example:
+\code{cpp}
+// Bad:
+myType* var;
+myType *var;
+* var = 0;
+// Good:
+myType * var;
+std::vector< myType* > var;
+*var = 0;
+\endcode
+* Uses spaces to clump math operations without explicitly using parentheses is encouraged as long as it improves readability.  Example:
+\code{.cpp}
+double distance = sqrt( x*x + y*y + z*z );
+\endcode
+* Do not use spaces to separate a typecast from the statement being cast.  Example:
+\code{.cpp}
+// Bad:
+( double ) myInt
+( ( double ) ( 1 + 1 ) )
+// Good:
+(double)myInt
+((double)( 1 + 1 ))
+\endcode
+* These spacing rules may be ignored only if the code is being written in a header file and needs to be as compact as possible.
+
+## Brackets
+* Control statements must always have brackets with one exception: control statements may forgo brackets if the following statement is a single line AND resides on the same line as the control.  Example:
+\code{.cpp}
+// Bad:
+while ( var == true )
+    oneLiner();
+
+// Good:
+while ( var == true ) oneLiner();
+while ( var == true ) {
+    oneLiner();
+}
+\endcode
+
+* Always place opening brackets on the same line as a control statement (also known as "Egyptian style").  Example:
+\code{.cpp}
+// Bad:
+if ( var == 0 )
+{
+    // body
+}
+
+// Good:
+if ( var == 0 ) {
+    // body
+}
+\endcode
+
+## Casing
+Lower camel case is the default for any naming scheme that isn't specified in this document.
+
+### Upper Camel Casing
+- Non-Member Global Variables
+- Namespaces
+- Classes
+- Enums
+
+### Lower Camel Casing
+- Member Functions
+- Member Variables
+- Local Variables
+- GLSL Variables
+
+## Prefixes
+Prefixes are separated from each other and the variable name by underscores.  They are presented in this order: (**Primary Prefix**, if needed) **_*- (any number of **Secondary Prefixes*- separated by underscores) **_*- (any number of **Context Prefixes*- separated by underscores) **_VariableName*- .
+
+### Primary Prefixes
+Primary prefixes must not conflict with each other in function.  If you are unsure of whether conflicts can occur or not, create new prefixes as secondary.
+- g - Global variable
+- m - Non-static member variable (regardless of access modifiers)
+
+### Secondary Prefixes
+- callback - A function that exists solely to be used as a callback
+- cache - Member variables related to caching
+- uniform - GLSL uniforms
+- in - GLSL in-variables
+- out - GLSL out-variables
+
+### Context Prefixes
+Context prefixes are required for global variables.  They provide additional information about the name and where it is intended to be used.  They can be used to prevent confusion about which class is which in a situation where two classes might have nearly identical names.  For example, Input_Keyboard is intended to handle input only and would not be a handler for the actual keyboard device.  Acceptable context prefixes are as follows:
+- Global variables and enum names must contain context prefixes.  This is usually the name of the class or namespace that it was created to serve.  For example: Input_ButtonState.
+- Class names may be prefixed with the name of the super class. For example, instead of calling a physics-enabled object a NewtonObject, it's called Object_Newton. But in the case with the Sprite class, it's not called Raster_Sprite because Raster is an abstract class and shouldn't be instantiated.
+- Note: The use of many context prefixes for multiple related classes may indicate the need for a common abstract base class.
+
+## Other Rules
+- Acronyms must be capitalized unless the acronym conflicts with the casing rule for that naming scheme. For example, a local variable that holds the previous URL for a page would be 'previousURL' not 'previousUrl'. Another example is to call a local variable 'url', not 'URL' (as the uppercase conflicts with lower camel case).
+- Header and source files may contain more than one class, but the files must be named after the most prominent class contained within.
+
+
+*/

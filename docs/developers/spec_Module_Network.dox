@@ -1,0 +1,16 @@
+/*! \page spec_Module_Network Network Module Design and Specification
+
+## Main Features
+The Network Module design is centered around the Network and PacketAccumulator classes.
+
+### Network
+A Network is a set of connections setup using PacketAccumulators.
+
+### PacketAccumulator
+A PacketAccumulator takes care of packets both inbound and outbound on a single connection.  Both TCP and UDP sockets are treated as connections.  A UDP socket, being the special case that isn't a persistent connection, is treated as having some of the same properties as a TCP connection.  In order to send or receive on a UDP socket, a "connection" must be made first (this does NOT require a handshake like TCP does).  If any packets are received from sources that don't match the UDP connection list, they are dropped as if the connection never existed.
+
+## Other Features
+### Realtime Packet Interpolator
+The PacketInterpolator abstracts out the need to interpolate between values as packets arrive.  The best example for this is position of players in an online game.  As the position packets arrive, they are automatically placed into an interpolator function, so that when PacketInterpolator->getBestValue() is called, the previous values and the latest value are used, along with a timing function, to predict the current best value to use.
+
+*/

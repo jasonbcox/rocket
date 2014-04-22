@@ -1,0 +1,61 @@
+/*! \page setup Setup ROCKET Engine
+
+## Install Eigen
+
+\code
+Download and Unpack Eigen from http://eigen.tuxfamily.org
+cd eigen-*
+mkdir build
+cd build
+cmake ..
+make install
+\endcode
+
+## Install GLEW
+
+\code
+Download and Unpack GLEW from glew.sourceforge.net
+cd glew-*
+make install
+Note: If libGLEW is unable to link, try copying the libGLEW* files from /usr/lib64/ to /usr/lib/x86_64-linux-gnu/
+\endcode
+
+## Install GLFW
+
+\code
+sudo apt-get install xorg-dev
+sudo apt-get install libglu1-mesa-dev
+
+git clone https://github.com/glfw/glfw.git
+cd glfw
+mkdir build
+cd build
+cmake ..
+make install
+\endcode
+
+## Install FLAC
+
+\code
+sudo apt-get install libflac-dev
+\endcode
+
+## Setup ROCKET Engine
+
+\code
+git clone https://github.com/jasonbcox/rocket.git
+cd rocket
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Debug
+make
+\endcode
+
+## Install Doxygen and Compile Documentation (Optional)
+\code
+sudo apt-get install doxygen
+cd rocket
+doxygen Doxyfile
+\endcode
+
+*/

@@ -14,7 +14,7 @@
 namespace Rocket {
 	namespace Graphics {
 
-		// Creates an empty Universe
+		//! Creates an empty Universe
 		Universe::Universe() {
 #ifdef ENABLE_DEBUG
 			m_cache_renderedPolygons = 0;
@@ -24,17 +24,16 @@ namespace Rocket {
 		Universe::~Universe() {
 		}
 
-		// Add a render pass to the end of the render list.
-		// Render passes must be added in the correct order, as dependecies are not checked.
+		//! Add a render pass to the end of the render list.  Render passes must be added in the correct order, as dependecies are not checked.
 		void Universe::addRenderPass( Scene * renderPass ) {
 			m_renderPasses.push_back( static_pointer_cast< Scene >( renderPass->shared_from_this() ) );
 		}
 
-		// Load and compile a shader
+		//! Load and compile a shader program file
 		void Universe::addShader( const char * shaderName, Shader * shader ) {
 			m_shaders[ shaderName ] = shader->shared_from_this();
 		}
-		// Get an existing shader program
+		//! Get an existing shader program
 		shared_ptr< Shader > Universe::getShader( const char * shaderName ) {
 			auto iter = m_shaders.find( shaderName );
 			if (iter == m_shaders.end()) {
@@ -44,7 +43,7 @@ namespace Rocket {
 			}
 		}
 
-		// Load a mesh into memory. If a mesh with the same name already exists, return a pointer to that mesh.
+		//! Load a Mesh into memory. If a Mesh with the same name already exists, return a pointer to that Mesh.
 		shared_ptr< Mesh > Universe::loadMesh( const char * meshName, const char * file, Shader * shader ) {
 			auto iter = m_meshes.find( meshName );
 			if (iter == m_meshes.end()) {
@@ -55,7 +54,7 @@ namespace Rocket {
 				return (*iter).second;
 			}
 		}
-		// Add a mesh if it doesn't already exist
+		//! Add a Mesh if it doesn't already exist
 		void Universe::addMesh( const char * meshName, Mesh * mesh ) {
 			auto iter = m_meshes.find( meshName );
 			if (iter == m_meshes.end()) {
@@ -64,7 +63,7 @@ namespace Rocket {
 				Debug_ThrowError( "Warning/Error: Mesh already added to universe!", 0 );
 			}
 		}
-		// Retrieve an already loaded mesh
+		//! Retrieve an already loaded Mesh
 		shared_ptr< Mesh > Universe::getMesh( const char * meshName ) {
 			auto iter = m_meshes.find( meshName );
 			if (iter == m_meshes.end()) {
@@ -74,7 +73,7 @@ namespace Rocket {
 			}
 		}
 
-		// Load a texture into memory.  If the texture already exists in memory, return a pointer to that texture.
+		//! Load a Texture into memory.  If the Texture already exists in memory, return a pointer to that Texture.
 		shared_ptr< Texture > Universe::loadTexture( const char * textureName, const char * file, bool mipmap, bool invertY ) {
 			auto iter = m_textures.find( textureName );
 			if (iter == m_textures.end()) {
@@ -85,7 +84,7 @@ namespace Rocket {
 				return (*iter).second;
 			}
 		}
-		// Retrieve an already loaded texture
+		//! Retrieve an already loaded Texture
 		shared_ptr< Texture > Universe::getTexture( const char * textureName ) {
 			auto iter = m_textures.find( textureName );
 			if (iter == m_textures.end()) {
@@ -95,6 +94,7 @@ namespace Rocket {
 			}
 		}
 
+		//! Render everything in this Universe given the number of milliseconds since the last draw
 		void Universe::display( float elapsedMilliseconds ) {
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
