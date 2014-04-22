@@ -22,20 +22,13 @@ namespace Rocket {
 			unsigned int getSampleRate();
 			unsigned int getCurrentFrame();
 
-			// play() - Play the sound
-			// replace - If the sound is already playing, replace the current frame
-			// position with startFrame
-			// repeat - If true, the sound will repeat until stopped.
-			// startFrame - The frame to begin playing at.
 			void play( bool replace = true, bool repeat = false,
 						unsigned int startFrame = 0 );
 			void pause();
 			void stop();
 
-			// addToBuffer() - Adds sound data to the audio stream buffer
 			void addToBuffer( double * buffer, unsigned int numBufferFrames );
 
-			// clone() - Returns a copy of this Sound, sharing the data pointer
 			shared_ptr< Sound > clone();
 
 		private:

@@ -31,6 +31,7 @@ namespace Rocket {
 			delete m_dac;
 		}
 
+		//! Begins generation of the sound stream
 		void AudioDevice::startStream() {
 			try {
 				m_dac->openStream( &m_outputParameters, NULL, RTAUDIO_FLOAT64,
@@ -41,16 +42,17 @@ namespace Rocket {
 			}
 			m_streamStarted = true;
 		}
+		//! Terminates the sound stream
 		void AudioDevice::stopStream() {
 			m_streamStarted = false;
 		}
 
+		//! Adds a sound to the list of sounds from which the stream is built from
 		void AudioDevice::addSound( Sound * sound ) {
 			m_sounds.push_back( sound->shared_from_this() );
 		}
 
-		// m_callback() - Callback that fills the sound buffer as needed to produce
-		// a continuous stream.
+		//! Callback that fills the sound buffer as needed to produce a continuous stream
 		int AudioDevice::m_callback( void * outputBuffer,
 										void * inputBuffer,
 										unsigned int numBufferFrames,

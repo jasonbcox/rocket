@@ -19,10 +19,9 @@ namespace Rocket {
 			AudioDevice( unsigned int numChannels, unsigned int sampleRate );
 			~AudioDevice();
 
-			void startStream();	// Begins generation of the sound stream
-			void stopStream();	// Terminates the sound stream
+			void startStream();
+			void stopStream();
 
-			// addSound() - Adds a sound to the list of sounds to build the stream from
 			void addSound( Sound * sound );
 
 		private:

@@ -44,16 +44,27 @@ namespace Rocket {
 		Sound::~Sound() {
 		}
 
+		//! Returns the number of audio channels for this Sound
 		unsigned int Sound::getNumChannels() {
 			return m_numChannels;
 		}
+
+		//! Returns the sample rate of this Sound
 		unsigned int Sound::getSampleRate() {
 			return m_sampleRate;
 		}
+
+		//! Returns the current sound frame position
 		unsigned int Sound::getCurrentFrame() {
 			return m_framePosition;
 		}
 
+		/*!	Play this Sound
+		- replace - If the sound is already playing, replace the current frame
+		- position with startFrame
+		- repeat - If true, the sound will repeat until stopped.
+		- startFrame - The frame to begin playing at.
+		*/
 		void Sound::play( bool replace, bool repeat, unsigned int startFrame ) {
 			if ( ( replace == true ) || ( ( replace == false ) && ( m_playing == false ) ) ) {
 				m_playing = true;
@@ -61,18 +72,19 @@ namespace Rocket {
 				m_framePosition = startFrame;
 			}
 		}
+
+		//! Pauses this Sound.  Calling play( true, false, getCurrentFrame() ) will continue from when it was paused.
 		void Sound::pause() {
 			m_playing = false;
 		}
+
+		//! Stops this Sound.
 		void Sound::stop() {
 			pause();
 			m_framePosition = 0;
 		}
 
-		// addToBuffer() adds values for numBufferFrames in buffer.
-		// The values that are added begin at m_framePosition where the sound left off
-		// at for the last addToBuffer() call.  If the end of the sound data is
-		// reached and m_repeat is false, the sound stops playing.
+		//!	Adds values for numBufferFrames in buffer. The values that are added begin at m_framePosition where the sound left off at for the last addToBuffer() call.  If the end of the sound data is reached and m_repeat is false, the sound stops playing.
 		void Sound::addToBuffer( double * buffer, unsigned int numBufferFrames ) {
 			if ( m_playing == true ) {
 				unsigned int frames = numBufferFrames;
@@ -97,6 +109,7 @@ namespace Rocket {
 			}
 		}
 
+		//! Returns a copy of this Sound, sharing the data pointer
 		shared_ptr< Sound > Sound::clone() {
 			return make_shared< Sound >( m_numChannels, m_sampleRate, m_numFrames, m_data );
 		}

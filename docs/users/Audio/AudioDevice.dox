@@ -1,0 +1,6 @@
+/*! \class Rocket::Audio::AudioDevice ./Audio/AudioDevice.h
+
+\brief
+The AudioDevice class is a wrapper for RtAudio to handle passing audio data to the hardware.
+
+*/
