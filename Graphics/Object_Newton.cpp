@@ -46,29 +46,37 @@ namespace Rocket {
 			return m_inertia;
 		}
 
+		//! Sets this Object_Newton's velocity relative to its parent's space
 		void Object_Newton::setVelocity( const Core::vec3 & v ) {
 			m_v = v;
 		}
+		//! Sets this Object_Newton's local angular velocity
 		void Object_Newton::setAngularVelocity( const Core::vec3 & rv ) {
 			m_omega = rv;
 		}
 
+		//! Applies acceleration relative to this Object_Newton's parent's space
 		void Object_Newton::applyAcceleration( const Core::vec3 & a ) {
 			m_frame_a += a;
 		}
+		//! Applies local angular acceleration
 		void Object_Newton::applyAngularAcceleration( const Core::vec3 & ra ) {
 			m_frame_alpha += ra;
 		}
+		//! Applies the given force relative to this Object_Newton's parent's space
 		void Object_Newton::applyForce( const Core::vec3 & F ) {
 			applyAcceleration( F * (1.0f/m_mass) );
 		}
+		//! Applies local torque given a torque vector
 		void Object_Newton::applyTorque( const Core::vec3 & T ) {
 			applyAngularAcceleration( T * (1.0f/m_inertia) );
 		}
+		//! Applies local torque given a rotation vector and a force vector
 		void Object_Newton::applyTorque( const Core::vec3 & r, const Core::vec3 & F ) {
 			applyTorque( Core::cross( r, F ) );
 		}
 
+		//! Updates this Object_Newton's rendering state
 		void Object_Newton::update( bool recursive, float elapsedMilliseconds ) {
 			// todo: update velocity with acceleration (based on elapsed time)
 			m_v += m_frame_a * elapsedMilliseconds;
@@ -95,6 +103,7 @@ namespace Rocket {
 			return r;
 		}
 
+		//! Make a clone of this Object_Newton and add it to the given Scene with an optional parent Tranform. Transform properties are copied from this Object.
 		shared_ptr< Object_Newton > Object_Newton::cloneNewtonInScene( Scene * scene, Transform * parent, const Core::vec3 & scale, const Core::vec4 & rotation, const Core::vec3 & position ) {
 			shared_ptr< Object_Newton > r = cloneNewton();
 

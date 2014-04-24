@@ -23,12 +23,12 @@ namespace Rocket {
 			void setInertia( float I );
 			float getInertia();
 
-			void setVelocity( const Core::vec3 & v );					// velocity relative to parent-space
-			void setAngularVelocity( const Core::vec3 & rv );			// local angular velocity relative
+			void setVelocity( const Core::vec3 & v );
+			void setAngularVelocity( const Core::vec3 & rv );
 
 			// Acceleration is applied for elapsedMilliseconds of time when update() is called
-			void applyAcceleration( const Core::vec3 & a );				// acceleration relative to parent-space
-			void applyAngularAcceleration( const Core::vec3 & ra );		// local angular accerelation relative
+			void applyAcceleration( const Core::vec3 & a );
+			void applyAngularAcceleration( const Core::vec3 & ra );
 			void applyForce( const Core::vec3 & F );
 			void applyTorque( const Core::vec3 & T );
 			void applyTorque( const Core::vec3 & r, const Core::vec3 & F );

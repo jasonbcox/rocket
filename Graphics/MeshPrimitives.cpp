@@ -10,7 +10,7 @@
 namespace Rocket {
 	namespace Graphics {
 
-		// Create a triangle (3 vertices and perpendicular normals for each vertex)
+		//! Create a triangle (3 vertices and perpendicular normals for each vertex)
 		void triangle( const Core::vec4 & a, const Core::vec4 & b, const Core::vec4 & c, int * vertexCount, std::vector<Core::vec4> * verticesList, std::vector<Core::vec3> * normalsList ) {
 			Core::vec3 normal = Core::normalize( Core::cross( (b-a).xyz(), (c-b).xyz() ) );
 
@@ -21,6 +21,7 @@ namespace Rocket {
 		}
 
 
+		//! Generate a quad Mesh in the given Universe, with the given Mesh name, rendered with the given Shader
 		Mesh * generatePrimitive_Quad( Universe * world, const char * meshName, Shader * shader ) {
 			Core::vec4 * vertices = new Core::vec4[6];
 			Core::vec3 * normals = new Core::vec3[6];
@@ -53,6 +54,7 @@ namespace Rocket {
 		}
 
 
+		//! Generate a cube Mesh in the given Universe, with the given Mesh name, rendered with the given Shader
 		Mesh * generatePrimitive_Cube( Universe * world, const char * meshName, Shader * shader ) {
 			// Base cube points
 			Core::vec4 seedPoints[8] = {
@@ -137,7 +139,7 @@ namespace Rocket {
 			}
 		}
 
-		// Create a sphere mesh by starting with a tetrahedron and dividing it divisions number of times
+		//! Generate a sphere Mesh by starting with a tetrahedron and dividing it divisions number of times.  It will be created in the given Universe, with the given Mesh name, and rendered with the given Shader.
 		Mesh * generatePrimitive_Sphere( Universe * world, const char * meshName, int divisions, Shader * shader ) {
 			if (divisions < 0) divisions = 0;
 
@@ -179,7 +181,7 @@ namespace Rocket {
 			return newMesh.get();
 		}
 
-		// Generate blended normals based on the center of a sphere
+		//! Generate blended normals based on the center of a sphere
 		void Mesh::generateSphericalNormals( Mesh * mesh ) {
 			for (int i = 0; i < mesh->m_vertexCount; i++) {
 				Core::vec4 normal = normalize( mesh->m_vertices[i] );

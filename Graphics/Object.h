@@ -22,12 +22,9 @@ namespace Rocket {
 			Object( Mesh * mesh = nullptr );
 			virtual ~Object();
 
-			// Creates a copy of this object, sharing the mesh, and copying all object properties (transforms not included)
 			shared_ptr< Object > clone();
-			// Clones the object into the specified Scene (transforms included)
 			shared_ptr< Object > cloneInScene( Scene * scene, Transform * parent, Core::vec3 scale, Core::vec4 rotation, Core::vec3 position );
 
-			// Calculate the object's world matrices before drawing
 			void calculateTransforms( float elapsedMilliseconds, const Core::mat4 & parent_orientation, bool parentCacheIsClean, bool applyUpdates ) override;
 
 			Mesh * getMesh();

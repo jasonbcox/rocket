@@ -77,11 +77,8 @@ namespace Rocket {
 			Core::vec3 * m_normals;
 			Core::vec2 * m_uv;
 
-			// Load a .obj file
 			void load_OBJ( const char * file );
 
-			// Transfer this mesh's model information to the GPU
-			// Only do this after loading the mesh, or after the mesh is modified by the CPU
 			void passMeshToGPU();
 		};
 

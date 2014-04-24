@@ -23,7 +23,6 @@ namespace Rocket {
 
 			disableTransparency();
 		}
-
 		Object::~Object() {
 			if ( m_mesh.get() != nullptr ) {
 				for ( auto owner : m_owners ) {
@@ -41,14 +40,14 @@ namespace Rocket {
 			cloneOnto->m_shaderUniforms = m_shaderUniforms->clone()->shared_from_this();
 		}
 
-		// Make a copy of this object, but instance the same mesh
+		//! Creates a copy of this Object, sharing the Mesh (not copied), and copying all Object properties (Transforms not included)
 		shared_ptr< Object > Object::clone() {
 			auto r = make_shared< Object >( m_mesh.get() );
 			clonePropertiesOnto( r.get() );
 			return r;
 		}
 
-		// Make a clone of this object and add it to the same scene as the original object with the same transform properties
+		//! Make a clone of this Object and add it to the given Scene with an optional parent Tranform. Transform properties are copied from this Object.
 		shared_ptr< Object > Object::cloneInScene( Scene * scene, Transform * parent, Core::vec3 scale, Core::vec4 rotation, Core::vec3 position ) {
 			shared_ptr< Object > r = clone();
 
@@ -61,38 +60,46 @@ namespace Rocket {
 			return r;
 		}
 
+		//! Calculate the Object's world matrices before drawing
 		void Object::calculateTransforms( float elapsedMilliseconds, const Core::mat4 & parent_orientation, bool parentCacheIsClean, bool applyUpdates ) {
 			Transform::calculateTransforms( elapsedMilliseconds, parent_orientation, parentCacheIsClean, applyUpdates );
 		}
 
-		// Return the mesh that renders this object
+		//! Returns the Mesh that renders this Object
 		Mesh * Object::getMesh() {
 			return m_mesh.get();
 		}
 
+		//! Remove the given Scene from the list of Scene owners that render this Object
 		void Object::removeOwner( Scene * scene ) {
 			Transform::removeOwner( scene );
 			if ( m_mesh.get() != nullptr ) m_mesh->removeMeshUserFromScene( this, scene );
 		}
 
+		//! Set this Object's Shader properties (uniforms)
 		void Object::setShaderUniforms( ShaderUniforms * shaderUniforms ) {
 			m_shaderUniforms = shaderUniforms->shared_from_this();
 		}
+		//! Returns this Object's current Shader properties
 		ShaderUniforms * Object::getShaderUniforms() {
 			return m_shaderUniforms.get();
 		}
 
+		//! Enables rendering of this Object with transparency
 		void Object::enableTransparency() {
 			m_transparencyEnabled = true;
 			if ( m_mesh.get() != nullptr ) m_mesh->addMeshUser( this );
 		}
+		//! Disables rendering of this Object with transparency
 		void Object::disableTransparency() {
 			m_transparencyEnabled = false;
 			if ( m_mesh.get() != nullptr ) m_mesh->addMeshUser( this );
 		}
+		//! Returns true if this Object is rendered with transparency enabled
 		bool Object::isTransparent() {
 			return m_transparencyEnabled;
 		}
 
 	}
 }
+

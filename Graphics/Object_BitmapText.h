@@ -30,7 +30,7 @@ namespace Rocket {
 			BitmapFontGlyph( int size, int w, int h, Core::vec2i o, Core::vec2i b, int a ) : fontSize(size), width(w), height(h), origin(o), bearing(b), advance(a) {}
 		};
 
-		// Object_BitmapText - A single texture applied to multiple quads (Sprites) where each quad is a glyph/character
+		//! A single texture applied to multiple quads (Sprites) where each quad is a glyph/character
 		class Object_BitmapText : public Object, public Raster {
 		public:
 			Object_BitmapText( Texture * bitmap );

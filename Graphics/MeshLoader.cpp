@@ -31,14 +31,13 @@ namespace Rocket {
 		}
 
 
-
+		//! Load a .obj file and store the vertex data into this Mesh
 		void Mesh::load_OBJ( const char * file ) {
 			// Storage for raw data.
 			std::vector<Core::vec4> vertices;
 			std::vector<Core::vec3> vertex_normals;
 			std::vector<Core::vec2> tex_coords;
 			std::vector<std::vector<int>> faces;
-
 
 			// Read lines from file.
 			std::ifstream myfile( file );

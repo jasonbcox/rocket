@@ -12,7 +12,7 @@ using namespace std;
 namespace Rocket {
 	namespace Graphics {
 
-		// Raster - An abstract base class for anything drawn in pixel space
+		//! An abstract base class for anything drawn in pixel space
 		class Raster {
 		public:
 			Raster( Transform * transform );	// transform - the transform to perform positioning, scaling, and rotation

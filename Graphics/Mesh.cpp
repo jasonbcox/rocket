@@ -12,8 +12,8 @@
 namespace Rocket {
 	namespace Graphics {
 
+		//! Generate the VertexArrayObject and VertexBufferObjects for this Mesh
 		void Mesh::generateBufferObjects() {
-			// Generate the VertexArrayObject and VertexBufferObjects for this mesh
 			glGenVertexArrays( 1, &m_vao );
 			glBindVertexArray( m_vao );
 			glGenBuffers( MESH_VBO_NUM, m_vbo );
@@ -61,6 +61,7 @@ namespace Rocket {
 			delete [] m_uv;
 		}
 
+		//! Setup function to be called before drawing
 		void Mesh::startPassesForScene( Scene * scene ) {
 			auto mapIter = m_objectUsers.find( scene );
 			if ( mapIter != m_objectUsers.end() ) {
@@ -76,6 +77,7 @@ namespace Rocket {
 #endif
 		}
 
+		//! Render all Objects that use this Mesh
 		void Mesh::drawCurrentPass( const Core::mat4 * cameraProjection, const Core::mat4 * cameraOrientation ) {
 			m_shader->useShaderProgram();
 			glBindVertexArray( getVertexArrayObject() );
@@ -112,6 +114,7 @@ namespace Rocket {
 		}
 
 
+		//! Add an Object to the list of targets that use this Mesh for rendering
 		void Mesh::addMeshUser( Object * object ) {
 			auto objectOwners = object->getOwners();
 			MeshDrawPasses removeFromPass = MeshDrawPasses::Transparent;
@@ -150,6 +153,7 @@ namespace Rocket {
 			}
 		}
 
+		//! Add the given Scene to this Mesh's render list
 		std::unordered_map< Scene*, renderPassListType >::iterator Mesh::addSceneToUserList( Scene * scene ) {
 			auto mapIter = m_objectUsers.insert( std::pair< Scene*, renderPassListType >( scene, renderPassListType() ) ).first;
 			for ( unsigned int i = 0; i < (unsigned int)MeshDrawPasses::END_OF_DRAW_PASSES; i++ ) {
@@ -158,6 +162,7 @@ namespace Rocket {
 			return mapIter;
 		}
 
+		//! Remove the given Object from this Mesh's render list with relation to the given Scene
 		void Mesh::removeMeshUserFromScene( const Object * meshUser, Scene * scene ) {
 			auto mapIter = m_objectUsers.find( scene );
 			if ( mapIter != m_objectUsers.end() ) {
@@ -175,6 +180,7 @@ namespace Rocket {
 			}
 		}
 
+		//! Pass all necessary Mesh data to the GPU.  Only call this function after loading this Mesh or after modifying its vertex data, as passing data to the GPU is rather slow.
 		void Mesh::passMeshToGPU() {
 			if ( m_shader.get() == nullptr ) Debug_ThrowError( "Error: Mesh must be linked to a shader.", 0 );
 			if ( m_vertexCount <= 0 ) Debug_ThrowError( "Error: Mesh must contain at least one vertex.", m_vertexCount );
@@ -245,18 +251,22 @@ namespace Rocket {
 			*/
 		}
 
+		//! Returns the Vertex Array Object number
 		GLuint Mesh::getVertexArrayObject() {
 			return m_vao;
 		}
 
+		//! Returns a pointer to the Shader used to render this Mesh
 		Shader * Mesh::getShader() {
 			return m_shader.get();
 		}
 
+		//! Returns the number of vertices in this Mesh
 		int Mesh::getVertexCount() {
 			return m_vertexCount;
 		}
 
+		//! Replace vertex data in this Mesh with the given vertex data
 		void Mesh::editMesh( int startVertex, int endVertex, Core::vec4 * vertices, Core::vec3 * normals, Core::vec2 * uvCoords ) {
 			if ( ( startVertex < 0 ) || ( startVertex > endVertex ) || ( endVertex >= m_vertexCount ) ) return;
 			for ( int x = startVertex; x <= endVertex; x++ ) {

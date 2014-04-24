@@ -89,6 +89,7 @@ namespace Rocket {
 		Object_BitmapText::~Object_BitmapText() {
 		}
 
+		//! Set this Object_BitmapText's text
 		void Object_BitmapText::setText( const string & text ) {
 			m_text = text;
 
@@ -145,10 +146,12 @@ namespace Rocket {
 			setPosition( Raster::m_position );
 		}
 
+		//! Returns this Object_BitmapText's text
 		const std::string & Object_BitmapText::getText() {
 			return m_text;
 		}
 
+		//! Enables this Object_BitmapText to be rendered with transparency
 		void Object_BitmapText::enableTransparency( float alphaTest, float alphaTransparency ) {
 			m_transparency = true;
 			m_alphaTest = alphaTest;
@@ -159,6 +162,7 @@ namespace Rocket {
 			}
 		}
 
+		//! Disables this Object_BitmapText to be rendered with transparency
 		void Object_BitmapText::disableTransparency() {
 			m_transparency = false;
 
