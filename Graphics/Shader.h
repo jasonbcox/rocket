@@ -69,7 +69,7 @@ namespace Rocket {
 
 			const Core::mat4 ** getCameraOrientation();
 			const Core::mat4 ** getCameraPerspective();
-			const Core::mat4 ** getObjecTransform();
+			const Core::mat4 ** getObjectTransform();
 
 		protected:
 			static unsigned int Global_InUseShaderProgram;

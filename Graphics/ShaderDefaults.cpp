@@ -12,6 +12,7 @@ namespace Rocket {
 			ShaderUniforms_Texture::~ShaderUniforms_Texture() {
 			}
 
+			//! Returns a copy of this ShaderUniforms_Texture (but not the texture itself)
 			shared_ptr< ShaderUniforms > ShaderUniforms_Texture::clone() {
 				auto r = make_shared< ShaderUniforms_Texture >();
 
@@ -26,6 +27,7 @@ namespace Rocket {
 				return r;
 			}
 
+			//! Creates a new texture Shader
 			Shader_Texture::Shader_Texture( const char * file_vertexShader, const char * file_fragmentShader ) : Shader( file_vertexShader, file_fragmentShader ) {
 				m_cache_texture.uniformName = "textureMap";
 				m_cache_textureScale.uniformName = "textureScale";
@@ -38,6 +40,7 @@ namespace Rocket {
 			Shader_Texture::~Shader_Texture() {
 			}
 
+			//! Refreshes this Shader_Texture's camera and object matrix uniforms
 			void Shader_Texture::refreshMyUniformLocationCache() {
 				refreshMyDefaultUniformLocationCache();
 				m_cache_texture.refreshCache( m_shaderNumber );
@@ -49,6 +52,7 @@ namespace Rocket {
 				m_cache_alphaTransparency.refreshCache( m_shaderNumber );
 			}
 
+			//! Passes this Shader_Texture's uniform data to the GPU
 			void Shader_Texture::passMyUniformDataToGPU( ShaderUniforms * i_uniforms ) {
 				ShaderUniforms_Texture * uniforms = (ShaderUniforms_Texture*)i_uniforms;
 				passMyDefaultUniformDataToGPU( uniforms );
@@ -89,6 +93,7 @@ namespace Rocket {
 				}
 			}
 
+			//! Set the given Object's uniform data to a new ShaderUniforms_Texture with the given properties
 			void setObjectUniforms_texture( Object * object,
 												Shader_UniformTexture textureData,
 												vec2 textureScale,
@@ -117,3 +122,4 @@ namespace Rocket {
 
 	}
 }
+

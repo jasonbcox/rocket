@@ -37,12 +37,11 @@ namespace Rocket {
 
 		class Scene : public Transform {
 		public:
-			Scene( float orthoWidth, float orthoHeight );								// Create an orthographic scene
-			Scene( float FOVy, float aspectRatio, float nearClip, float farClip );		// Create a perspective scene
+			Scene( float orthoWidth, float orthoHeight );
+			Scene( float FOVy, float aspectRatio, float nearClip, float farClip );
 			~Scene();
 
 			void addMesh( Mesh * mesh );
-			// todo: removeMesh() and/or deleteAllMeshes() so that mesh cleanup is automated
 
 			// Note: addObject() decouples the object from the Scene if parent is nullptr
 			// This means that, from the perspective of any object, "world space" is with respect to its containing Scene node
@@ -53,11 +52,8 @@ namespace Rocket {
 
 			void addComposite( Scene * scene );
 
-			//void draw( bool drawTransparentObjects );
 			virtual void draw( float elapsedMilliseconds, bool clearScreen );
 			// elapsedMilliseconds since the last call to draw(). This value is used to correctly interpolate movement of objects within the scene.
-
-			//void queueTransparentObject( Object * object );
 
 			void renderToTexture( int width, int height );
 
@@ -93,8 +89,6 @@ namespace Rocket {
 			void setCameraTurnSpeed( const Core::vec3 & speed );
 			void ControlCamera( float elapsedTime );
 
-			// pickScreen() returns the world position of the picked location
-			// if optionalDepth is not specified (equal to 0.0f), the depth is picked from the scene's depth buffer
 			Rocket::Core::vec4 pickScreen( int x, int y, float optionalDepth = 0.0f );
 
 			// GL properties

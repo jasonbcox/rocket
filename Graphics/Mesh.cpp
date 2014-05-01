@@ -93,7 +93,7 @@ namespace Rocket {
 				Object * obj = (*objIter).get();
 				if ( obj->isVisible() == true ) {
 					// Orientation of the object
-					*m_shader->getObjecTransform() = &(obj->getFinalOrientation());
+					*m_shader->getObjectTransform() = &(obj->getFinalOrientation());
 
 					m_shader->passUniformDataToGPU( obj->getShaderUniforms() );
 

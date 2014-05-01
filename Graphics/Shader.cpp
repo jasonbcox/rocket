@@ -17,6 +17,10 @@ namespace Rocket {
 
 		unsigned int Shader::Global_InUseShaderProgram = 0;
 
+		/*! Create a Shader_UniformTexture using a Texture as a uniform in the specified texture slot with the given properties
+			wrapS - GL wrap value for the S-Axis
+			wrapT - GL wrap value for the T-Axis
+		*/
 		Shader_UniformTexture::Shader_UniformTexture( unsigned int textureSlot, Texture * texture, unsigned int wrapS, unsigned int wrapT ) {
 			m_textureSlot = textureSlot;
 			if ( texture == nullptr ) {
@@ -30,6 +34,7 @@ namespace Rocket {
 		Shader_UniformTexture::~Shader_UniformTexture() {
 		}
 
+		//! Create a ShaderUniformCache for caching a Shader's uniform value
 		ShaderUniformCache::ShaderUniformCache() {
 			cachedValue = nullptr;
 			cacheSize = 0;
@@ -43,6 +48,7 @@ namespace Rocket {
 			}
 		}
 
+		//! Reset the uniform's location data with respect to the given shader
 		void ShaderUniformCache::refreshCache( unsigned int shaderNumber ) {
 			cachedUniformLocation = glGetUniformLocation( shaderNumber, uniformName.c_str() );
 			if ( cachedUniformLocation < 0 ) {
@@ -50,6 +56,7 @@ namespace Rocket {
 			}
 		}
 
+		//! Returns true if the uniform needs refreshing given a newValue and the size of that data
 		bool ShaderUniformCache::uniformNeedsRefreshing( void * newValue, size_t size ) {
 			if ( ( cacheIsClean == false ) || ( cacheSize != size ) || ( memcmp( cachedValue, newValue, size ) != 0 ) ) {
 				if ( cacheSize != size ) {
@@ -72,6 +79,7 @@ namespace Rocket {
 		ShaderUniforms::~ShaderUniforms() {
 		}
 
+		//! Returns a copy of this ShaderUniforms
 		shared_ptr< ShaderUniforms > ShaderUniforms::clone() {
 			auto r = make_shared< ShaderUniforms >();
 			return r;
@@ -96,7 +104,7 @@ namespace Rocket {
 			return buf;
 		}
 
-		// Load the shader files and compile them into a shader program
+		//! Load the shader files and compile them into a shader program
 		Shader::Shader( const char * file_vertexShader, const char * file_fragmentShader) {
 			struct TempShader {
 				const char * filename;
@@ -108,7 +116,7 @@ namespace Rocket {
 			};
 
 			m_shaderNumber = glCreateProgram();											GL_GET_ERROR();
-    
+
 			for ( int i = 0; i < 2; ++i ) {
 				TempShader & s = shaders[i];
 				s.source = readFile( s.filename );
@@ -170,25 +178,29 @@ namespace Rocket {
 			glDeleteProgram( m_shaderNumber );
 		}
 
-
+		//! Returns the shader number of this Shader
 		unsigned int Shader::getShaderNumber() {
 			return m_shaderNumber;
 		}
 
+		//! Refreshes this Shader's entire uniform cache
 		void Shader::refreshUniformLocationCache() {
 			this->refreshMyUniformLocationCache();
 		}
 
+		//! Refreshes this Shader's camera and object matrix uniforms
 		void Shader::refreshMyDefaultUniformLocationCache() {
 			m_cache_cameraOrientation.refreshCache( m_shaderNumber );
 			m_cache_cameraPerspective.refreshCache( m_shaderNumber );
 			m_cache_objectTransform.refreshCache( m_shaderNumber );
 		}
 
+		//! Pass this Shader's uniform data to the GPU
 		void Shader::passUniformDataToGPU( ShaderUniforms * uniforms ) {
 			this->passMyUniformDataToGPU( uniforms );
 		}
 
+		//! Pass only this Shader's default uniforms to the GPU
 		void Shader::passMyDefaultUniformDataToGPU( ShaderUniforms * uniforms ) {
 			if ( m_cache_cameraOrientation.uniformNeedsRefreshing( m_cameraOrientation, sizeof(Core::mat4) ) == true ) {
 				glUniformMatrix4fv( m_cache_cameraOrientation.cachedUniformLocation, 1, GL_TRUE, *m_cameraOrientation );
@@ -209,16 +221,20 @@ namespace Rocket {
 			//glUniformMatrix4fv( tempVarLoc, 1, GL_TRUE, *((Core::mat4*)((*localIter).m_value)) );
 		}
 
+		//! Returns the camera orientation stored in this Shader's uniform
 		const Core::mat4 ** Shader::getCameraOrientation() {
 			return (const Core::mat4 **)&m_cameraOrientation;
 		}
+		//! Returns the camera perspective (view matrix) stored in this Shader's uniform
 		const Core::mat4 ** Shader::getCameraPerspective() {
 			return (const Core::mat4 **)&m_cameraPerspective;
 		}
-		const Core::mat4 ** Shader::getObjecTransform() {
+		//! Returns the object transform matrix stored in this Shader's uniform
+		const Core::mat4 ** Shader::getObjectTransform() {
 			return (const Core::mat4 **)&m_objectTransform;
 		}
 
+		//! Set the GPU to use this Shader program for rendering
 		void Shader::useShaderProgram() {
 			if ( Global_InUseShaderProgram != m_shaderNumber ) {
 				Global_InUseShaderProgram = m_shaderNumber;
@@ -229,3 +245,4 @@ namespace Rocket {
 
 	}
 }
+
