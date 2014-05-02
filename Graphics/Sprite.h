@@ -33,14 +33,10 @@ namespace Rocket {
 			void enableTransparency( float alphaTest, float alphaTransparency );
 			void disableTransparency();
 
-			// Set UV coords in pixel-space (0 - size)
 			void setUVPixels( int left, int top, int right, int bottom );
-			// Set UV coords in texel-space (0.0 - 1.0)
 			void setUV( float left, float top, float right, float bottom );
-			// Get UV coords in pixel-space
 			Core::vec4i getUV();
 
-			// addAnimation() sets the sections of the sprite sheet to animate through when an animation is activated
 			void addAnimation( string animationName, vector< vec4i > frames );
 			void playAnimation( string animationName, float timeMilliseconds, bool repeat = true, int startFrame = 0 );
 			void pauseAnimation();

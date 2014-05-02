@@ -47,11 +47,13 @@ namespace Rocket {
 			g_SpriteCount--;
 		}
 
+		//! Enables the use of Sprites in the given Scene using the given Shader for rendering those Sprites.  This function only needs to be called once per Scene that utilizes Sprites.
 		void Sprite::enableSpritesInScene( Universe * world, Scene * scene, Shader * meshShader ) {
 			if ( g_SpriteMesh.get() == nullptr ) g_SpriteMesh = generatePrimitive_Quad( world, "SPRITE_MESH", meshShader )->shared_from_this();
 			scene->addMesh( g_SpriteMesh.get() );
 		}
 
+		//! Enables transparency for this Sprite
 		void Sprite::enableTransparency( float alphaTest, float alphaTransparency ) {
 			Object::enableTransparency();
 
@@ -59,7 +61,8 @@ namespace Rocket {
 			uniforms->m_alphaTest = alphaTest;
 			uniforms->m_alphaTransparency = alphaTransparency;
 		}
-		
+
+		//! Disables transparency for this Sprite
 		void Sprite::disableTransparency() {
 			Object::disableTransparency();
 
@@ -68,11 +71,13 @@ namespace Rocket {
 			uniforms->m_alphaTransparency = 1.0f;
 		}
 
+		//! Set the UV coordinates of this Sprite in pixel-space (0 - texture size)
 		void Sprite::setUVPixels( int left, int top, int right, int bottom ) {
 			vec2i size = m_texture->getSize();
 			setUV( left/(size.x()*1.0f), (top+1)/(size.y()*1.0f), right/(size.x()*1.0f), (bottom+1)/(size.y()*1.0f) );
 		}
 
+		//! Set the UV coordinates of this Sprite in texel-space (0.0 - 1.0)
 		void Sprite::setUV( float left, float top, float right, float bottom ) {
 			vec2i size = m_texture->getSize();
 			vec4i newCoords( (int)(left*size.x()), (int)(top*size.y()), (int)(right*size.x()), (int)(bottom*size.y()) );
@@ -105,13 +110,16 @@ namespace Rocket {
 			}
 		}
 
+		//! Returns the UV coordinates of this Sprite in pixel-space
 		vec4i Sprite::getUV() {
 			return m_uvCoords;
 		}
 
+		//! Sets the sections of the sprite sheet to animate through when an animation is activated
 		void Sprite::addAnimation( string animationName, vector< vec4i > frames ) {
 			m_frames[ animationName ] = frames;
 		}
+		//! Play the specified animation for the given length of time
 		void Sprite::playAnimation( string animationName, float timeMilliseconds, bool repeat, int startFrame ) {
 			auto frames = m_frames.find( animationName );
 			if ( frames != m_frames.end() ) {
@@ -124,13 +132,16 @@ namespace Rocket {
 				m_animationRepeat = repeat;
 			}
 		}
+		//! Pause the current animation
 		void Sprite::pauseAnimation() {
 			m_animationPlaying = false;
 		}
+		//! Returns the current animation frame
 		int Sprite::currentFrame() {
 			return m_animationCurrentFrame;
 		}
 
+		//! Updates this Sprite's rendering
 		void Sprite::update( bool recursive, float elapsedMilliseconds ) {
 			if ( m_animationPlaying == true ) {
 				m_animationTime += elapsedMilliseconds;
@@ -156,3 +167,4 @@ namespace Rocket {
 
 	}
 }
+

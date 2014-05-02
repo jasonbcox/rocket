@@ -22,13 +22,16 @@ namespace Rocket {
 			glDeleteTextures( 1, &m_textureID );
 		}
 
+		//! Returns the texture ID of this Texture
 		unsigned int Texture::getID() {
 			return m_textureID;
 		}
 
+		//! Returns the size of this Texture in pixels
 		Core::vec2i Texture::getSize() {
 			return m_size;
 		}
 
 	}
 }
+

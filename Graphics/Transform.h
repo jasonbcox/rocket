@@ -24,28 +24,24 @@ namespace Rocket {
 			Transform();
 			virtual ~Transform();
 
-			// addChild() adds child to this Transform's list of children
-			// if coupleChildToParent is true, child's m_parent is set to this Transform, otherwise, it is not set.
-			// For adding children to a Scene, always set coupleChildToParent as false.
 			void addChild( Transform * child, bool coupleChildToParent );
 
-			void scale( const Core::vec3 & scale );			// set the scale
+			void scale( const Core::vec3 & scale );
 
-			void position( const Core::vec3 & offset );		// set the local position
-			const Core::vec3 & position();					// get the local position
+			void position( const Core::vec3 & offset );
+			const Core::vec3 & position();
 
-			// getParentOrientation() returns the concatenation of all ancestor matrices
 			const Core::mat4 & getParentOrientation();
 			const Core::mat4 & getFinalOrientation();
 			//void positionWorld( Core::vec3 pos );	// todo: position in world space, relative to parent
-			Core::vec3 positionWorld();		// get position in world space (with respect to root parent node)
+			Core::vec3 positionWorld();
 
 			// todo: rotate() around world space axes
-			void rotate( const Core::vec4 & quaternion );					// transform the current local rotation by a quaternion
-			void rotate( float angle, Core::vec3 axisOfRotation );			// transform the current local rotation by angle on axisOfRotation
-			void rotatePitch( float pitch );								// pitch the current local rotation (X-axis rotation)
-			void rotateYaw( float yaw );									// yaw the current local rotation (Y-axis rotation)
-			void rotateRoll( float roll );									// roll the current local rotation (Z-axis rotation)
+			void rotate( const Core::vec4 & quaternion );
+			void rotate( float angle, Core::vec3 axisOfRotation );
+			void rotatePitch( float pitch );
+			void rotateYaw( float yaw );
+			void rotateRoll( float roll );
 			const Core::vec4 & rotation_quaternion();
 			Core::vec3 rotation_euler();		// todo: doesn't work (see vector.h)
 
@@ -58,12 +54,8 @@ namespace Rocket {
 			void show();
 			bool isVisible();
 
-			virtual void update( bool recursive, float elapsedMilliseconds );				// update function for this object type (overloading OK)
+			virtual void update( bool recursive, float elapsedMilliseconds );
 
-			// the transparencyCollector must be a pointer to the scene's transparency list for a normal draw pass
-			// for a transparency draw pass, transparencyCollector must be NULL
-			//virtual void draw( const Core::mat4 camera_projection, const Core::mat4 camera_orientation, Core::mat4 parent_orientation, std::vector<Object*> * transparencyCollector );
-			//virtual void draw( Scene * drawer, Core::mat4 parent_orientation, bool opaquePass );
 			virtual void calculateTransforms( float elapsedMilliseconds, const Core::mat4 & parent_orientation, bool parentCacheIsClean, bool applyUpdates );
 
 			// Optional z-indexing functions
@@ -114,4 +106,3 @@ namespace Rocket {
 
 
 #endif
-
