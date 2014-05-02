@@ -34,8 +34,8 @@ namespace Rocket {
 			setCameraInput( nullptr );
 		}
 
-		/*!	Create a Scene that is rendered with an orthographic camera
-			orthoWidth/orthoHeight - Number of pixels to render in that dimension
+		/*! Create a Scene that is rendered with an orthographic camera
+		- orthoWidth/orthoHeight - Number of pixels to render in that dimension
 		*/
 		Scene::Scene( float orthoWidth, float orthoHeight ) {
 			m_camera_projection = Core::Orthographic( 0.0f, orthoWidth, orthoHeight, 0.0f, -OrthographicDrawDistance, OrthographicDrawDistance );
@@ -44,11 +44,11 @@ namespace Rocket {
 
 			disableDepthTest();
 		}
-		/*!	Create a Scene that is rendered with a perspective camera
-			FOVy - Y-Axis (vertical) field of view in degrees.  Typical values for this range from 60.0 - 90.0
-			aspectRatio - Ratio of width to height
-			nearClip - Distance of the near clip plane
-			farClip - Distance of the far clip plane
+		/*! Create a Scene that is rendered with a perspective camera
+		- FOVy - Y-Axis (vertical) field of view in degrees.  Typical values for this range from 60.0 - 90.0
+		- aspectRatio - Ratio of width to height
+		- nearClip - Distance of the near clip plane
+		- farClip - Distance of the far clip plane
 		*/
 		Scene::Scene( float FOVy, float aspectRatio, float nearClip, float farClip ) {
 			m_camera_projection = Core::Perspective( FOVy, aspectRatio, nearClip, farClip );

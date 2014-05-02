@@ -116,8 +116,8 @@ namespace Rocket {
 		}
 
 		/*! Sets the sections of the sprite sheet to animate through when an animation is activated
-			animationName - The name used to retrieve this animation for playing.  The animation name is only unique to this Sprite.
-			frames - List of coordinates of each animation frame in this order: { left, top, right, bottom }
+		- animationName - The name used to retrieve this animation for playing.  The animation name is only unique to this Sprite.
+		- frames - List of coordinates of each animation frame in this order: { left, top, right, bottom }
 		*/
 		void Sprite::addAnimation( string animationName, vector< vec4i > frames ) {
 			m_frames[ animationName ] = frames;
