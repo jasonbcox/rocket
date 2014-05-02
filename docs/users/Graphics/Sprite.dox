@@ -1,0 +1,8 @@
+/*! \class Rocket::Graphics::Sprite ./Graphics/Sprite.h
+
+\brief
+The Sprite class is used to render textured quads to appear as flat elements on the screen, such as UI elements.  By default, Sprites support frame-by-frame animation via the texture as a sprite sheet.
+
+Note: Sprite::enableSpritesInScene() must be called on each Scene where you plan on using Sprites.
+
+*/

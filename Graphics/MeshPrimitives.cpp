@@ -21,6 +21,7 @@ namespace Rocket {
 		}
 
 
+		//! \relates Mesh
 		//! Generate a quad Mesh in the given Universe, with the given Mesh name, rendered with the given Shader
 		Mesh * generatePrimitive_Quad( Universe * world, const char * meshName, Shader * shader ) {
 			Core::vec4 * vertices = new Core::vec4[6];
@@ -54,6 +55,7 @@ namespace Rocket {
 		}
 
 
+		//! \relates Mesh
 		//! Generate a cube Mesh in the given Universe, with the given Mesh name, rendered with the given Shader
 		Mesh * generatePrimitive_Cube( Universe * world, const char * meshName, Shader * shader ) {
 			// Base cube points
@@ -139,6 +141,7 @@ namespace Rocket {
 			}
 		}
 
+		//! \relates Mesh
 		//! Generate a sphere Mesh by starting with a tetrahedron and dividing it divisions number of times.  It will be created in the given Universe, with the given Mesh name, and rendered with the given Shader.
 		Mesh * generatePrimitive_Sphere( Universe * world, const char * meshName, int divisions, Shader * shader ) {
 			if (divisions < 0) divisions = 0;

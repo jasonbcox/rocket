@@ -1,0 +1,10 @@
+/*! \class Rocket::Graphics::Mesh ./Graphics/Mesh.h
+
+\brief
+The Mesh class is used to store vertex, normal, UV, and other render information for a 3D mesh.
+
+Meshes are drawn in multiple passes. Currently there are two passes: Opaque and Transparent, rendered in that order.  A particular Mesh will report what Objects render this particular Mesh and during which passes.
+
+For your convenience, some generatePrimitive_*() functions have been provided.
+
+*/

@@ -1,0 +1,6 @@
+/*! \class Rocket::Graphics::Scissor ./Graphics/Scissor.h
+
+\brief
+The Scissor class is used to render a Scene to a portion of the screen.
+
+*/
