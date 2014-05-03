@@ -2,19 +2,23 @@
 
 ## General Rules
 - Do not work on a ticket unless it is assigned to you, or you were given permission to modify something by the person whom the ticket is assigned.  If a ticket is unassigned, you can ask to be assigned to it.
-- All tickets must have only one development status label and at least one unnumbered label attached.  See the Label Usage section below for details on which labels a ticket should have.  Note that when closing a ticket, be sure to leave the label on the ticket.  This allows us to look back and see the stage of completion that tickets were closed on.
+- All tickets must have only one development status label, only one priority label, and at least one unnumbered label attached.  See the Label Usage section below for details on which labels a ticket should have.  Note that when closing a ticket, be sure to leave the label on the ticket.  This allows us to look back and see the stage of completion that tickets were closed on.
 - Before opening a new ticket, be sure to communicate with someone about the issue or feature first.
 - Almost all labels should have a milestone attached.  If you are unsure, speak to someone about it.  If a ticket can't be placed in any single milestone due to overlap, place it in the most generally named milestone.  If a ticket can't be placed because there is no milestone that fits it, leave the milestone unassigned.
 - If you are not setup as a Github contributor for Rocket, please request that you be added to the issue in question (see the Forked label below), fork the repository, and then make your change.
 
 ## Label Usage
-- Numbered labels indicate the development status:
+- Single digit labels indicate the development status:
 	- \htmlonly <span class="badge">0 - Requirements</span>\endhtmlonly : The changes to be made for this ticket are still being decided on.
 	- \htmlonly <span class="badge">1 - Pending Development</span>\endhtmlonly : Requirements have been finalized and the ticket can now be assigned to a developer.
 	- \htmlonly <span class="badge">2 - In Development</span>\endhtmlonly : A developer has been selected and the changes are in progress.
 	- \htmlonly <span class="badge">3 - Testing</span>\endhtmlonly : Testing may be done by anyone, but it is encouraged to be done by someone other than the original developer.  During this stage, it is imperative to ensure that sufficient test cases exist for the code changes associated with the ticket.
 	- \htmlonly <span class="badge">4 - Update Wiki</span>\endhtmlonly : Before closing any ticket, make sure information in the wiki reflects any changes that have been committed.
 	- \htmlonly <span class="badge">5 - Complete</span>\endhtmlonly : This ticket is taken care of and may be closed.
+- Double digit labels indicate ticket priority:
+	- \htmlonly <span class="badge badge-yellow">00 - Low Priority</span>\endhtmlonly : Please consider working on more important tickets before going to this one.
+	- \htmlonly <span class="badge badge-orange">01 - Medium Priority</span>\endhtmlonly : Consider fixing this issue before attempting to add new features.
+	- \htmlonly <span class="badge badge-red">02 - High Priority</span>\endhtmlonly : Finish this ticket before all others.
 - All tickets must have at least one unnumbered label attached to indicate what sort of issue it is.  The types are as follows:
 	- \htmlonly <span class="badge badge-yellow">Bug</span>\endhtmlonly : Addressing a problem in existing code.
 	- \htmlonly <span class="badge badge-green">Enhancement</span>\endhtmlonly : Adding new functionality.
