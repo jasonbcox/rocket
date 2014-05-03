@@ -1,6 +1,25 @@
 /*! \page Module_Graphics Graphics Module
 
-This module handles everything rendered to the screen other than terminal output.
+The Graphics Module is designed to make rendering of 2D and 3D images simple without reducing flexibility or rendering capability.  Everything rendered to the screen other than terminal output is handled by these classes.
+
+## Universe
+The Universe class is intended to hold all assets for rendering, usually in some way that is searchable and cachable.  Currently, these assets consist of Meshes, Shaders, Textures, and Scenes (scene graphs with Objects).
+
+Calling Universe::display() will render each Scene as a render pass, such that each render pass is rendered on top of the previously drawn passes.
+
+## Scene
+The Scene class is a scene graph with a built-in camera for rendering the particular scene.  Also contained in the Scene class is a list of Meshes used to render all Objects contained in the scene graph.  Optional composite Scenes may be attached as well to be rendered immediately after.
+
+## Transform
+The Transform class is the base for all matrix-based transforms in the scene graph (Scenes included).  The Transform class has functions for manipulating the transform via translation, rotation, and scaling, as well as attaching other Transforms as children.  Much of a Transform's data is cached such that children will only be updated when the cache becomes dirty.
+
+## Mesh
+The Mesh class holds all rendering data necessary to draw a 3D object.  Currently Meshes used in a Scene are drawn in two separate passes: First opaque, then transparent-enabled Meshes.
+
+## Object
+The Object class is a Transform that contains a Mesh to be rendered according to that transformation.
+
+A simple example of setting up a Universe with a UI Scene being rendered on top of the environment Scene:
 
 \code{.cpp}
 Universe * world = new Universe();

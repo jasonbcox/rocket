@@ -1,0 +1,5 @@
+/*! \page spec_Module_Graphics Graphics Module Design and Specification
+
+This page is used to plan out future changes to the Graphics Module as well as describe how features are intended to operate.  All features that work as expected should have the appropriate documentation moved to /docs/users/.
+
+*/

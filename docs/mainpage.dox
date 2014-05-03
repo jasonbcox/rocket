@@ -32,6 +32,9 @@ Then, just shoot an email to Jason Cox at contact@jasonbcox.com.
 ## Documentation for ROCKET Engine Source Code Developers
 
 - \subpage testFramework
+- \subpage spec_Module_Audio
+- \subpage spec_Module_Core
+- \subpage spec_Module_Graphics
 - \subpage spec_Module_Network
 
 */

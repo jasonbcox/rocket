@@ -1,0 +1,11 @@
+/*! \page Module_Network Network Module
+
+The Network Module is designed to simplify the process of setting up and maintaining connections as well as packaging and unpackaging data sent across a network.
+
+## Network
+The Network class is a set of connections setup using PacketAccumulators.
+
+## PacketAccumulator
+The PacketAccumulator class takes care of packets both inbound and outbound on a single connection.  Both TCP and UDP sockets are treated as connections.  A UDP socket, being the special case that isn't a persistent connection, is treated as having some of the same properties as a TCP connection.  In order to send or receive on a UDP socket, a "connection" must be made first (this does NOT require a handshake like TCP does).  If any packets are received from sources that don't match the UDP connection list, they are dropped as if the connection never existed.
+
+*/
