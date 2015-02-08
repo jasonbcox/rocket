@@ -33,10 +33,7 @@ namespace Rocket {
 
 			const Core::mat4 & getParentOrientation();
 			const Core::mat4 & getFinalOrientation();
-			//void positionWorld( Core::vec3 pos );	// todo: position in world space, relative to parent
-			Core::vec3 positionWorld();
 
-			// todo: rotate() around world space axes
 			void rotate( const Core::vec4 & quaternion );
 			void rotate( float angle, Core::vec3 axisOfRotation );
 			void rotatePitch( float pitch );

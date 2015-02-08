@@ -225,7 +225,7 @@ Rocket_UnitTest ( all_Graphics ) {
 		mainScene->ControlCamera( (float)elapsed );
 
 		// orbit glass panes around blue cube
-		vec3 orbitForce = Rocket::Core::normalize( testCube->positionWorld() - testObject->positionWorld() );
+		vec3 orbitForce = Rocket::Core::normalize( testCube->position() - testObject->position() );
 		testObject->applyForce( orbitForce * 0.0001f );
 
 		//std::cout << "cam-R: " << (int)(mainScene->getCameraRotation().x*180/3.1415) << ", " << (int)(mainScene->getCameraRotation().y*180/3.1415) << ", " << (int)(mainScene->getCameraRotation().z*180/3.1415) << "\n";

@@ -91,15 +91,6 @@ namespace Rocket {
 			cleanParentOrientationCache();
 			return m_cache_parentOrientation;
 		}
-		/*void Transform::positionWorld( Core::vec3 pos ) {
-			// todo: position in world space, relative to parent
-			//m_position = pos;
-		}*/
-		//! Returns this Transform's position in world-space (with respect to the root parent node)
-		Core::vec3 Transform::positionWorld() {
-			Core::mat4 orient = getParentOrientation() * orientation();
-			return Core::vec3( orient(0,3), orient(1,3), orient(2,3) );
-		}
 
 		//! Rotate this Transform using a quaternion (local rotation)
 		void Transform::rotate( const Core::vec4 & quaternion ) {
