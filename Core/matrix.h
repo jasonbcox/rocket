@@ -9,7 +9,6 @@
 #define EIGEN_MPL2_ONLY
 #define EIGEN_DEFAULT_TO_ROW_MAJOR
 #include <eigen3/Eigen/Dense>
-using namespace Eigen;
 
 #include "vector.h"
 #include "mathconstants.h"
@@ -25,19 +24,19 @@ namespace Rocket {
 
 		template< class T, unsigned int R, unsigned int C > class T_mat {
 		public:
-			Matrix< T, R, C > m_matrix;
+			Eigen::Matrix< T, R, C > m_matrix;
 
 			// Constructors
 
 			// Default is identity matrix
 			T_mat< T, R, C >() { m_matrix.setIdentity(); }
 			// Fill the matrix with an Eigen Matrix
-			T_mat< T, R, C >( Matrix< T, R, C > matrix ) { m_matrix = matrix; }
+			T_mat< T, R, C >( Eigen::Matrix< T, R, C > matrix ) { m_matrix = matrix; }
 
 			// Constructor that takes in R x C number of elements
-			inline void eigenCommaExpand( CommaInitializer< Matrix< T, R, C > > & commaInit ) {}
+			inline void eigenCommaExpand( Eigen::CommaInitializer< Eigen::Matrix< T, R, C > > & commaInit ) {}
 			template< typename... Args >
-			inline void eigenCommaExpand( CommaInitializer< Matrix< T, R, C > > & commaInit, T && head, Args &&... tail ) {
+			inline void eigenCommaExpand( Eigen::CommaInitializer< Eigen::Matrix< T, R, C > > & commaInit, T && head, Args &&... tail ) {
 				commaInit.operator , ( head );
 				eigenCommaExpand( commaInit, std::forward< T >( tail )... );
 			}
@@ -101,14 +100,14 @@ namespace Rocket {
 			}
 
 			// Conversion Operators
-			operator Matrix< T, R, C >() const { return m_matrix; }
+			operator Eigen::Matrix< T, R, C >() const { return m_matrix; }
 
 			template< class U > operator T_mat< U, R, C >() const { return T_mat< U, R, C >( m_matrix.template cast< U >() ); }
 
 			operator T * () { return m_matrix.data(); }
 
 			friend std::ostream & operator << ( std::ostream& stream, const T_mat< T, R, C > & m ) {
-				IOFormat MatrixFormat( FullPrecision, 0, ", ", "\n", "[", "]" );
+				Eigen::IOFormat MatrixFormat( Eigen::FullPrecision, 0, ", ", "\n", "[", "]" );
 				return stream << m.m_matrix.format( MatrixFormat );
 			}
 		};

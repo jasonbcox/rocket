@@ -8,7 +8,6 @@
 
 #define EIGEN_MPL2_ONLY
 #include <eigen3/Eigen/Dense>
-using namespace Eigen;
 
 #include "mathconstants.h"
 
@@ -19,24 +18,24 @@ namespace Rocket {
 			static_assert( N > 1, "Number of elements must be greater than 1" );
 
 		public:
-			Matrix< T, N, 1 > m_elements;
+			Eigen::Matrix< T, N, 1 > m_elements;
 
 			// Constructors
 			T_vec() { m_elements.setZero(); }
-			T_vec( Matrix< T, N, 1 > elements ) { m_elements = elements; }
+			T_vec( Eigen::Matrix< T, N, 1 > elements ) { m_elements = elements; }
 
 			// Constructor that takes N number of elements
 			template< typename... Args >
 			T_vec( T first, Args &&... args ) {
 				static_assert( sizeof...( Args ) == N - 1, "Invalid number of arguments" );
-				m_elements = Matrix< T, N, 1 >( first, args... );
+				m_elements = Eigen::Matrix< T, N, 1 >( first, args... );
 			}
 
 			// Constructor that appends right vector to left vector
 			template< unsigned int Nleft, unsigned int Nright >
 			T_vec( const T_vec< T, Nleft > & left, const T_vec< T, Nright > & right ) {
 				static_assert( Nleft + Nright == N, "Left and Right vectors do not contain the right number of elements" );
-				m_elements = Matrix< T, N, 1 >();
+				m_elements = Eigen::Matrix< T, N, 1 >();
 				for ( unsigned int i = 0; i < Nleft; i++ ) {
 					m_elements[i] = left[i];
 				}
@@ -49,7 +48,7 @@ namespace Rocket {
 			template< unsigned int N2, typename... Args >
 			T_vec( const T_vec< T, N2 > & v, Args &&... args ) {
 				static_assert( sizeof...( Args ) == N - N2, "Invalid number of arguments" );
-				m_elements = Matrix< T, N, 1 >();
+				m_elements = Eigen::Matrix< T, N, 1 >();
 				for ( unsigned int i = 0; i < N2; i++ ) {
 					m_elements[i] = v[i];
 				}
@@ -130,7 +129,7 @@ namespace Rocket {
 			T_vec< T, 4 > wzyx() const { return T_vec< T, 4 >( w(), z(), y(), x() ); }
 
 			// Conversion Operators
-			operator Matrix< T, N, 1 >() const { return m_elements; }
+			operator Eigen::Matrix< T, N, 1 >() const { return m_elements; }
 
 			template< class U >
 			operator T_vec< U, N >() const {
@@ -140,7 +139,7 @@ namespace Rocket {
 			operator T * () { return m_elements.data(); }
 
 			friend std::ostream & operator << ( std::ostream& stream, const T_vec< T, N > & v ) {
-				IOFormat VectorFormat( FullPrecision, 0, ", ", "\n", "(", ")" );
+				Eigen::IOFormat VectorFormat( Eigen::FullPrecision, 0, ", ", "\n", "(", ")" );
 				return stream << v.m_elements.format( VectorFormat );
 			}
 		};
